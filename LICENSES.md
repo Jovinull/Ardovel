@@ -45,7 +45,7 @@ production tools are kept outside this repository.
 | `fx/hit_spark.png` | sword impact spark, three frames |
 | `vegetation/oak.png`, `birch.png`, `fern.png` | oak, birch, fern |
 | `props/shrine.png`, `shrine_awakened.png` | shrine (dormant / awakened) |
-| `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept, Portuguese accented glyphs added, proportional spacing |
+| `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
 
 ## Third-party tools
 
