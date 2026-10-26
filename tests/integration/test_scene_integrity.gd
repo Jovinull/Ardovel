@@ -92,3 +92,44 @@ func test_camera_is_limited_to_the_ground() -> void:
 	add_child_autofree(forest)
 	var cam := forest.player.camera
 	assert_eq(Vector4i(cam.limit_left, cam.limit_top, cam.limit_right, cam.limit_bottom), Vector4i(0, 0, 640, 448))
+
+
+func test_every_area_knows_its_id_and_has_a_return_point_for_each_passage() -> void:
+	for area in Game.AREAS:
+		var level: Level = load(Game.AREAS[area]).instantiate()
+		assert_eq(level.area_id, area, "%s scene declares its id" % area)
+		assert_not_null(level.music, "%s has music" % area)
+		var exits := level.find_children("*", "", true, false).filter(func(n: Node) -> bool: return n is AreaExit)
+		assert_gt(exits.size(), 0, "%s can be left" % area)
+		for exit: AreaExit in exits:
+			assert_true(Game.AREAS.has(exit.target_area), "%s leads to a known area" % exit.name)
+			var target: Level = load(Game.AREAS[exit.target_area]).instantiate()
+			assert_not_null(target.entry(exit.target_entry), "%s arrives at %s/%s" % [exit.name, exit.target_area, exit.target_entry])
+			target.free()
+		level.free()
+
+
+func test_a_new_adventure_and_the_shrine_point_to_real_entries() -> void:
+	var start := Adventure.new()
+	var village: Level = load(Game.AREAS[start.area]).instantiate()
+	assert_not_null(village.entry(start.entry))
+	village.free()
+	var forest: Level = load(Game.AREAS[&"forest"]).instantiate()
+	var shrine: Shrine = forest.get_node(^"Entities/Shrine")
+	assert_not_null(forest.entry(shrine.return_entry))
+	forest.free()
+
+
+func test_village_has_its_cast() -> void:
+	var village: Level = load("res://world/village/village.tscn").instantiate()
+	var npcs := village.find_children("*", "", true, false).filter(func(n: Node) -> bool: return n is Npc)
+	assert_eq(npcs.size(), 3)
+	for npc: Npc in npcs:
+		assert_false(npc.display_name.is_empty())
+		assert_not_null(npc.sheet)
+		assert_not_null(npc.faceset)
+		assert_gt(npc.lines.size(), 0)
+		assert_true(npc.lines.back().requires.is_empty(), "%s always has something to say" % npc.name)
+	assert_eq(village.find_children("*", "", true, false).filter(func(n: Node) -> bool: return n is GuardianStatue).size(), 1)
+	assert_eq(village.find_children("*", "", true, false).filter(func(n: Node) -> bool: return n is Player).size(), 1)
+	village.free()

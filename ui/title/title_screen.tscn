@@ -1,0 +1,65 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/title/title_screen.gd" id="1_title"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2_theme"]
+
+[node name="TitleScreen" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_title")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+
+[node name="Background" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.105882, 0.105882, 1)
+
+[node name="Title" type="Label" parent="Root"]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 30.0
+offset_right = 124.0
+offset_bottom = 40.0
+scale = Vector2(3, 3)
+theme_override_colors/font_color = Color(0.94902, 0.917647, 0.945098, 1)
+text = "Ardovel"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Root"]
+layout_mode = 0
+offset_top = 66.0
+offset_right = 320.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.580392, 0.541176, 0.611765, 1)
+text = "O Santuário Esquecido"
+horizontal_alignment = 1
+
+[node name="Options" type="VBoxContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 100.0
+offset_right = 320.0
+offset_bottom = 140.0
+theme_override_constants/separation = 3
+
+[node name="Notice" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = 156.0
+offset_right = 310.0
+offset_bottom = 176.0
+theme_override_colors/font_color = Color(0.580392, 0.541176, 0.611765, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
