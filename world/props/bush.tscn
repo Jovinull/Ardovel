@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetNature.png" id="1_tex"]
+
+[sub_resource type="RectangleShape2D" id="base"]
+size = Vector2(10, 5)
+
+[node name="Bush" type="StaticBody2D"]
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_tex")
+centered = false
+offset = Vector2(-8, -15)
+region_enabled = true
+region_rect = Rect2(16, 160, 16, 16)
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2.5)
+shape = SubResource("base")
