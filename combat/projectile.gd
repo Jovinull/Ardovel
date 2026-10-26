@@ -30,6 +30,9 @@ func _ready() -> void:
 
 func launch(from: Vector2, toward: Vector2, source: Node) -> void:
 	global_position = from
+	# Launched right after entering the tree: without this, physics interpolation would draw the
+	# first frame somewhere between the spawn origin and the muzzle.
+	reset_physics_interpolation()
 	direction = toward.normalized() if toward != Vector2.ZERO else Vector2.DOWN
 	shooter = source
 
