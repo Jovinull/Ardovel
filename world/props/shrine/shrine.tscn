@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/shrine/shrine.gd" id="1_shrine"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/shrine.png" id="2_tex"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="3_interactable"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="4_key"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Spirit.wav" id="5_spirit"]
+
+[sub_resource type="RectangleShape2D" id="base"]
+size = Vector2(26, 8)
+
+[sub_resource type="RectangleShape2D" id="reach"]
+size = Vector2(36, 26)
+
+[node name="Shrine" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_shrine")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+centered = false
+offset = Vector2(-17, -32)
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -4)
+shape = SubResource("base")
+
+[node name="Crystal" type="Marker2D" parent="."]
+position = Vector2(0, -16)
+
+[node name="Interactable" type="Area2D" parent="." node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("3_interactable")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable"]
+position = Vector2(0, -6)
+shape = SubResource("reach")
+
+[node name="Prompt" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(0, -40)
+texture = ExtResource("4_key")
+
+[node name="AwakenSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_spirit")
+volume_db = -3.0
