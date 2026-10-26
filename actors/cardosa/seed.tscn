@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://combat/projectile.gd" id="1_projectile"]
+[ext_resource type="SpriteFrames" path="res://actors/cardosa/seed_frames.tres" id="2_frames"]
+[ext_resource type="Script" path="res://combat/hitbox.gd" id="3_hitbox"]
+[ext_resource type="Script" path="res://combat/hurtbox.gd" id="4_hurtbox"]
+[ext_resource type="Script" path="res://combat/health.gd" id="5_health"]
+[ext_resource type="PackedScene" path="res://fx/hit_spark.tscn" id="6_spark"]
+
+[sub_resource type="CircleShape2D" id="solid"]
+radius = 2.0
+
+[sub_resource type="CircleShape2D" id="sting"]
+radius = 3.0
+
+[sub_resource type="CircleShape2D" id="cut"]
+radius = 4.0
+
+[node name="Seed" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_projectile")
+burst_effect = ExtResource("6_spark")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_frames")
+animation = &"spin"
+autoplay = "spin"
+
+[node name="Solid" type="CollisionShape2D" parent="."]
+shape = SubResource("solid")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("5_health")
+max_health = 1
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+script = ExtResource("3_hitbox")
+damage = 2
+knockback = 90.0
+
+[node name="Shape" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("sting")
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("4_hurtbox")
+health = NodePath("../Health")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("cut")
+

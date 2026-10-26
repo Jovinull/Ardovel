@@ -26,6 +26,11 @@ func is_attacking() -> bool:
 	return phase != AttackData.Phase.IDLE
 
 
+## Seconds until the current attack ends (0 when idle).
+func remaining() -> float:
+	return maxf(data.duration() - _elapsed, 0.0) if is_attacking() else 0.0
+
+
 ## Starts an attack towards `toward` (any non-zero vector). Returns false if one is running.
 func start(toward: Vector2) -> bool:
 	if is_attacking() or toward == Vector2.ZERO:

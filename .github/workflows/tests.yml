@@ -1,0 +1,27 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  gut:
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: 4.7.2
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          echo "GODOT=$RUNNER_TEMP/Godot_v${GODOT_VERSION}-stable_linux.x86_64" >> "$GITHUB_ENV"
+
+      # A fresh checkout has no .godot cache: import once so class names and resources resolve.
+      - name: Import project
+        run: '"$GODOT" --headless --path . --import'
+
+      - name: Run tests
+        run: '"$GODOT" --headless --path . -s addons/gut/gut_cmdln.gd'

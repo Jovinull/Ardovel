@@ -8,6 +8,8 @@
 [ext_resource type="Script" path="res://combat/hitbox.gd" id="6_hitbox"]
 [ext_resource type="Script" path="res://combat/hit_flash.gd" id="7_flash"]
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Hit1.wav" id="8_hit"]
+[ext_resource type="Script" path="res://combat/death_sequence.gd" id="9_death"]
+[ext_resource type="PackedScene" path="res://fx/smoke_puff.tscn" id="10_poof"]
 
 [sub_resource type="RectangleShape2D" id="body"]
 size = Vector2(10, 6)
@@ -16,14 +18,14 @@ size = Vector2(10, 6)
 size = Vector2(14, 13)
 
 [sub_resource type="RectangleShape2D" id="contact"]
-size = Vector2(10, 9)
+size = Vector2(14, 9)
 
 [sub_resource type="CircleShape2D" id="sight"]
 radius = 72.0
 
 [node name="Musgorico" type="CharacterBody2D"]
 collision_layer = 4
-collision_mask = 5
+collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_musgo")
 
@@ -84,3 +86,9 @@ target = NodePath("../Sprite")
 [node name="HitSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_hit")
 volume_db = -4.0
+
+[node name="DeathSequence" type="Node" parent="." node_paths=PackedStringArray("sprite", "areas")]
+script = ExtResource("9_death")
+sprite = NodePath("../Sprite")
+effect = ExtResource("10_poof")
+areas = [NodePath("../Hurtbox"), NodePath("../ContactHitbox"), NodePath("../Detection")]

@@ -2,8 +2,8 @@
 
 A top-down 2D action fantasy RPG made with Godot 4.7 (GDScript).
 
-For now there is a single forest clearing: the hero explores, fights the Musgoricos and can awaken
-the shrine.
+For now there is a single forest clearing: the hero explores, fights the Musgoricos and the
+seed-spitting Cardosas, and can awaken the shrine.
 
 ## Running
 
@@ -26,6 +26,8 @@ Tests use [GUT](https://github.com/bitwes/Gut) 9.7.1, bundled in `addons/gut`.
 godot --headless --path . --import
 godot --headless --path . -s addons/gut/gut_cmdln.gd
 ```
+
+GitHub Actions runs the same two commands on every push (`.github/workflows/tests.yml`).
 
 ## Art
 

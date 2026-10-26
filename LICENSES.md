@@ -24,7 +24,7 @@ was written for this project.
 | `Ui/Font/font8x8.png` | basis of the UI font (see below) |
 | `FX/Smoke/Smoke/SpriteSheet.png` | enemy death puff |
 | `FX/Magic/Circle/SpriteSheetSpark.png` | shrine awakening spark |
-| `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact3`, `Spirit`) | sound effects |
+| `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact3`, `Spirit`, `Launch`) | sound effects |
 
 ## Ardovel original art — `assets/ardovel/`
 
@@ -35,7 +35,14 @@ production tools are kept outside this repository.
 | --- | --- |
 | `characters/hero_walk.png` | hero, 16×16: columns down/up/left/right, 4 walk frames |
 | `characters/hero_attack.png` | hero, three-phase sword swing, 40×40 frames |
+| `characters/hero_hurt.png` | hero hurt poses, 16×16, one per direction |
+| `characters/hero_death.png` | hero death: stagger, kneel, fallen (32×32 frames) |
 | `monsters/musgorico.png` | Musgorico, 16×16, same layout |
+| `monsters/musgorico_combat.png` | Musgorico windup, lunge and hurt poses |
+| `monsters/musgorico_death.png` | Musgorico curling up and going flat |
+| `monsters/cardosa.png` | Cardosa, the seed-spitting plant: idle, windup, shot, hurt, wilt |
+| `monsters/cardosa_seed.png` | Cardosa's seed, two spin frames |
+| `fx/hit_spark.png` | sword impact spark, three frames |
 | `vegetation/oak.png`, `birch.png`, `fern.png` | oak, birch, fern |
 | `props/shrine.png`, `shrine_awakened.png` | shrine (dormant / awakened) |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept, Portuguese accented glyphs added, proportional spacing |

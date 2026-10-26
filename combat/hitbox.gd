@@ -6,6 +6,8 @@ extends Area2D
 ## targets that are already inside the area when it activates are hit too. Monitoring stays on
 ## permanently: toggling it would make overlaps lag one physics step behind activation.
 
+signal landed(hurtbox: Hurtbox)
+
 @export var damage: int = 1
 @export var knockback: float = 100.0
 ## A swing hits each target once per activation; contact damage leaves this off and relies on
@@ -38,4 +40,7 @@ func strike(hurtbox: Hurtbox) -> bool:
 		return false
 	if hit_once_per_activation:
 		_already_hit[hurtbox] = true
-	return hurtbox.receive_hit(Hit.new(damage, knockback, global_position))
+	if not hurtbox.receive_hit(Hit.new(damage, knockback, global_position)):
+		return false
+	landed.emit(hurtbox)
+	return true
