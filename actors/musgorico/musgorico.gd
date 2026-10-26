@@ -1,13 +1,13 @@
 class_name Musgorico
 extends CharacterBody2D
 ## Mossy hedgehog, the first hostile creature. Wanders near its home, chases a target it
-## notices, then telegraphs and lunges. Touching its quills always hurts.
+## notices, then telegraphs and lunges. Touching its quills always hurts, and it bounces off
+## whatever it pricks instead of sitting on top of it.
 
 signal defeated
 
 enum State { IDLE, WANDER, CHASE, WINDUP, LUNGE, RECOVER, RETURN, HURT, DEAD }
 
-const POOF := preload("res://fx/smoke_puff.tscn")
 const ARRIVE_DISTANCE := 3.0
 
 @export var wander_speed: float = 22.0
@@ -24,6 +24,8 @@ const ARRIVE_DISTANCE := 3.0
 @export var lunge_time: float = 0.22
 @export var recover_time: float = 0.6
 @export var hurt_time: float = 0.25
+## Speed of the hop backwards after its quills prick something.
+@export var recoil_speed: float = 90.0
 @export var friction: float = 600.0
 ## Fixed seed for reproducible wandering (0 = random).
 @export var rng_seed: int = 0
@@ -43,6 +45,7 @@ var _rng := RandomNumberGenerator.new()
 @onready var _contact: Hitbox = $ContactHitbox
 @onready var _detection: Area2D = $Detection
 @onready var _hit_flash: HitFlash = $HitFlash
+@onready var _death: DeathSequence = $DeathSequence
 @onready var _hit_sound: AudioStreamPlayer2D = $HitSound
 
 
@@ -54,12 +57,15 @@ func _ready() -> void:
 		_rng.randomize()
 	_detection.body_entered.connect(_on_body_detected)
 	_hurtbox.hit_received.connect(_on_hit_received)
+	_contact.landed.connect(_on_contact_landed)
 	health.died.connect(_on_died)
 	_contact.active = true
 	_enter(State.IDLE)
 
 
 func _physics_process(delta: float) -> void:
+	if state == State.DEAD:
+		return
 	_state_left -= delta
 	match state:
 		State.IDLE:
@@ -82,7 +88,7 @@ func _physics_process(delta: float) -> void:
 				_move_towards(target.global_position, chase_speed)
 		State.WINDUP:
 			velocity = Vector2.ZERO
-			# Telegraph: shiver in place before the lunge.
+			# Telegraph: shiver in place, quills bristling, before the lunge.
 			_sprite.offset.x = 1.0 if int(_state_left * 30.0) % 2 == 0 else -1.0
 			if _state_left <= 0.0:
 				_enter(State.LUNGE)
@@ -97,8 +103,6 @@ func _physics_process(delta: float) -> void:
 		State.RETURN:
 			if _move_towards(home, wander_speed):
 				_enter(State.IDLE)
-		State.DEAD:
-			return
 	move_and_slide()
 	_update_animation()
 
@@ -153,16 +157,31 @@ func _enter(next: State) -> void:
 
 func _update_animation() -> void:
 	var moving := velocity.length() > 1.0
-	if moving and state != State.HURT:
+	if moving and state in [State.WANDER, State.CHASE, State.RETURN]:
 		facing = Facing.cardinal(velocity)
-	_sprite.speed_scale = 2.0 if state == State.LUNGE else 1.0
-	var prefix := "walk_" if moving and state != State.HURT else "idle_"
-	_sprite.play(StringName(prefix + Facing.name_of(facing)))
+	var dir := Facing.name_of(facing)
+	match state:
+		State.WINDUP:
+			_sprite.play(StringName("windup_" + dir))
+		State.LUNGE:
+			_sprite.play(StringName("lunge_" + dir))
+		State.HURT:
+			_sprite.play(StringName("hurt_" + dir))
+		_:
+			_sprite.play(StringName(("walk_" if moving else "idle_") + dir))
 
 
 func _on_body_detected(body: Node2D) -> void:
 	if target == null:
 		set_target(body)
+
+
+func _on_contact_landed(hurtbox: Hurtbox) -> void:
+	if state == State.DEAD:
+		return
+	var away := hurtbox.global_position.direction_to(global_position)
+	velocity = (away if away != Vector2.ZERO else -facing) * recoil_speed
+	_enter(State.RECOVER)
 
 
 func _on_hit_received(hit: Hit) -> void:
@@ -176,10 +195,6 @@ func _on_hit_received(hit: Hit) -> void:
 
 func _on_died() -> void:
 	state = State.DEAD
-	_contact.active = false
-	_hurtbox.set_deferred(&"monitorable", false)
-	var poof: Node2D = POOF.instantiate()
-	poof.position = position
-	get_parent().add_child.call_deferred(poof)
+	velocity = Vector2.ZERO
 	defeated.emit()
-	queue_free()
+	_death.start()
