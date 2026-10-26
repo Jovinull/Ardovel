@@ -69,3 +69,29 @@ func test_restart_action_requests_a_restart_only_when_open() -> void:
 	var release := InputEventAction.new()
 	release.action = &"restart"
 	Input.parse_input_event(release)
+
+
+func test_sword_hit_freezes_the_world_briefly() -> void:
+	player.hit_landed.emit()
+	assert_eq(Engine.time_scale, 0.0)
+	await get_tree().create_timer(0.15, true, false, true).timeout
+	assert_eq(Engine.time_scale, 1.0)
+
+
+func test_a_second_hit_extends_the_freeze() -> void:
+	# Long freezes so a slow frame cannot blur the windows: first ends at 0.3, second at 0.5.
+	game.hit_stop_time = 0.3
+	player.hit_landed.emit()
+	await get_tree().create_timer(0.2, true, false, true).timeout
+	player.hit_landed.emit()
+	await get_tree().create_timer(0.2, true, false, true).timeout
+	assert_eq(Engine.time_scale, 0.0, "the first freeze must not release the second")
+	await get_tree().create_timer(0.3, true, false, true).timeout
+	assert_eq(Engine.time_scale, 1.0)
+
+
+func test_leaving_the_game_never_leaves_time_frozen() -> void:
+	player.hit_landed.emit()
+	remove_child(game)
+	assert_eq(Engine.time_scale, 1.0)
+	add_child(game)
