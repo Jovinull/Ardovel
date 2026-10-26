@@ -65,6 +65,14 @@ func _physics_process(delta: float) -> void:
 			pass
 
 
+## Turns the hero towards `direction` (snapped to a cardinal) in the idle pose.
+func face(direction: Vector2) -> void:
+	if direction == Vector2.ZERO:
+		return
+	facing = Facing.cardinal(direction)
+	_sprite.play(StringName("idle_" + Facing.name_of(facing)))
+
+
 func _move_input() -> Vector2:
 	return Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 

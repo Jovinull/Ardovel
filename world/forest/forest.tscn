@@ -1,7 +1,7 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://world/level.gd" id="1_fpnp5"]
-[ext_resource type="TileSet" path="res://world/forest/forest_tileset.tres" id="2_dnmi7"]
+[ext_resource type="TileSet" path="res://world/ground_tileset.tres" id="2_dnmi7"]
 [ext_resource type="PackedScene" path="res://actors/player/player.tscn" id="3_fynp5"]
 [ext_resource type="PackedScene" path="res://world/props/shrine/shrine.tscn" id="5_ca7d4"]
 [ext_resource type="PackedScene" path="res://actors/musgorico/musgorico.tscn" id="7_ltoxr"]
@@ -16,6 +16,9 @@
 [ext_resource type="PackedScene" path="res://world/props/stump.tscn" id="17_i37xd"]
 [ext_resource type="PackedScene" path="res://world/props/boulder.tscn" id="18_xbfgq"]
 [ext_resource type="PackedScene" path="res://actors/cardosa/cardosa.tscn" id="21_cards"]
+[ext_resource type="Script" path="res://world/area_entry.gd" id="22_entry"]
+[ext_resource type="Script" path="res://world/area_exit.gd" id="23_exit"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Musics/11 - Clearing.ogg" id="24_music"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_77kt1"]
 size = Vector2(672, 16)
@@ -29,8 +32,13 @@ size = Vector2(16, 448)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yqnd7"]
 size = Vector2(16, 448)
 
+[sub_resource type="RectangleShape2D" id="exit_south"]
+size = Vector2(56, 8)
+
 [node name="Forest" type="Node2D" unique_id=702321889 node_paths=PackedStringArray("player", "ground")]
 script = ExtResource("1_fpnp5")
+area_id = &"forest"
+music = ExtResource("24_music")
 player = NodePath("Entities/Player")
 ground = NodePath("Ground")
 
@@ -309,3 +317,27 @@ shape = SubResource("RectangleShape2D_kflk0")
 [node name="@CollisionShape2D@5" type="CollisionShape2D" parent="Bounds" unique_id=133256602]
 position = Vector2(648, 224)
 shape = SubResource("RectangleShape2D_yqnd7")
+
+[node name="Entries" type="Node2D" parent="."]
+
+[node name="South" type="Marker2D" parent="Entries"]
+position = Vector2(328, 416)
+script = ExtResource("22_entry")
+id = &"south"
+facing = Vector2(0, -1)
+
+[node name="Shrine" type="Marker2D" parent="Entries"]
+position = Vector2(320, 128)
+script = ExtResource("22_entry")
+id = &"shrine"
+
+[node name="ToVillage" type="Area2D" parent="."]
+position = Vector2(328, 444)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("23_exit")
+target_area = &"village"
+target_entry = &"north"
+
+[node name="Shape" type="CollisionShape2D" parent="ToVillage"]
+shape = SubResource("exit_south")
