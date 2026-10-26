@@ -27,6 +27,8 @@ godot --headless --path . --import
 godot --headless --path . -s addons/gut/gut_cmdln.gd
 ```
 
+GitHub Actions runs the same two commands on every push (`.github/workflows/tests.yml`).
+
 ## Art
 
 The visual base is the Ninja Adventure asset pack (CC0), together with original art made for the
