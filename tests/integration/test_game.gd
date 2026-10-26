@@ -60,16 +60,19 @@ func test_restart_action_requests_a_restart_only_when_open() -> void:
 	var press := InputEventAction.new()
 	press.action = &"restart"
 	press.pressed = true
-	Input.parse_input_event(press)
-	await wait_frames(2)
-	assert_signal_not_emitted(death_screen, "restart_requested")
-	death_screen.open()
-	Input.parse_input_event(press)
-	await wait_frames(2)
-	assert_signal_emitted(death_screen, "restart_requested")
 	var release := InputEventAction.new()
 	release.action = &"restart"
-	Input.parse_input_event(release)
+	# Each event object is sent once: Godot rejects parsing the same one twice in a frame.
+	Input.parse_input_event(press.duplicate())
+	await wait_process_frames(2)
+	Input.parse_input_event(release.duplicate())
+	await wait_process_frames(2)
+	assert_signal_not_emitted(death_screen, "restart_requested")
+	death_screen.open()
+	Input.parse_input_event(press.duplicate())
+	await wait_process_frames(2)
+	assert_signal_emitted(death_screen, "restart_requested")
+	Input.parse_input_event(release.duplicate())
 
 
 func test_sword_hit_freezes_the_world_briefly() -> void:
