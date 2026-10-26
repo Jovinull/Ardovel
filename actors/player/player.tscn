@@ -91,6 +91,7 @@ shape = SubResource("reach")
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2(0, -8)
+process_callback = 0
 
 [node name="SwingSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("11_slash")

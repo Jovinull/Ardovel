@@ -1,0 +1,86 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/musgorico/musgorico.gd" id="1_musgo"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Shadow.png" id="2_shadow"]
+[ext_resource type="SpriteFrames" path="res://actors/musgorico/musgorico_frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://combat/health.gd" id="4_health"]
+[ext_resource type="Script" path="res://combat/hurtbox.gd" id="5_hurtbox"]
+[ext_resource type="Script" path="res://combat/hitbox.gd" id="6_hitbox"]
+[ext_resource type="Script" path="res://combat/hit_flash.gd" id="7_flash"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Hit1.wav" id="8_hit"]
+
+[sub_resource type="RectangleShape2D" id="body"]
+size = Vector2(10, 6)
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(14, 13)
+
+[sub_resource type="RectangleShape2D" id="contact"]
+size = Vector2(10, 9)
+
+[sub_resource type="CircleShape2D" id="sight"]
+radius = 72.0
+
+[node name="Musgorico" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 5
+motion_mode = 1
+script = ExtResource("1_musgo")
+
+[node name="Shadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.6)
+position = Vector2(0, -1)
+texture = ExtResource("2_shadow")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -8)
+sprite_frames = ExtResource("3_frames")
+animation = &"idle_down"
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("body")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("4_health")
+max_health = 3
+invulnerability_time = 0.25
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("5_hurtbox")
+health = NodePath("../Health")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -7)
+shape = SubResource("hurt")
+
+[node name="ContactHitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+script = ExtResource("6_hitbox")
+damage = 2
+knockback = 130.0
+hit_once_per_activation = false
+
+[node name="Shape" type="CollisionShape2D" parent="ContactHitbox"]
+position = Vector2(0, -6)
+shape = SubResource("contact")
+
+[node name="Detection" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="Shape" type="CollisionShape2D" parent="Detection"]
+position = Vector2(0, -6)
+shape = SubResource("sight")
+
+[node name="HitFlash" type="Node" parent="." node_paths=PackedStringArray("target")]
+script = ExtResource("7_flash")
+target = NodePath("../Sprite")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_hit")
+volume_db = -4.0
