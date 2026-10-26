@@ -9,9 +9,6 @@
 *.exe
 *.pck
 
-# Test reports written by GUT
-/tests/reports/
-
 # OS / editor noise
 .DS_Store
 Thumbs.db
