@@ -80,7 +80,7 @@ func test_forest_instances_inherit_their_scene_settings() -> void:
 	for node in forest.get_node(^"Entities").get_children():
 		if node is Musgorico:
 			assert_eq((node as Musgorico).collision_layer, 4, node.name)
-			assert_eq((node as Musgorico).collision_mask, 5, node.name)
+			assert_eq((node as Musgorico).collision_mask, 7, node.name)
 	var text := FileAccess.get_file_as_string("res://world/forest/forest.tscn")
 	assert_false(text.contains("
 collision_layer = 4
