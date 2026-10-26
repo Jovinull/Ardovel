@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" path="res://world/props/small_tree.tscn" id="16_nqkb8"]
 [ext_resource type="PackedScene" path="res://world/props/stump.tscn" id="17_i37xd"]
 [ext_resource type="PackedScene" path="res://world/props/boulder.tscn" id="18_xbfgq"]
+[ext_resource type="PackedScene" path="res://actors/cardosa/cardosa.tscn" id="21_cards"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_77kt1"]
 size = Vector2(672, 16)
@@ -58,6 +59,12 @@ position = Vector2(548, 292)
 
 [node name="Musgorico3" type="CharacterBody2D" parent="Entities" unique_id=2018053162 instance=ExtResource("7_ltoxr")]
 position = Vector2(128, 300)
+
+[node name="Cardosa1" parent="Entities" instance=ExtResource("21_cards")]
+position = Vector2(250, 288)
+
+[node name="Cardosa2" parent="Entities" instance=ExtResource("21_cards")]
+position = Vector2(562, 250)
 
 [node name="PineGrove1" type="StaticBody2D" parent="Entities" unique_id=2057591773 instance=ExtResource("9_h4u35")]
 position = Vector2(32, 44)

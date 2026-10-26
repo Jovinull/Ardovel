@@ -2,8 +2,8 @@
 
 A top-down 2D action fantasy RPG made with Godot 4.7 (GDScript).
 
-For now there is a single forest clearing: the hero explores, fights the Musgoricos and can awaken
-the shrine.
+For now there is a single forest clearing: the hero explores, fights the Musgoricos and the
+seed-spitting Cardosas, and can awaken the shrine.
 
 ## Running
 

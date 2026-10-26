@@ -69,6 +69,8 @@ func test_forest_has_its_cast_and_a_full_ground() -> void:
 	assert_eq(hedgehogs.size(), 3)
 	var shrines := entities.get_children().filter(func(n: Node) -> bool: return n is Shrine)
 	assert_eq(shrines.size(), 1)
+	var plants := entities.get_children().filter(func(n: Node) -> bool: return n is Cardosa)
+	assert_eq(plants.size(), 2)
 
 
 func test_forest_instances_inherit_their_scene_settings() -> void:
