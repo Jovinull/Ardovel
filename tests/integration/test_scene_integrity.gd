@@ -71,6 +71,20 @@ func test_forest_has_its_cast_and_a_full_ground() -> void:
 	assert_eq(shrines.size(), 1)
 
 
+func test_forest_instances_inherit_their_scene_settings() -> void:
+	# Instances must not carry stale copies of layers or scripts from the scene they come from.
+	var forest: Level = load("res://world/forest/forest.tscn").instantiate()
+	add_child_autofree(forest)
+	for node in forest.get_node(^"Entities").get_children():
+		if node is Musgorico:
+			assert_eq((node as Musgorico).collision_layer, 4, node.name)
+			assert_eq((node as Musgorico).collision_mask, 5, node.name)
+	var text := FileAccess.get_file_as_string("res://world/forest/forest.tscn")
+	assert_false(text.contains("
+collision_layer = 4
+"), "no per-instance layer overrides in the forest scene")
+
+
 func test_camera_is_limited_to_the_ground() -> void:
 	var forest: Level = load("res://world/forest/forest.tscn").instantiate()
 	add_child_autofree(forest)

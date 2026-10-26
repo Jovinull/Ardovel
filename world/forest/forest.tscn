@@ -3,11 +3,8 @@
 [ext_resource type="Script" path="res://world/level.gd" id="1_fpnp5"]
 [ext_resource type="TileSet" path="res://world/forest/forest_tileset.tres" id="2_dnmi7"]
 [ext_resource type="PackedScene" path="res://actors/player/player.tscn" id="3_fynp5"]
-[ext_resource type="Script" path="res://actors/player/player.gd" id="4_lcb8x"]
 [ext_resource type="PackedScene" path="res://world/props/shrine/shrine.tscn" id="5_ca7d4"]
-[ext_resource type="Script" path="res://world/props/shrine/shrine.gd" id="6_wtmk7"]
 [ext_resource type="PackedScene" path="res://actors/musgorico/musgorico.tscn" id="7_ltoxr"]
-[ext_resource type="Script" path="res://actors/musgorico/musgorico.gd" id="8_tqgd6"]
 [ext_resource type="PackedScene" path="res://world/props/pine_grove.tscn" id="9_h4u35"]
 [ext_resource type="PackedScene" path="res://world/props/oak.tscn" id="10_n1ala"]
 [ext_resource type="PackedScene" path="res://world/props/birch.tscn" id="11_dyjvo"]
@@ -49,159 +46,111 @@ y_sort_enabled = true
 
 [node name="Player" type="CharacterBody2D" parent="Entities" unique_id=1320973539 instance=ExtResource("3_fynp5")]
 position = Vector2(328, 424)
-collision_layer = 2
-motion_mode = 1
-script = ExtResource("4_lcb8x")
 
 [node name="Shrine" type="StaticBody2D" parent="Entities" unique_id=1832448317 instance=ExtResource("5_ca7d4")]
 position = Vector2(320, 100)
-collision_mask = 0
-script = ExtResource("6_wtmk7")
 
 [node name="Musgorico1" type="CharacterBody2D" parent="Entities" unique_id=1295737214 instance=ExtResource("7_ltoxr")]
 position = Vector2(516, 268)
-collision_layer = 4
-collision_mask = 5
-motion_mode = 1
-script = ExtResource("8_tqgd6")
 
 [node name="Musgorico2" type="CharacterBody2D" parent="Entities" unique_id=1101322356 instance=ExtResource("7_ltoxr")]
 position = Vector2(548, 292)
-collision_layer = 4
-collision_mask = 5
-motion_mode = 1
-script = ExtResource("8_tqgd6")
 
 [node name="Musgorico3" type="CharacterBody2D" parent="Entities" unique_id=2018053162 instance=ExtResource("7_ltoxr")]
 position = Vector2(128, 300)
-collision_layer = 4
-collision_mask = 5
-motion_mode = 1
-script = ExtResource("8_tqgd6")
 
 [node name="PineGrove1" type="StaticBody2D" parent="Entities" unique_id=2057591773 instance=ExtResource("9_h4u35")]
 position = Vector2(32, 44)
-collision_mask = 0
 
 [node name="PineGrove2" type="StaticBody2D" parent="Entities" unique_id=227848772 instance=ExtResource("9_h4u35")]
 position = Vector2(92, 40)
-collision_mask = 0
 
 [node name="Oak1" type="StaticBody2D" parent="Entities" unique_id=881495976 instance=ExtResource("10_n1ala")]
 position = Vector2(152, 56)
-collision_mask = 0
 
 [node name="Birch1" type="StaticBody2D" parent="Entities" unique_id=394042825 instance=ExtResource("11_dyjvo")]
 position = Vector2(196, 50)
-collision_mask = 0
 
 [node name="Birch2" type="StaticBody2D" parent="Entities" unique_id=873354054 instance=ExtResource("11_dyjvo")]
 position = Vector2(268, 40)
-collision_mask = 0
 
 [node name="RoundTree1" type="StaticBody2D" parent="Entities" unique_id=1401621012 instance=ExtResource("12_jyu76")]
 position = Vector2(300, 30)
-collision_mask = 0
 
 [node name="Oak2" type="StaticBody2D" parent="Entities" unique_id=526202262 instance=ExtResource("10_n1ala")]
 position = Vector2(352, 38)
-collision_mask = 0
 
 [node name="Birch3" type="StaticBody2D" parent="Entities" unique_id=1178806352 instance=ExtResource("11_dyjvo")]
 position = Vector2(404, 46)
-collision_mask = 0
 
 [node name="Oak3" type="StaticBody2D" parent="Entities" unique_id=1530142202 instance=ExtResource("10_n1ala")]
 position = Vector2(452, 58)
-collision_mask = 0
 
 [node name="PineGrove3" type="StaticBody2D" parent="Entities" unique_id=764246767 instance=ExtResource("9_h4u35")]
 position = Vector2(520, 42)
-collision_mask = 0
 
 [node name="PineGrove4" type="StaticBody2D" parent="Entities" unique_id=1157637886 instance=ExtResource("9_h4u35")]
 position = Vector2(584, 46)
-collision_mask = 0
 
 [node name="Birch4" type="StaticBody2D" parent="Entities" unique_id=1215085087 instance=ExtResource("11_dyjvo")]
 position = Vector2(628, 60)
-collision_mask = 0
 
 [node name="Oak4" type="StaticBody2D" parent="Entities" unique_id=717082942 instance=ExtResource("10_n1ala")]
 position = Vector2(18, 118)
-collision_mask = 0
 
 [node name="Birch5" type="StaticBody2D" parent="Entities" unique_id=1947070120 instance=ExtResource("11_dyjvo")]
 position = Vector2(10, 170)
-collision_mask = 0
 
 [node name="PineGrove5" type="StaticBody2D" parent="Entities" unique_id=1918655406 instance=ExtResource("9_h4u35")]
 position = Vector2(26, 226)
-collision_mask = 0
 
 [node name="Oak5" type="StaticBody2D" parent="Entities" unique_id=154931436 instance=ExtResource("10_n1ala")]
 position = Vector2(16, 300)
-collision_mask = 0
 
 [node name="RoundTree2" type="StaticBody2D" parent="Entities" unique_id=1101086328 instance=ExtResource("12_jyu76")]
 position = Vector2(22, 352)
-collision_mask = 0
 
 [node name="PineGrove6" type="StaticBody2D" parent="Entities" unique_id=1246652673 instance=ExtResource("9_h4u35")]
 position = Vector2(34, 412)
-collision_mask = 0
 
 [node name="Oak6" type="StaticBody2D" parent="Entities" unique_id=445547939 instance=ExtResource("10_n1ala")]
 position = Vector2(626, 128)
-collision_mask = 0
 
 [node name="RoundTree3" type="StaticBody2D" parent="Entities" unique_id=1819173671 instance=ExtResource("12_jyu76")]
 position = Vector2(620, 186)
-collision_mask = 0
 
 [node name="Birch6" type="StaticBody2D" parent="Entities" unique_id=1472104243 instance=ExtResource("11_dyjvo")]
 position = Vector2(632, 244)
-collision_mask = 0
 
 [node name="PineGrove7" type="StaticBody2D" parent="Entities" unique_id=364063987 instance=ExtResource("9_h4u35")]
 position = Vector2(614, 330)
-collision_mask = 0
 
 [node name="Oak7" type="StaticBody2D" parent="Entities" unique_id=378485304 instance=ExtResource("10_n1ala")]
 position = Vector2(626, 398)
-collision_mask = 0
 
 [node name="PineGrove8" type="StaticBody2D" parent="Entities" unique_id=1073977250 instance=ExtResource("9_h4u35")]
 position = Vector2(100, 448)
-collision_mask = 0
 
 [node name="Oak8" type="StaticBody2D" parent="Entities" unique_id=1397928496 instance=ExtResource("10_n1ala")]
 position = Vector2(168, 444)
-collision_mask = 0
 
 [node name="Birch7" type="StaticBody2D" parent="Entities" unique_id=32198470 instance=ExtResource("11_dyjvo")]
 position = Vector2(214, 440)
-collision_mask = 0
 
 [node name="RoundTree4" type="StaticBody2D" parent="Entities" unique_id=1605524223 instance=ExtResource("12_jyu76")]
 position = Vector2(262, 446)
-collision_mask = 0
 
 [node name="Birch8" type="StaticBody2D" parent="Entities" unique_id=850695916 instance=ExtResource("11_dyjvo")]
 position = Vector2(396, 442)
-collision_mask = 0
 
 [node name="Oak9" type="StaticBody2D" parent="Entities" unique_id=1654076253 instance=ExtResource("10_n1ala")]
 position = Vector2(444, 446)
-collision_mask = 0
 
 [node name="PineGrove9" type="StaticBody2D" parent="Entities" unique_id=1156144130 instance=ExtResource("9_h4u35")]
 position = Vector2(512, 448)
-collision_mask = 0
 
 [node name="Birch9" type="StaticBody2D" parent="Entities" unique_id=2110649197 instance=ExtResource("11_dyjvo")]
 position = Vector2(566, 440)
-collision_mask = 0
 
 [node name="Fern1" type="Node2D" parent="Entities" unique_id=773068710 instance=ExtResource("13_b1lkh")]
 position = Vector2(270, 122)
@@ -211,162 +160,129 @@ position = Vector2(372, 118)
 
 [node name="Bush1" type="StaticBody2D" parent="Entities" unique_id=472971026 instance=ExtResource("14_8bojx")]
 position = Vector2(262, 84)
-collision_mask = 0
 
 [node name="Rock1" type="StaticBody2D" parent="Entities" unique_id=663195729 instance=ExtResource("15_cmhfg")]
 position = Vector2(382, 80)
-collision_mask = 0
 
 [node name="Bush2" type="StaticBody2D" parent="Entities" unique_id=1251791588 instance=ExtResource("14_8bojx")]
 position = Vector2(384, 136)
-collision_mask = 0
 
 [node name="Oak10" type="StaticBody2D" parent="Entities" unique_id=158988 instance=ExtResource("10_n1ala")]
 position = Vector2(258, 206)
-collision_mask = 0
 
 [node name="Fern3" type="Node2D" parent="Entities" unique_id=231754575 instance=ExtResource("13_b1lkh")]
 position = Vector2(278, 214)
 
 [node name="Birch10" type="StaticBody2D" parent="Entities" unique_id=1803542273 instance=ExtResource("11_dyjvo")]
 position = Vector2(372, 236)
-collision_mask = 0
 
 [node name="RoundTree5" type="StaticBody2D" parent="Entities" unique_id=555079972 instance=ExtResource("12_jyu76")]
 position = Vector2(206, 372)
-collision_mask = 0
 
 [node name="SmallTree1" type="StaticBody2D" parent="Entities" unique_id=1483161118 instance=ExtResource("16_nqkb8")]
 position = Vector2(402, 314)
-collision_mask = 0
 
 [node name="Stump1" type="StaticBody2D" parent="Entities" unique_id=1782920123 instance=ExtResource("17_i37xd")]
 position = Vector2(274, 370)
-collision_mask = 0
 
 [node name="Fern4" type="Node2D" parent="Entities" unique_id=1911422075 instance=ExtResource("13_b1lkh")]
 position = Vector2(386, 330)
 
 [node name="Bush3" type="StaticBody2D" parent="Entities" unique_id=476439124 instance=ExtResource("14_8bojx")]
 position = Vector2(290, 268)
-collision_mask = 0
 
 [node name="Rock2" type="StaticBody2D" parent="Entities" unique_id=723943844 instance=ExtResource("15_cmhfg")]
 position = Vector2(352, 306)
-collision_mask = 0
 
 [node name="Boulder1" type="StaticBody2D" parent="Entities" unique_id=149969757 instance=ExtResource("18_xbfgq")]
 position = Vector2(382, 392)
-collision_mask = 0
 
 [node name="Fern5" type="Node2D" parent="Entities" unique_id=1985418313 instance=ExtResource("13_b1lkh")]
 position = Vector2(246, 386)
 
 [node name="Oak11" type="StaticBody2D" parent="Entities" unique_id=77263573 instance=ExtResource("10_n1ala")]
 position = Vector2(112, 150)
-collision_mask = 0
 
 [node name="RoundTree6" type="StaticBody2D" parent="Entities" unique_id=42177986 instance=ExtResource("12_jyu76")]
 position = Vector2(176, 176)
-collision_mask = 0
 
 [node name="Fern6" type="Node2D" parent="Entities" unique_id=1416245413 instance=ExtResource("13_b1lkh")]
 position = Vector2(136, 162)
 
 [node name="SmallTree2" type="StaticBody2D" parent="Entities" unique_id=1834003336 instance=ExtResource("16_nqkb8")]
 position = Vector2(70, 196)
-collision_mask = 0
 
 [node name="Bush4" type="StaticBody2D" parent="Entities" unique_id=211574948 instance=ExtResource("14_8bojx")]
 position = Vector2(200, 120)
-collision_mask = 0
 
 [node name="Birch11" type="StaticBody2D" parent="Entities" unique_id=755154476 instance=ExtResource("11_dyjvo")]
 position = Vector2(476, 138)
-collision_mask = 0
 
 [node name="Oak12" type="StaticBody2D" parent="Entities" unique_id=322178322 instance=ExtResource("10_n1ala")]
 position = Vector2(548, 168)
-collision_mask = 0
 
 [node name="Fern7" type="Node2D" parent="Entities" unique_id=1112090037 instance=ExtResource("13_b1lkh")]
 position = Vector2(498, 150)
 
 [node name="SmallTree3" type="StaticBody2D" parent="Entities" unique_id=1047320642 instance=ExtResource("16_nqkb8")]
 position = Vector2(590, 116)
-collision_mask = 0
 
 [node name="Bush5" type="StaticBody2D" parent="Entities" unique_id=1609026378 instance=ExtResource("14_8bojx")]
 position = Vector2(430, 176)
-collision_mask = 0
 
 [node name="Boulder2" type="StaticBody2D" parent="Entities" unique_id=837795694 instance=ExtResource("18_xbfgq")]
 position = Vector2(452, 252)
-collision_mask = 0
 
 [node name="Rock3" type="StaticBody2D" parent="Entities" unique_id=1254331036 instance=ExtResource("15_cmhfg")]
 position = Vector2(576, 236)
-collision_mask = 0
 
 [node name="Oak13" type="StaticBody2D" parent="Entities" unique_id=544321195 instance=ExtResource("10_n1ala")]
 position = Vector2(476, 346)
-collision_mask = 0
 
 [node name="Stump2" type="StaticBody2D" parent="Entities" unique_id=1866878455 instance=ExtResource("17_i37xd")]
 position = Vector2(584, 330)
-collision_mask = 0
 
 [node name="Fern8" type="Node2D" parent="Entities" unique_id=943587157 instance=ExtResource("13_b1lkh")]
 position = Vector2(456, 330)
 
 [node name="Bush6" type="StaticBody2D" parent="Entities" unique_id=458949907 instance=ExtResource("14_8bojx")]
 position = Vector2(600, 286)
-collision_mask = 0
 
 [node name="Birch12" type="StaticBody2D" parent="Entities" unique_id=512787649 instance=ExtResource("11_dyjvo")]
 position = Vector2(176, 262)
-collision_mask = 0
 
 [node name="Oak14" type="StaticBody2D" parent="Entities" unique_id=181357353 instance=ExtResource("10_n1ala")]
 position = Vector2(82, 262)
-collision_mask = 0
 
 [node name="Stump3" type="StaticBody2D" parent="Entities" unique_id=1321235870 instance=ExtResource("17_i37xd")]
 position = Vector2(72, 346)
-collision_mask = 0
 
 [node name="Fern9" type="Node2D" parent="Entities" unique_id=1128049747 instance=ExtResource("13_b1lkh")]
 position = Vector2(160, 330)
 
 [node name="Rock4" type="StaticBody2D" parent="Entities" unique_id=852306417 instance=ExtResource("15_cmhfg")]
 position = Vector2(192, 346)
-collision_mask = 0
 
 [node name="Bush7" type="StaticBody2D" parent="Entities" unique_id=1301584867 instance=ExtResource("14_8bojx")]
 position = Vector2(110, 350)
-collision_mask = 0
 
 [node name="Oak15" type="StaticBody2D" parent="Entities" unique_id=1355369782 instance=ExtResource("10_n1ala")]
 position = Vector2(144, 392)
-collision_mask = 0
 
 [node name="Birch13" type="StaticBody2D" parent="Entities" unique_id=1233834249 instance=ExtResource("11_dyjvo")]
 position = Vector2(98, 372)
-collision_mask = 0
 
 [node name="Fern10" type="Node2D" parent="Entities" unique_id=369540809 instance=ExtResource("13_b1lkh")]
 position = Vector2(186, 410)
 
 [node name="SmallTree4" type="StaticBody2D" parent="Entities" unique_id=455963385 instance=ExtResource("16_nqkb8")]
 position = Vector2(482, 408)
-collision_mask = 0
 
 [node name="Fern11" type="Node2D" parent="Entities" unique_id=471801828 instance=ExtResource("13_b1lkh")]
 position = Vector2(540, 398)
 
 [node name="Bush8" type="StaticBody2D" parent="Entities" unique_id=1333579499 instance=ExtResource("14_8bojx")]
 position = Vector2(438, 404)
-collision_mask = 0
 
 [node name="Bounds" type="StaticBody2D" parent="." unique_id=2091794299]
 collision_mask = 0
