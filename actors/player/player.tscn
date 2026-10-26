@@ -1,0 +1,101 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/player/player.gd" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Shadow.png" id="2_shadow"]
+[ext_resource type="SpriteFrames" path="res://actors/player/player_frames.tres" id="3_frames"]
+[ext_resource type="Script" path="res://combat/hurtbox.gd" id="4_hurtbox"]
+[ext_resource type="Script" path="res://combat/hitbox.gd" id="5_hitbox"]
+[ext_resource type="Script" path="res://combat/melee_attack.gd" id="6_melee"]
+[ext_resource type="Resource" path="res://actors/player/sword_attack.tres" id="7_sword"]
+[ext_resource type="Script" path="res://combat/health.gd" id="8_health"]
+[ext_resource type="Script" path="res://combat/hit_flash.gd" id="9_flash"]
+[ext_resource type="Script" path="res://interaction/interactor.gd" id="10_interactor"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Whoosh & Slash/Slash.wav" id="11_slash"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact.wav" id="12_impact"]
+
+[sub_resource type="RectangleShape2D" id="body"]
+size = Vector2(10, 6)
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(10, 13)
+
+[sub_resource type="RectangleShape2D" id="sword"]
+size = Vector2(20, 14)
+
+[sub_resource type="CircleShape2D" id="reach"]
+radius = 12.0
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+motion_mode = 1
+script = ExtResource("1_player")
+
+[node name="Shadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.6)
+position = Vector2(0, -1)
+texture = ExtResource("2_shadow")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -8)
+sprite_frames = ExtResource("3_frames")
+animation = &"idle_down"
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("body")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("8_health")
+max_health = 12
+invulnerability_time = 1.0
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("4_hurtbox")
+health = NodePath("../Health")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -7)
+shape = SubResource("hurt")
+
+[node name="AttackPivot" type="Node2D" parent="."]
+position = Vector2(0, -8)
+
+[node name="SwordHitbox" type="Area2D" parent="AttackPivot"]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("5_hitbox")
+
+[node name="Shape" type="CollisionShape2D" parent="AttackPivot/SwordHitbox"]
+shape = SubResource("sword")
+
+[node name="MeleeAttack" type="Node" parent="." node_paths=PackedStringArray("hitbox")]
+script = ExtResource("6_melee")
+data = ExtResource("7_sword")
+hitbox = NodePath("../AttackPivot/SwordHitbox")
+
+[node name="HitFlash" type="Node" parent="." node_paths=PackedStringArray("target")]
+script = ExtResource("9_flash")
+target = NodePath("../Sprite")
+
+[node name="Interactor" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 32
+script = ExtResource("10_interactor")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactor"]
+position = Vector2(0, -6)
+shape = SubResource("reach")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(0, -8)
+
+[node name="SwingSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_slash")
+volume_db = -6.0
+
+[node name="HurtSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_impact")
+volume_db = -4.0
