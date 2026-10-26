@@ -1,10 +1,9 @@
 extends GutTest
-## The assembled game scene: HUD wiring, death screen and the restart request.
-## The actual scene reload is validated in real runs (reloading here would reload the test runner).
+## The assembled game scene: HUD wiring, death screen, the restart request and hit-stop.
 
 const GameScene := preload("res://game/game.tscn")
 
-var game: Node
+var game: Game
 var player: Player
 var hud: Hud
 var death_screen: DeathScreen
@@ -12,9 +11,11 @@ var death_screen: DeathScreen
 
 func before_each() -> void:
 	game = GameScene.instantiate()
+	game.show_title = false
 	add_child_autofree(game)
+	game.start_new()
 	await wait_physics_frames(2)
-	player = (game.get_node(^"Level") as Level).player
+	player = game.level.player
 	hud = game.get_node(^"HUD")
 	death_screen = game.get_node(^"DeathScreen")
 
@@ -53,22 +54,25 @@ func test_death_opens_the_death_screen() -> void:
 
 
 func test_restart_action_requests_a_restart_only_when_open() -> void:
-	assert_true(death_screen.restart_requested.is_connected(game.restart), "wired to the game's restart")
-	death_screen.restart_requested.disconnect(game.restart)  # reloading would reload the test runner
+	assert_true(death_screen.restart_requested.is_connected(game.respawn), "wired to the game's respawn")
+	death_screen.restart_requested.disconnect(game.respawn)  # only the request is under test here
 	watch_signals(death_screen)
 	var press := InputEventAction.new()
 	press.action = &"restart"
 	press.pressed = true
-	Input.parse_input_event(press)
-	await wait_frames(2)
-	assert_signal_not_emitted(death_screen, "restart_requested")
-	death_screen.open()
-	Input.parse_input_event(press)
-	await wait_frames(2)
-	assert_signal_emitted(death_screen, "restart_requested")
 	var release := InputEventAction.new()
 	release.action = &"restart"
-	Input.parse_input_event(release)
+	# Each event object is sent once: Godot rejects parsing the same one twice in a frame.
+	Input.parse_input_event(press.duplicate())
+	await wait_process_frames(2)
+	Input.parse_input_event(release.duplicate())
+	await wait_process_frames(2)
+	assert_signal_not_emitted(death_screen, "restart_requested")
+	death_screen.open()
+	Input.parse_input_event(press.duplicate())
+	await wait_process_frames(2)
+	assert_signal_emitted(death_screen, "restart_requested")
+	Input.parse_input_event(release.duplicate())
 
 
 func test_sword_hit_freezes_the_world_briefly() -> void:

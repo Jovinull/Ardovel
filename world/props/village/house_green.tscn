@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetHouse.png" id="1_o62kn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hc3kn"]
+size = Vector2(60, 22)
+
+[node name="HouseGreen" type="StaticBody2D" unique_id=332284584]
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=507549122]
+texture = ExtResource("1_o62kn")
+centered = false
+offset = Vector2(-32, -48)
+region_enabled = true
+region_rect = Rect2(304, 0, 64, 48)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1578293443]
+position = Vector2(0, -11)
+shape = SubResource("RectangleShape2D_hc3kn")

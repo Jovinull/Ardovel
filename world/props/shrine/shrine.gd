@@ -1,7 +1,8 @@
 class_name Shrine
 extends StaticBody2D
-## The forest wayshrine. The first interaction awakens it (restoring the actor's health);
-## afterwards it stays awakened and only answers with a short message.
+## The forest wayshrine. The first interaction awakens it (restoring the actor's health) and
+## makes it the adventure's return point; afterwards it stays awakened, also across saves, and
+## only answers with a short message.
 
 signal awakened
 
@@ -12,8 +13,13 @@ const AWAKENED_TEXTURE := preload("res://assets/ardovel/props/shrine_awakened.pn
 
 @export_multiline var awaken_message: String = "Uma luz antiga desperta no santuário.\nSuas feridas se fecham."
 @export_multiline var awakened_message: String = "O cristal pulsa em silêncio."
+## Adventure flag recording that this shrine is awake.
+@export var flag: StringName = &"forest_shrine_awakened"
+## Entry of this area the hero returns to once the shrine is awake.
+@export var return_entry: StringName = &"shrine"
 
 var state: State = State.DORMANT
+var _adventure: Adventure
 
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _interactable: Interactable = $Interactable
@@ -22,7 +28,16 @@ var state: State = State.DORMANT
 
 
 func _ready() -> void:
+	add_to_group(&"adventure")
 	_interactable.action = _on_interact
+
+
+## Takes the adventure state; a shrine awakened earlier comes back awake, without ceremony.
+func bind_adventure(adventure: Adventure) -> void:
+	_adventure = adventure
+	if adventure.has_flag(flag):
+		state = State.AWAKENED
+		_sprite.texture = AWAKENED_TEXTURE
 
 
 func _on_interact(actor: Node2D) -> String:
@@ -37,5 +52,8 @@ func _on_interact(actor: Node2D) -> String:
 	var actor_health := actor.get(&"health") as Health
 	if actor_health != null:
 		actor_health.restore_full()
+	if _adventure != null:
+		_adventure.set_return_point(return_entry)
+		_adventure.set_flag(flag)
 	awakened.emit()
 	return awaken_message

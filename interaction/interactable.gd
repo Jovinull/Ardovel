@@ -8,6 +8,9 @@ const PROMPT_BOB := 2.0
 @export var enabled: bool = true
 ## Optional indicator shown (and gently bobbing) while this is the player's current target.
 @export var prompt: Node2D
+## Name and portrait shown with this object's messages (for characters; empty for things).
+@export var speaker: String = ""
+@export var portrait: Texture2D
 
 var action: Callable
 var _prompt_rest_y: float

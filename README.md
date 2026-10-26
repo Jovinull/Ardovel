@@ -2,8 +2,9 @@
 
 A top-down 2D action fantasy RPG made with Godot 4.7 (GDScript).
 
-For now there is a single forest clearing: the hero explores, fights the Musgoricos and the
-seed-spitting Cardosas, and can awaken the shrine.
+For now it holds one short adventure, *O Santuário Esquecido*: the hero sets out from a small
+village, crosses a forest of Musgoricos and seed-spitting Cardosas to awaken an old shrine, and
+finds the village changed on returning.
 
 ## Running
 
@@ -11,8 +12,12 @@ Open `project.godot` in Godot 4.7.2 and press F5.
 
 - Move: arrow keys or WASD
 - Sword: Space or J
-- Interact: E or K
+- Interact, talk and advance dialogue: E or K
 - Try again: Enter
+
+The adventure is saved automatically (one slot) whenever the hero reaches an area or makes
+progress; the title menu offers to continue it. Saves live in Godot's user data folder
+(`user://save.json`, with a `.bak` copy of the previous save).
 
 Gamepads work too. Bindings live in *Project Settings › Input Map*.
 

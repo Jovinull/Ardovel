@@ -21,6 +21,11 @@ func open() -> void:
 	set_process_unhandled_input(true)
 
 
+func close() -> void:
+	_root.hide()
+	set_process_unhandled_input(false)
+
+
 func is_open() -> bool:
 	return _root.visible
 

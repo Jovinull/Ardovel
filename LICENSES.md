@@ -17,14 +17,18 @@ was written for this project.
 | --- | --- |
 | `Backgrounds/Tilesets/TilesetFloor.png` | grass and dirt paths (terrain) |
 | `Backgrounds/Tilesets/TilesetNature.png` | the pack's trees, bushes, flowers, rocks and stumps |
+| `Backgrounds/Tilesets/TilesetHouse.png` | village houses, shop, arch, stall, barrels, banner, fence and the guardian statue |
+| `Actor/Character/OldMan2/`, `Woman/`, `OldWoman/` (`SpriteSheet.png`, `Faceset.png`) | the villagers and their portraits |
 | `Actor/Character/Shadow.png` | character shadows |
 | `Ui/Receptacle/Heart.png` | health hearts |
 | `Ui/Input/Keyboard/KeyE.png`, `KeyEnter.png` | key prompts |
-| `Ui/Dialog/DialogueBoxSimple.png` | message box |
+| `Ui/Dialog/DialogueBoxSimple.png`, `FacesetBox.png` | dialogue box and portrait frame |
+| `Ui/Arrow.png` | next-page marker |
 | `Ui/Font/font8x8.png` | basis of the UI font (see below) |
 | `FX/Smoke/Smoke/SpriteSheet.png` | enemy death puff |
 | `FX/Magic/Circle/SpriteSheetSpark.png` | shrine awakening spark |
 | `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact3`, `Spirit`, `Launch`) | sound effects |
+| `Audio/Musics/33 - Calm Village.ogg`, `11 - Clearing.ogg` | village and forest music |
 
 ## Ardovel original art — `assets/ardovel/`
 
@@ -45,7 +49,7 @@ production tools are kept outside this repository.
 | `fx/hit_spark.png` | sword impact spark, three frames |
 | `vegetation/oak.png`, `birch.png`, `fern.png` | oak, birch, fern |
 | `props/shrine.png`, `shrine_awakened.png` | shrine (dormant / awakened) |
-| `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept, Portuguese accented glyphs added, proportional spacing |
+| `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
 
 ## Third-party tools
 
