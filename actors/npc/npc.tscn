@@ -1,0 +1,44 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/npc/npc.gd" id="1_npc"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Shadow.png" id="2_shadow"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="3_interactable"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="4_key"]
+
+[sub_resource type="RectangleShape2D" id="body"]
+size = Vector2(10, 6)
+
+[sub_resource type="RectangleShape2D" id="reach"]
+size = Vector2(28, 26)
+
+[node name="Npc" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_npc")
+
+[node name="Shadow" type="Sprite2D" parent="."]
+position = Vector2(0, -1)
+texture = ExtResource("2_shadow")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -8)
+hframes = 4
+vframes = 7
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("body")
+
+[node name="Interactable" type="Area2D" parent="." node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("3_interactable")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable"]
+position = Vector2(0, -6)
+shape = SubResource("reach")
+
+[node name="Prompt" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(0, -26)
+texture = ExtResource("4_key")
