@@ -2,25 +2,26 @@ extends GutTest
 ## The UI bitmap font: glyph shapes that once read wrong, and coverage of the game's text.
 
 const FNT := "res://assets/ardovel/ui/fonts/ardovel_8.fnt"
-const PNG := "res://assets/ardovel/ui/fonts/ardovel_8.png"
 ## Folders holding player-facing text (scripts and scenes).
 const TEXT_DIRS: Array[String] = ["res://actors", "res://game", "res://interaction", "res://ui", "res://world"]
 
+# The imported font, as the game draws it: its glyph sheet and the size it was built at.
+var _font: FontFile
+var _size: Vector2i
 var _sheet: Image
-var _glyphs: Dictionary[int, Rect2i] = {}
 
 
 func before_all() -> void:
-	_sheet = Image.load_from_file(PNG)
-	var regex := RegEx.create_from_string("char id=(\\d+) x=(\\d+) y=(\\d+) width=(\\d+) height=(\\d+)")
-	for found in regex.search_all(FileAccess.get_file_as_string(FNT)):
-		_glyphs[found.get_string(1).to_int()] = Rect2i(found.get_string(2).to_int(), found.get_string(3).to_int(),
-				found.get_string(4).to_int(), found.get_string(5).to_int())
+	_font = load(FNT)
+	_size = _font.get_size_cache_list(0)[0]
+	_sheet = _font.get_texture_image(0, _size, 0)
 
 
 ## Ink pixels of `ch`, in glyph coordinates.
 func _ink(ch: String) -> Array[Vector2i]:
-	var rect := _glyphs[ch.unicode_at(0)]
+	var code := ch.unicode_at(0)
+	assert_eq(_font.get_glyph_texture_idx(0, _size, code), 0, "%s is on the first glyph sheet" % ch)
+	var rect := Rect2i(_font.get_glyph_uv_rect(0, _size, code))
 	var pixels: Array[Vector2i] = []
 	for y in rect.size.y:
 		for x in rect.size.x:
@@ -69,7 +70,7 @@ func test_every_character_in_the_game_text_has_a_glyph() -> void:
 			for literal in strings.search_all(FileAccess.get_file_as_string(path)):
 				for ch in literal.get_string():
 					var code := ch.unicode_at(0)
-					if code > 126 and not _glyphs.has(code):
+					if code > 126 and not _font.has_char(code):
 						missing[ch] = path
 	assert_eq(missing, {}, "characters without a glyph (and where they appear)")
 
