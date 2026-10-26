@@ -41,61 +41,41 @@
 [sub_resource type="Resource" id="Resource_cwave"]
 script = ExtResource("17_aj1lm")
 requires = &"elder_thanked"
-text = "Os bichos da floresta ainda andam bravos, mas agora a praça tem luz de novo.
-
-Se você cair lá fora, a luz do santuário vai te trazer de volta."
+text = "ANSELMO_AFTER"
 
 [sub_resource type="Resource" id="Resource_1bb0f"]
 script = ExtResource("17_aj1lm")
 requires = &"forest_shrine_awakened"
-text = "Você viu a praça? A guardiã voltou a segurar a luz!
-
-Então foi você quem despertou o santuário...
-
-Fazia anos que aquela pedra não brilhava assim. Obrigado. A vila vai dormir mais tranquila."
+text = "ANSELMO_THANKS"
 sets = &"elder_thanked"
 
 [sub_resource type="Resource" id="Resource_cfoqg"]
 script = ExtResource("17_aj1lm")
 requires = &"heard_of_shrine"
-text = "O santuário fica no fim da trilha, ao norte da floresta.
-
-Passe pelo arco de pedra e não se afaste do caminho."
+text = "ANSELMO_REMINDER"
 
 [sub_resource type="Resource" id="Resource_fu32g"]
 script = ExtResource("17_aj1lm")
-text = "Bom dia! Que bom te ver de pé.
-
-Os musgos da floresta andam espinhosos e bravos, e a estátua da praça perdeu o brilho.
-
-Dizem que tudo começou quando o velho santuário da floresta adormeceu. Alguém precisa ir até lá."
+text = "ANSELMO_RUMOR"
 sets = &"heard_of_shrine"
 
 [sub_resource type="Resource" id="Resource_01s4r"]
 script = ExtResource("17_aj1lm")
 requires = &"forest_shrine_awakened"
-text = "Você despertou o santuário? Então as inscrições tinham razão!
-
-Elas falam de outros santuários por estas terras. Um dia ainda vou encontrá-los."
+text = "LIA_AWAKENED"
 
 [sub_resource type="Resource" id="Resource_7wukx"]
 script = ExtResource("17_aj1lm")
-text = "Estou estudando esta estátua. A esfera que ela segurava sumiu há muito tempo.
-
-As inscrições ligam a guardiã a um santuário na floresta. Será que ele ainda desperta?"
+text = "LIA_STUDY"
 
 [sub_resource type="Resource" id="Resource_wa0am"]
 script = ExtResource("17_aj1lm")
 requires = &"forest_shrine_awakened"
-text = "Viu só? A praça brilhando de novo!
-
-Acho que amanhã volto a buscar lenha na floresta. Com cuidado, é claro."
+text = "CIDA_AWAKENED"
 
 [sub_resource type="Resource" id="Resource_y3b4i"]
 script = ExtResource("17_aj1lm")
-text = "Bom dia! A banca está vazia hoje.
-
-Desde que os musgos ficaram espinhosos, ninguém se arrisca a buscar lenha na floresta."
+text = "CIDA_EMPTY"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bpo8i"]
 size = Vector2(40, 12)
@@ -165,7 +145,7 @@ collision_mask = 0
 position = Vector2(150, 190)
 collision_mask = 0
 script = ExtResource("14_28v0v")
-display_name = "Seu Anselmo"
+display_name = "NPC_ANSELMO"
 sheet = ExtResource("15_nhykk")
 faceset = ExtResource("16_mywwm")
 lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cwave"), SubResource("Resource_1bb0f"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g")])
@@ -174,7 +154,7 @@ lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cwave"), SubResour
 position = Vector2(276, 202)
 collision_mask = 0
 script = ExtResource("14_28v0v")
-display_name = "Lia"
+display_name = "NPC_LIA"
 sheet = ExtResource("18_mvvu5")
 faceset = ExtResource("19_edwi0")
 facing = Vector2(-1, 0)
@@ -184,7 +164,7 @@ lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_01s4r"), SubResour
 position = Vector2(382, 306)
 collision_mask = 0
 script = ExtResource("14_28v0v")
-display_name = "Dona Cida"
+display_name = "NPC_CIDA"
 sheet = ExtResource("20_jram5")
 faceset = ExtResource("21_bnvwc")
 lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])

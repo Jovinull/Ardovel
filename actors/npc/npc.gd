@@ -5,6 +5,7 @@ extends StaticBody2D
 
 const FRAME_SIZE := 16
 
+## Translation key of the name shown in the dialogue box.
 @export var display_name: String
 ## Pack character sheet (16x16 frames; columns down, up, left, right; idle pose on the first row).
 @export var sheet: Texture2D

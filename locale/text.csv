@@ -1,0 +1,29 @@
+keys,pt_BR,en
+LANGUAGE_NAME,Português,English
+TITLE_SUBTITLE,O Santuário Esquecido,The Forgotten Shrine
+TITLE_CONTINUE,Continuar,Continue
+TITLE_NEW,Nova aventura,New adventure
+TITLE_LANGUAGE,Idioma: %s,Language: %s
+TITLE_QUIT,Sair,Quit
+TITLE_CONFIRM_NEW,"Sim, começar de novo","Yes, start over"
+TITLE_CANCEL,Não,No
+TITLE_REPLACE_WARNING,Uma nova aventura substitui a que está salva.,A new adventure will replace the saved one.
+SAVE_RECOVERED,A aventura foi recuperada da cópia de segurança.,Your adventure was restored from its backup.
+SAVE_UNREADABLE,Não foi possível ler a aventura salva.,The saved adventure could not be read.
+DEATH_TITLE,Você caiu.,You have fallen.
+DEATH_RETRY,Tentar de novo,Try again
+NPC_ANSELMO,Seu Anselmo,Anselmo
+NPC_LIA,Lia,Lia
+NPC_CIDA,Dona Cida,Cida
+SHRINE_AWAKEN,Uma luz antiga desperta no santuário.\nSuas feridas se fecham.,An ancient light wakes in the shrine.\nYour wounds close.
+SHRINE_AWAKENED,O cristal pulsa em silêncio.,The crystal pulses in silence.
+STATUE_DORMANT,"Uma velha estátua coberta de musgo.\nAs mãos estão vazias, como se esperassem algo.","An old statue, covered in moss.\nIts hands are empty, as if waiting for something."
+STATUE_RESTORED,A guardiã voltou a segurar a luz.\nO musgo secou e a pedra parece nova.,The guardian holds the light again.\nThe moss has dried and the stone looks new.
+ANSELMO_RUMOR,"Bom dia! Que bom te ver de pé.\n\nOs musgos da floresta andam espinhosos e bravos, e a estátua da praça perdeu o brilho.\n\nDizem que tudo começou quando o velho santuário da floresta adormeceu. Alguém precisa ir até lá.","Morning! Good to see you up and about.\n\nThe moss critters in the forest have turned prickly and mean, and the statue in the square has lost its glow.\n\nThey say it all began when the old forest shrine fell asleep. Someone ought to go and see."
+ANSELMO_REMINDER,"O santuário fica no fim da trilha, ao norte da floresta.\n\nPasse pelo arco de pedra e não se afaste do caminho.","The shrine is at the end of the trail, up in the north of the forest.\n\nGo through the stone arch and keep to the path."
+ANSELMO_THANKS,Você viu a praça? A guardiã voltou a segurar a luz!\n\nEntão foi você quem despertou o santuário...\n\nFazia anos que aquela pedra não brilhava assim. Obrigado. A vila vai dormir mais tranquila.,Have you seen the square? The guardian is holding the light again!\n\nSo you were the one who woke the shrine...\n\nThat stone hasn't shone like this in years. Thank you. The village will sleep easier tonight.
+ANSELMO_AFTER,"Os bichos da floresta ainda andam bravos, mas agora a praça tem luz de novo.\n\nSe você cair lá fora, a luz do santuário vai te trazer de volta.","The forest critters are still restless, but the square has its light back.\n\nIf you fall out there, the shrine's light will bring you back."
+LIA_STUDY,Estou estudando esta estátua. A esfera que ela segurava sumiu há muito tempo.\n\nAs inscrições ligam a guardiã a um santuário na floresta. Será que ele ainda desperta?,I'm studying this statue. The orb it used to hold went missing long ago.\n\nThe inscriptions tie the guardian to a shrine in the forest. Could it still wake up?
+LIA_AWAKENED,Você despertou o santuário? Então as inscrições tinham razão!\n\nElas falam de outros santuários por estas terras. Um dia ainda vou encontrá-los.,You woke the shrine? Then the inscriptions were right!\n\nThey speak of other shrines across these lands. One day I'll find them.
+CIDA_EMPTY,"Bom dia! A banca está vazia hoje.\n\nDesde que os musgos ficaram espinhosos, ninguém se arrisca a buscar lenha na floresta.","Morning! The stall is empty today.\n\nEver since the moss critters turned prickly, nobody dares to fetch firewood in the forest."
+CIDA_AWAKENED,"Viu só? A praça brilhando de novo!\n\nAcho que amanhã volto a buscar lenha na floresta. Com cuidado, é claro.","See that? The square is shining again!\n\nI think I'll go back for firewood tomorrow. Carefully, of course."

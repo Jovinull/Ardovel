@@ -11,8 +11,9 @@ enum State { DORMANT, AWAKENED }
 const SPARK := preload("res://fx/awaken_spark.tscn")
 const AWAKENED_TEXTURE := preload("res://assets/ardovel/props/shrine_awakened.png")
 
-@export_multiline var awaken_message: String = "Uma luz antiga desperta no santuário.\nSuas feridas se fecham."
-@export_multiline var awakened_message: String = "O cristal pulsa em silêncio."
+## Translation keys of the shrine's messages.
+@export var awaken_message: String = "SHRINE_AWAKEN"
+@export var awakened_message: String = "SHRINE_AWAKENED"
 ## Adventure flag recording that this shrine is awake.
 @export var flag: StringName = &"forest_shrine_awakened"
 ## Entry of this area the hero returns to once the shrine is awake.

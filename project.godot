@@ -86,6 +86,11 @@ restart={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://locale/text.pt_BR.translation", "res://locale/text.en.translation")
+locale/fallback="pt_BR"
+
 [layer_names]
 
 2d_physics/layer_1="world"

@@ -15,8 +15,9 @@ const CELEBRATE_DELAY := 0.4
 @export var flag: StringName = &"forest_shrine_awakened"
 ## Set once the restored statue has been seen.
 @export var seen_flag: StringName = &"village_statue_seen_restored"
-@export_multiline var dormant_text: String = "Uma velha estátua coberta de musgo.\nAs mãos estão vazias, como se esperassem algo."
-@export_multiline var restored_text: String = "A guardiã voltou a segurar a luz.\nO musgo secou e a pedra parece nova."
+## Translation keys of what the statue says when examined.
+@export var dormant_text: String = "STATUE_DORMANT"
+@export var restored_text: String = "STATUE_RESTORED"
 
 var restored: bool = false
 var _adventure: Adventure

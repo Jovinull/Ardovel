@@ -206,7 +206,7 @@ func test_the_first_objective_from_rumour_to_thanks() -> void:
 	var statue: GuardianStatue = game.level.get_node(^"Entities/GuardianStatue")
 	assert_false(statue.restored)
 	var first := await _talk("Anselmo")
-	assert_string_contains(first, "santuário")
+	assert_eq(first, "ANSELMO_RUMOR")
 	assert_true(game.adventure.has_flag(&"heard_of_shrine"))
 	assert_ne(await _talk("Anselmo"), first, "a reminder instead of the whole story")
 	await _take_exit("ToForest")
@@ -220,7 +220,7 @@ func test_the_first_objective_from_rumour_to_thanks() -> void:
 	await wait_physics_frames(5)
 	assert_false(statue.is_waiting_to_be_seen())
 	assert_true(game.adventure.has_flag(&"village_statue_seen_restored"), "celebrated once seen")
-	assert_string_contains(await _talk("Anselmo"), "Obrigado")
+	assert_eq(await _talk("Anselmo"), "ANSELMO_THANKS")
 	assert_true(game.adventure.has_flag(&"elder_thanked"))
 	assert_true(game.save_slot.load_adventure().has_flag(&"elder_thanked"), "saved")
 

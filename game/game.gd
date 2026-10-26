@@ -1,7 +1,7 @@
 class_name Game
 extends Node
-## Root of a play session. Owns the adventure state, its save slot and the current area: shows
-## the title, loads areas (one at a time, swapped behind a fade), sends the hero back to the
+## Root of a play session. Owns the adventure state, its save slot, the player's settings and
+## the current area: shows the title (and applies the chosen language), loads areas (one at a time, swapped behind a fade), sends the hero back to the
 ## return point after a fall, and freezes the area while a dialogue is open. Also owns the
 ## brief hit-stop when the sword connects.
 
@@ -18,12 +18,15 @@ const MUSIC_SILENT_DB := -40.0
 @export var hit_stop_time: float = 0.06
 ## Save slot path; empty uses SaveFile.default_path.
 @export var save_path: String = ""
+## Settings file path; empty uses Settings.default_path.
+@export var settings_path: String = ""
 ## Opens the title menu on start. Tests and tools turn this off and start adventures directly.
 @export var show_title: bool = true
 
 var adventure: Adventure
 var level: Level
 var save_slot: SaveFile
+var settings: Settings
 var _travelling: bool = false
 var _save_queued: bool = false
 var _hit_stop_token: int = 0
@@ -37,11 +40,15 @@ var _hit_stop_token: int = 0
 
 func _ready() -> void:
 	save_slot = SaveFile.new(save_path)
+	settings = Settings.new(settings_path)
+	settings.load_settings()
+	TranslationServer.set_locale(settings.effective_locale())
 	_death_screen.restart_requested.connect(respawn)
 	_hud.dialogue_started.connect(_set_area_frozen.bind(true))
 	_hud.dialogue_finished.connect(_set_area_frozen.bind(false))
 	_title.continue_requested.connect(continue_saved)
 	_title.new_requested.connect(start_new)
+	_title.language_requested.connect(switch_language)
 	_title.quit_requested.connect(get_tree().quit)
 	if show_title:
 		open_title()
@@ -56,10 +63,19 @@ func open_title() -> void:
 	var notice := ""
 	match save_slot.status:
 		SaveFile.Status.RECOVERED:
-			notice = "A aventura foi recuperada da cópia de segurança."
+			notice = "SAVE_RECOVERED"
 		SaveFile.Status.CORRUPT, SaveFile.Status.INCOMPATIBLE:
-			notice = "Não foi possível ler a aventura salva."
+			notice = "SAVE_UNREADABLE"
 	_title.open(saved != null and AREAS.has(saved.area), save_slot.exists(), notice)
+
+
+## Shows the game in the next language and remembers the choice.
+func switch_language() -> void:
+	settings.locale = Settings.next_locale(settings.effective_locale())
+	var error := settings.save()
+	if error != OK:
+		push_warning("Could not save the settings: %s" % error_string(error))
+	TranslationServer.set_locale(settings.locale)
 
 
 ## Starts a fresh adventure in the village and saves it right away.

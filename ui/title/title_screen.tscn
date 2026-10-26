@@ -33,6 +33,7 @@ offset_right = 124.0
 offset_bottom = 40.0
 scale = Vector2(3, 3)
 theme_override_colors/font_color = Color(0.94902, 0.917647, 0.945098, 1)
+auto_translate_mode = 2
 text = "Ardovel"
 horizontal_alignment = 1
 
@@ -42,7 +43,7 @@ offset_top = 66.0
 offset_right = 320.0
 offset_bottom = 76.0
 theme_override_colors/font_color = Color(0.580392, 0.541176, 0.611765, 1)
-text = "O Santuário Esquecido"
+text = "TITLE_SUBTITLE"
 horizontal_alignment = 1
 
 [node name="Options" type="VBoxContainer" parent="Root"]

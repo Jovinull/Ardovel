@@ -65,14 +65,15 @@ func heart_quarters(index: int) -> int:
 	return _heart_frames.find(heart.texture)
 
 
-## Opens the dialogue box with `text`; an empty text changes nothing.
+## Opens the dialogue box with `text` (a translation key, or text without one); an empty text
+## changes nothing. `speaker` is translated too.
 func show_message(text: String, speaker: String = "", portrait: Texture2D = null) -> void:
 	if text.is_empty():
 		return
 	var was_open := is_message_visible()
-	_pages = text.split("\n\n", false)
+	_pages = tr(text).split("\n\n", false)
 	_page = 0
-	_speaker.text = speaker
+	_speaker.text = tr(speaker)
 	_speaker.visible = not speaker.is_empty()
 	_portrait.texture = portrait
 	_portrait_box.visible = portrait != null
