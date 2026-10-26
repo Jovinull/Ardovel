@@ -63,3 +63,13 @@ func test_hit_knockback_points_away_from_source() -> void:
 	var hit := Hit.new(1, 100.0, Vector2.ZERO)
 	assert_eq(hit.knockback_velocity(Vector2(10, 0)), Vector2(100, 0))
 	assert_eq(hit.knockback_velocity(Vector2.ZERO), Vector2(0, 100), "degenerate case falls back to down")
+
+
+func test_landed_only_reports_hits_that_went_through() -> void:
+	watch_signals(hitbox)
+	health.invulnerability_time = 1.0
+	hitbox.hit_once_per_activation = false
+	hitbox.active = true
+	hitbox.strike(hurtbox)
+	hitbox.strike(hurtbox)
+	assert_signal_emit_count(hitbox, "landed", 1)

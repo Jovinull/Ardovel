@@ -90,3 +90,12 @@ func test_phase_changes_on_the_expected_physics_tick() -> void:
 	assert_eq(attack.phase, Phase.WINDUP)
 	attack.advance(1.0 / 60.0)
 	assert_eq(attack.phase, Phase.ACTIVE)
+
+
+func test_remaining_time_counts_down_to_zero() -> void:
+	assert_eq(attack.remaining(), 0.0)
+	attack.start(Vector2.DOWN)
+	assert_almost_eq(attack.remaining(), 0.3, 0.0001)
+	for i in 5:
+		attack.advance(0.05)
+	assert_almost_eq(attack.remaining(), 0.05, 0.0001)

@@ -36,6 +36,13 @@ func blink(duration: float) -> void:
 	_blink_tween.tween_callback(_set_blink_phase.bind(-1.0))
 
 
+func stop_blinking() -> void:
+	if _blink_tween != null:
+		_blink_tween.kill()
+		_blink_tween = null
+	_set_blink_phase(-1.0)
+
+
 func _set_flash(value: float) -> void:
 	_material.set_shader_parameter(&"flash", value)
 
