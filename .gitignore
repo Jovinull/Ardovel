@@ -1,0 +1,18 @@
+# Godot 4 generated data (import cache, editor state, shader cache)
+.godot/
+
+# Exports and platform build templates
+/build/
+/android/
+*.apk
+*.aab
+*.exe
+*.pck
+
+# Test reports written by GUT
+/tests/reports/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.tmp
