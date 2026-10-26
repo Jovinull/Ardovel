@@ -8,5 +8,7 @@ const TEST_SAVE_DIR := "user://test_saves"
 func run() -> void:
 	SaveFile.default_path = TEST_SAVE_DIR.path_join("save.json")
 	var dir := ProjectSettings.globalize_path(TEST_SAVE_DIR)
+	if not DirAccess.dir_exists_absolute(dir):
+		return  # first run on this machine: nothing left over to clean
 	for file in DirAccess.get_files_at(dir):
 		DirAccess.remove_absolute(dir.path_join(file))
