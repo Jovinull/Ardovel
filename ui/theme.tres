@@ -1,0 +1,12 @@
+[gd_resource type="Theme" format=3]
+
+[ext_resource type="FontFile" path="res://assets/ardovel/ui/fonts/ardovel_8.fnt" id="1_font"]
+
+[resource]
+default_font = ExtResource("1_font")
+default_font_size = 8
+Label/colors/font_color = Color(0.94902, 0.917647, 0.945098, 1)
+Label/colors/font_shadow_color = Color(0.0784314, 0.105882, 0.105882, 1)
+Label/constants/line_spacing = 1
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1

@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://world/forest/forest.tscn" id="2_forest"]
+[ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" path="res://ui/death_screen/death_screen.tscn" id="4_death"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_game")
+
+[node name="Level" parent="." instance=ExtResource("2_forest")]
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="DeathScreen" parent="." instance=ExtResource("4_death")]
