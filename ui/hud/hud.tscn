@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://ui/hud/hud.gd" id="1_hud"]
 [ext_resource type="Theme" path="res://ui/theme.tres" id="2_theme"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Dialog/DialogueBoxSimple.png" id="3_box"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Dialog/FacesetBox.png" id="4_face_box"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Arrow.png" id="5_arrow"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -31,7 +33,7 @@ theme_override_constants/separation = 0
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 30.0
-offset_top = 134.0
+offset_top = 126.0
 offset_right = 290.0
 offset_bottom = 174.0
 mouse_filter = 2
@@ -47,7 +49,44 @@ layout_mode = 0
 offset_left = 9.0
 offset_top = 7.0
 offset_right = 251.0
-offset_bottom = 34.0
+offset_bottom = 40.0
 theme_override_colors/font_color = Color(0.231373, 0.211765, 0.262745, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 autowrap_mode = 3
+
+[node name="NextArrow" type="TextureRect" parent="Frame/MessageBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 243.0
+offset_top = 40.0
+offset_right = 256.0
+offset_bottom = 53.0
+mouse_filter = 2
+texture = ExtResource("5_arrow")
+
+[node name="PortraitBox" type="TextureRect" parent="Frame"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 30.0
+offset_top = 76.0
+offset_right = 78.0
+offset_bottom = 124.0
+mouse_filter = 2
+texture = ExtResource("4_face_box")
+
+[node name="Portrait" type="TextureRect" parent="Frame/PortraitBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 43.0
+offset_bottom = 43.0
+mouse_filter = 2
+
+[node name="Speaker" type="Label" parent="Frame"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 34.0
+offset_top = 114.0
+offset_right = 200.0
+offset_bottom = 124.0
