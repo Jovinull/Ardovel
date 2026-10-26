@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://dy2jimg5x0ft5"
+path="res://.godot/imported/ardovel_8.fnt-4dd9d801941de976b58e5b71975e14a7.fontdata"
+
+[deps]
+
+source_file="res://assets/ardovel/ui/fonts/ardovel_8.fnt"
+dest_files=["res://.godot/imported/ardovel_8.fnt-4dd9d801941de976b58e5b71975e14a7.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2
