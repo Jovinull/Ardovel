@@ -2,7 +2,6 @@ class_name Interactor
 extends Area2D
 ## Tracks the Interactables in reach of its owner and focuses the nearest usable one.
 
-signal focus_changed(target: Interactable)
 signal interacted(target: Interactable, message: String)
 
 var focused: Interactable
@@ -48,7 +47,6 @@ func refresh_focus() -> void:
 		focused = best
 		if focused != null:
 			focused.set_focused(true)
-		focus_changed.emit(focused)
 
 
 func _on_area_entered(area: Area2D) -> void:

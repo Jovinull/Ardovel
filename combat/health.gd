@@ -3,7 +3,6 @@ extends Node
 ## Hit points of an actor, with an optional invulnerability window after each hit.
 
 signal changed(current: int, maximum: int)
-signal damaged(amount: int)
 signal died
 
 @export_range(1, 999) var max_health: int = 3
@@ -39,7 +38,6 @@ func take_damage(amount: int) -> bool:
 	if amount <= 0 or is_dead() or is_invulnerable():
 		return false
 	current = maxi(current - amount, 0)
-	damaged.emit(amount)
 	changed.emit(current, max_health)
 	if is_dead():
 		died.emit()
