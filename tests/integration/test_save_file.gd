@@ -68,10 +68,21 @@ func test_a_truncated_save_falls_back_to_the_backup() -> void:
 
 
 func test_garbage_without_a_backup_is_reported_as_corrupt() -> void:
-	_write(slot.path, "\u0000\u0001 not json")
+	_write(slot.path, "not json at all")
 	assert_null(slot.load_adventure())
 	assert_eq(slot.status, SaveFile.Status.CORRUPT)
 	assert_true(slot.exists(), "still counts as existing progress: a new game must confirm")
+
+
+func test_a_file_of_zero_bytes_is_corrupt() -> void:
+	# What a write cut short by a power loss often leaves behind.
+	var zeros := PackedByteArray()
+	zeros.resize(64)
+	var file := FileAccess.open(slot.path, FileAccess.WRITE)
+	file.store_buffer(zeros)
+	file.close()
+	assert_null(slot.load_adventure())
+	assert_eq(slot.status, SaveFile.Status.CORRUPT)
 
 
 func test_valid_json_with_invalid_fields_is_corrupt() -> void:

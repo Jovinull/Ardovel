@@ -74,8 +74,11 @@ func _read(file_path: String) -> Adventure:
 	if not FileAccess.file_exists(file_path):
 		_read_status = Status.MISSING
 		return null
+	# A write cut short by a crash or power loss can leave zero bytes behind. Valid JSON never
+	# holds one, so such a file is corrupt without decoding it as text.
+	var bytes := FileAccess.get_file_as_bytes(file_path)
 	var json := JSON.new()
-	if json.parse(FileAccess.get_file_as_string(file_path)) != OK or not json.data is Dictionary:
+	if bytes.has(0) or json.parse(bytes.get_string_from_utf8()) != OK or not json.data is Dictionary:
 		_read_status = Status.CORRUPT
 		return null
 	var adventure := Adventure.from_dict(json.data)
