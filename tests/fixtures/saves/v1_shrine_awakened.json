@@ -1,0 +1,10 @@
+{
+	"area": "forest",
+	"entry": "shrine",
+	"flags": [
+		"forest_shrine_awakened",
+		"heard_of_shrine"
+	],
+	"health": 12,
+	"version": 1
+}

@@ -84,8 +84,8 @@ func _read(file_path: String) -> Adventure:
 	var adventure := Adventure.from_dict(json.data)
 	if adventure == null:
 		var version: Variant = (json.data as Dictionary).get("version")
-		var other_version := (version is float or version is int) and int(version) != Adventure.FORMAT_VERSION
-		_read_status = Status.INCOMPATIBLE if other_version else Status.CORRUPT
+		var unreadable_version := (version is float or version is int) and not Adventure.reads_version(int(version))
+		_read_status = Status.INCOMPATIBLE if unreadable_version else Status.CORRUPT
 	return adventure
 
 

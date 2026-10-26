@@ -1,9 +1,10 @@
 class_name Game
 extends Node
 ## Root of a play session. Owns the adventure state, its save slot, the player's settings and
-## the current area: shows the title (and applies the chosen language), loads areas (one at a time, swapped behind a fade), sends the hero back to the
-## return point after a fall, and freezes the area while a dialogue is open. Also owns the
-## brief hit-stop when the sword connects.
+## the current area: shows the title (and applies the chosen language), loads areas (one at a
+## time, swapped behind a fade), sends the hero back to the checkpoint after a fall, and
+## freezes the area while a dialogue is open. Also owns the brief hit-stop when the sword
+## connects.
 
 ## Stable area ids (as written in saves and passages) and their scenes.
 const AREAS: Dictionary[StringName, String] = {
@@ -84,7 +85,8 @@ func start_new() -> void:
 	save_now()
 
 
-## Resumes the saved adventure at its return point. False if there is nothing usable.
+## Resumes the saved adventure where it was left (its resume point). False if there is nothing
+## usable.
 func continue_saved() -> bool:
 	var saved := save_slot.load_adventure()
 	if saved == null or not AREAS.has(saved.area):
@@ -107,15 +109,24 @@ func travel(area: StringName, entry: StringName) -> void:
 	_travelling = false
 
 
-## Back to the adventure's return point with full health; everything earned is kept.
+## Back to safety with full health, everything earned kept: to the checkpoint (the last shrine
+## awakened, wherever it is), or before any shrine to the entry the hero last arrived through.
 func respawn() -> void:
 	if _travelling:
 		return
 	_travelling = true
 	await _fade_to(1.0)
 	_death_screen.close()
+	var area := adventure.area
+	var entry := adventure.entry
+	if adventure.has_checkpoint() and AREAS.has(adventure.checkpoint_area):
+		area = adventure.checkpoint_area
+		entry = adventure.checkpoint_entry
+	elif adventure.has_checkpoint():
+		push_warning("Checkpoint area %s is unknown; returning to %s." % [adventure.checkpoint_area, area])
 	adventure.health = Adventure.FULL_HEALTH
-	_load_area(adventure.area, adventure.entry)
+	_load_area(area, entry)
+	adventure.enter(area, entry)
 	save_now()
 	await _fade_to(0.0)
 	_travelling = false
@@ -205,4 +216,10 @@ func _set_area_frozen(frozen: bool) -> void:
 func _queue_save() -> void:
 	if not _save_queued:
 		_save_queued = true
-		save_now.call_deferred()
+		_save_if_still_queued.call_deferred()
+
+
+## A save_now() in between already wrote the change; writing again would only rotate the backup.
+func _save_if_still_queued() -> void:
+	if _save_queued:
+		save_now()

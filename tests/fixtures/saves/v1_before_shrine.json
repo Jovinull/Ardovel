@@ -1,0 +1,9 @@
+{
+	"area": "forest",
+	"entry": "south",
+	"flags": [
+		"heard_of_shrine"
+	],
+	"health": 9,
+	"version": 1
+}

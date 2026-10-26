@@ -1,7 +1,7 @@
 class_name Shrine
 extends StaticBody2D
 ## The forest wayshrine. The first interaction awakens it (restoring the actor's health) and
-## makes it the adventure's return point; afterwards it stays awakened, also across saves, and
+## makes it the adventure's checkpoint; afterwards it stays awakened, also across saves, and
 ## only answers with a short message.
 
 signal awakened
@@ -16,7 +16,7 @@ const AWAKENED_TEXTURE := preload("res://assets/ardovel/props/shrine_awakened.pn
 @export var awakened_message: String = "SHRINE_AWAKENED"
 ## Adventure flag recording that this shrine is awake.
 @export var flag: StringName = &"forest_shrine_awakened"
-## Entry of this area the hero returns to once the shrine is awake.
+## Entry of this area that becomes the checkpoint once the shrine is awake.
 @export var return_entry: StringName = &"shrine"
 
 var state: State = State.DORMANT
@@ -54,7 +54,7 @@ func _on_interact(actor: Node2D) -> String:
 	if actor_health != null:
 		actor_health.restore_full()
 	if _adventure != null:
-		_adventure.set_return_point(return_entry)
+		_adventure.activate_checkpoint(return_entry)
 		_adventure.set_flag(flag)
 	awakened.emit()
 	return awaken_message
