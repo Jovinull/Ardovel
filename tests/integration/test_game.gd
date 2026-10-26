@@ -48,7 +48,7 @@ func test_interaction_messages_reach_the_hud() -> void:
 func test_death_opens_the_death_screen() -> void:
 	assert_false(death_screen.is_open())
 	player.health.take_damage(999)
-	await wait_seconds(1.5)
+	await wait_for_signal(player.died, 4.0)
 	assert_true(death_screen.is_open())
 
 

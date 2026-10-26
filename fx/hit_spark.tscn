@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://fx/one_shot_effect.gd" id="1_fx"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/fx/hit_spark.png" id="2_spark"]
+
+[node name="HitSpark" type="Sprite2D"]
+z_index = 1
+texture = ExtResource("2_spark")
+hframes = 3
+script = ExtResource("1_fx")
+fps = 20.0

@@ -4,17 +4,23 @@ extends CharacterBody2D
 ## Combat and interaction live in child components; this script only coordinates them.
 
 signal died
+## A sword swing connected with a target.
+signal hit_landed
 
 enum State { MOVE, ATTACK, HURT, DEAD }
 
-const HURT_TIME := 0.18
-const DEATH_SPIN_STEP := 0.09
-const DEATH_SPIN := [Vector2.DOWN, Vector2.LEFT, Vector2.UP, Vector2.RIGHT]
+const HIT_SPARK := preload("res://fx/hit_spark.tscn")
 
 @export var max_speed: float = 72.0
 ## px/s²: reaches full speed in about 0.06 s, which keeps the controls snappy but not twitchy.
 @export var acceleration: float = 1200.0
 @export var friction: float = 1600.0
+## Seconds without control after being hit, while the knockback plays out.
+@export var hurt_time: float = 0.2
+## An attack pressed this close to the end of the current swing is queued instead of dropped.
+@export var attack_buffer_time: float = 0.15
+## Seconds the fallen pose is held before `died` is emitted.
+@export var death_hold_time: float = 0.5
 
 var state: State = State.MOVE
 var facing: Vector2 = Vector2.DOWN
@@ -27,6 +33,7 @@ var _attack_buffered: bool = false
 @onready var _sprite: AnimatedSprite2D = $Sprite
 @onready var _hurtbox: Hurtbox = $Hurtbox
 @onready var _attack: MeleeAttack = $MeleeAttack
+@onready var _sword: Hitbox = $AttackPivot/SwordHitbox
 @onready var _hit_flash: HitFlash = $HitFlash
 @onready var _swing_sound: AudioStreamPlayer2D = $SwingSound
 @onready var _hurt_sound: AudioStreamPlayer2D = $HurtSound
@@ -37,6 +44,7 @@ func _ready() -> void:
 	health.died.connect(_on_died)
 	_attack.phase_changed.connect(_on_attack_phase_changed)
 	_attack.finished.connect(_on_attack_finished)
+	_sword.landed.connect(_on_sword_landed)
 	_sprite.play(&"idle_down")
 
 
@@ -45,7 +53,7 @@ func _physics_process(delta: float) -> void:
 		State.MOVE:
 			_process_move(delta)
 		State.ATTACK:
-			if Input.is_action_just_pressed(&"attack"):
+			if Input.is_action_just_pressed(&"attack") and _attack.remaining() <= attack_buffer_time:
 				_attack_buffered = true
 			_brake(delta)
 		State.HURT:
@@ -57,13 +65,17 @@ func _physics_process(delta: float) -> void:
 			pass
 
 
+func _move_input() -> Vector2:
+	return Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
+
+
 func _process_move(delta: float) -> void:
+	var input := _move_input()
 	if Input.is_action_just_pressed(&"attack"):
-		_start_attack()
+		_start_attack(input)
 		return
 	if Input.is_action_just_pressed(&"interact"):
 		interactor.interact(self)
-	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	velocity = PlayerMotion.next_velocity(velocity, input, max_speed, acceleration, friction, delta)
 	move_and_slide()
 	facing = PlayerMotion.next_facing(input, facing)
@@ -76,8 +88,10 @@ func _brake(delta: float) -> void:
 	move_and_slide()
 
 
-func _start_attack() -> void:
+## The direction held when a swing starts wins, so the hero can turn between swings.
+func _start_attack(input: Vector2) -> void:
 	_attack_buffered = false
+	facing = PlayerMotion.next_facing(input, facing)
 	if _attack.start(facing):
 		state = State.ATTACK
 		velocity = Vector2.ZERO
@@ -99,7 +113,14 @@ func _on_attack_finished() -> void:
 		return
 	state = State.MOVE
 	if _attack_buffered:
-		_start_attack()
+		_start_attack(_move_input())
+
+
+func _on_sword_landed(target: Hurtbox) -> void:
+	var spark: Node2D = HIT_SPARK.instantiate()
+	spark.global_position = target.global_position.lerp(_sword.global_position, 0.5)
+	get_parent().add_child(spark)
+	hit_landed.emit()
 
 
 func _on_hit_received(hit: Hit) -> void:
@@ -110,9 +131,13 @@ func _on_hit_received(hit: Hit) -> void:
 	_attack.cancel()
 	_attack_buffered = false
 	state = State.HURT
-	_hurt_left = HURT_TIME
+	_hurt_left = hurt_time
 	velocity = hit.knockback_velocity(global_position)
-	_sprite.play(StringName("idle_" + Facing.name_of(facing)))
+	# Face whoever hit us; the knockback carries the hero backwards, away from them.
+	var toward_source := global_position.direction_to(hit.source_position)
+	if toward_source != Vector2.ZERO:
+		facing = Facing.cardinal(toward_source)
+	_sprite.play(StringName("hurt_" + Facing.name_of(facing)))
 	_hit_flash.blink(health.invulnerability_time)
 
 
@@ -121,14 +146,8 @@ func _on_died() -> void:
 	velocity = Vector2.ZERO
 	_attack.cancel()
 	_hurtbox.set_deferred(&"monitorable", false)
-	# There is no death animation in the art yet: spin through the idle poses, then fade out.
-	var tween := create_tween()
-	for i in 8:
-		tween.tween_callback(_show_idle.bind(DEATH_SPIN[i % DEATH_SPIN.size()]))
-		tween.tween_interval(DEATH_SPIN_STEP)
-	tween.tween_property(_sprite, ^"modulate:a", 0.0, 0.4)
-	tween.tween_callback(died.emit)
-
-
-func _show_idle(direction: Vector2) -> void:
-	_sprite.play(StringName("idle_" + Facing.name_of(direction)))
+	_hit_flash.stop_blinking()
+	_sprite.play(&"death")
+	await _sprite.animation_finished
+	await get_tree().create_timer(death_hold_time).timeout
+	died.emit()
