@@ -34,6 +34,9 @@ var settings: Settings
 var _travelling: bool = false
 var _save_queued: bool = false
 var _hit_stop_token: int = 0
+var _gamepad_active: bool = false
+var _active_joypad: int = -1
+var _joypad_name: String = ""
 ## The hero's maximum health before heart vessels (as set in the player scene).
 var _base_max_health: int = 0
 
@@ -61,8 +64,24 @@ func _ready() -> void:
 	_pause.language_requested.connect(switch_language)
 	_pause.title_requested.connect(_return_to_title)
 	_pause.quit_requested.connect(_quit_safely)
+	Input.joy_connection_changed.connect(_on_joy_connection_changed)
+	var connected_joypads := Input.get_connected_joypads()
+	if not connected_joypads.is_empty():
+		_active_joypad = connected_joypads[0]
+		_gamepad_active = true
+		_joypad_name = Input.get_joy_name(_active_joypad)
+	_update_input_prompts()
 	if show_title:
 		open_title()
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventJoypadButton and (event as InputEventJoypadButton).pressed:
+		_set_active_joypad(event.device)
+	elif event is InputEventJoypadMotion and absf((event as InputEventJoypadMotion).axis_value) >= 0.5:
+		_set_active_joypad(event.device)
+	elif event is InputEventKey and (event as InputEventKey).pressed and not (event as InputEventKey).echo:
+		_set_keyboard_active()
 
 
 func _exit_tree() -> void:
@@ -272,6 +291,46 @@ func _quit_safely() -> void:
 
 func _set_paused(paused: bool) -> void:
 	get_tree().paused = paused
+
+
+func _set_active_joypad(device: int) -> void:
+	_gamepad_active = true
+	_active_joypad = device
+	_joypad_name = Input.get_joy_name(device) if device >= 0 else ""
+	_update_input_prompts()
+
+
+func _set_keyboard_active() -> void:
+	_gamepad_active = false
+	_active_joypad = -1
+	_joypad_name = ""
+	_update_input_prompts()
+
+
+func _on_joy_connection_changed(device: int, connected: bool) -> void:
+	if connected:
+		_active_joypad = device
+		_gamepad_active = true
+		_joypad_name = Input.get_joy_name(device)
+	else:
+		if device != _active_joypad:
+			return
+		var connected_joypads := Input.get_connected_joypads()
+		if connected_joypads.is_empty():
+			_gamepad_active = false
+			_active_joypad = -1
+			_joypad_name = ""
+		else:
+			_active_joypad = connected_joypads[0]
+			_joypad_name = Input.get_joy_name(_active_joypad)
+	_update_input_prompts()
+
+
+func _update_input_prompts() -> void:
+	_hud.set_input_mode(_gamepad_active, _joypad_name)
+	_death_screen.set_input_mode(_gamepad_active)
+	_title.set_input_mode(_gamepad_active, _joypad_name)
+	_pause.set_input_mode(_gamepad_active, _joypad_name)
 
 
 func _refresh_first_step_guidance() -> void:

@@ -1,7 +1,19 @@
-[gd_scene format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://ui/title/title_screen.gd" id="1_title"]
 [ext_resource type="Theme" path="res://ui/theme.tres" id="2_theme"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_plate"]
+bg_color = Color(0.0784314, 0.105882, 0.105882, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.372549, 0.443137, 0.376471, 1)
+content_margin_left = 8.0
+content_margin_top = 5.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
 
 [node name="TitleScreen" type="CanvasLayer"]
 layer = 20
@@ -25,12 +37,38 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0784314, 0.105882, 0.105882, 1)
 
+[node name="Backdrop" type="SubViewportContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Root/Backdrop"]
+size = Vector2i(320, 180)
+render_target_update_mode = 4
+
+[node name="BackdropShade" type="ColorRect" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0784314, 0.105882, 0.105882, 0.4)
+
 [node name="Title" type="Label" parent="Root"]
 layout_mode = 0
 offset_left = 53.0
-offset_top = 30.0
+offset_top = 19.0
 offset_right = 124.0
-offset_bottom = 40.0
+offset_bottom = 29.0
 scale = Vector2(3, 3)
 theme_override_colors/font_color = Color(0.94902, 0.917647, 0.945098, 1)
 auto_translate_mode = 2
@@ -39,28 +77,48 @@ horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Root"]
 layout_mode = 0
-offset_top = 66.0
+offset_top = 50.0
 offset_right = 320.0
-offset_bottom = 76.0
+offset_bottom = 60.0
 theme_override_colors/font_color = Color(0.580392, 0.541176, 0.611765, 1)
 text = "TITLE_SUBTITLE"
 horizontal_alignment = 1
 
+[node name="MenuPlate" type="Panel" parent="Root"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 68.0
+offset_right = 248.0
+offset_bottom = 152.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_menu_plate")
+
 [node name="Options" type="VBoxContainer" parent="Root"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_top = 100.0
-offset_right = 320.0
-offset_bottom = 140.0
+offset_left = 72.0
+offset_top = 79.0
+offset_right = 248.0
+offset_bottom = 151.0
 theme_override_constants/separation = 3
 
 [node name="Notice" type="Label" parent="Root"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 10.0
-offset_top = 156.0
+offset_top = 152.0
+offset_right = 310.0
+offset_bottom = 164.0
+theme_override_colors/font_color = Color(0.580392, 0.541176, 0.611765, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="InputHint" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = 164.0
 offset_right = 310.0
 offset_bottom = 176.0
 theme_override_colors/font_color = Color(0.580392, 0.541176, 0.611765, 1)
 horizontal_alignment = 1
-autowrap_mode = 3

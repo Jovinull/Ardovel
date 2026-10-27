@@ -104,8 +104,9 @@ func test_pause_menu_responds_to_keyboard_inputs() -> void:
 
 func test_pause_menu_responds_to_joypad_inputs() -> void:
 	var open := InputEventJoypadButton.new()
-	open.button_index = JOY_BUTTON_B
+	open.button_index = JOY_BUTTON_START
 	open.pressed = true
+	game.call(&"_input", open)
 	game.call(&"_unhandled_input", open)
 	var pause := game.get_node(^"PauseScreen") as PauseScreen
 	assert_true(pause.is_open())
@@ -120,13 +121,56 @@ func test_pause_menu_responds_to_joypad_inputs() -> void:
 	pause.call(&"_unhandled_input", confirm)
 	assert_true(pause.is_showing_controls())
 	var back := InputEventJoypadButton.new()
-	back.button_index = JOY_BUTTON_B
+	back.button_index = JOY_BUTTON_START
 	back.pressed = true
 	pause.call(&"_unhandled_input", back)
 	assert_false(pause.is_showing_controls())
 	pause.call(&"_unhandled_input", back)
 	assert_false(pause.is_open())
 	assert_false(get_tree().paused)
+
+
+func test_input_mode_switches_between_keyboard_and_gamepad() -> void:
+	var guidance: Label = hud.get_node(^"%Guidance")
+	var title: TitleScreen = game.get_node(^"TitleScreen")
+	var death: DeathScreen = game.get_node(^"DeathScreen")
+	var pause: PauseScreen = game.get_node(^"PauseScreen")
+	var pad := InputEventJoypadButton.new()
+	pad.device = 0
+	pad.button_index = JOY_BUTTON_A
+	pad.pressed = true
+	game.call(&"_input", pad)
+	var joypad_name := String(game.get(&"_joypad_name"))
+	assert_true(pause.get(&"_gamepad_active"))
+	assert_true(guidance.text.contains(InputPrompts.dismiss_label(true, joypad_name)))
+	assert_eq((title.get_node(^"%InputHint") as Label).text,
+		InputPrompts.title_hint(true, joypad_name))
+	assert_true((death.get_node(^"%Prompt") as Label).visible)
+	pause.open()
+	pause.choose(PauseScreen.Choice.CONTROLS)
+	assert_eq((pause.get_node(^"%Controls") as Label).text,
+		InputPrompts.controls_text(true, joypad_name))
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_E
+	key.pressed = true
+	game.call(&"_input", key)
+	assert_false(pause.get(&"_gamepad_active"))
+	assert_true(guidance.text.contains("E: fechar"))
+	assert_eq((title.get_node(^"%InputHint") as Label).text,
+		InputPrompts.title_hint(false, ""))
+	assert_false((death.get_node(^"%Prompt") as Label).visible)
+	assert_eq((pause.get_node(^"%Controls") as Label).text,
+		InputPrompts.controls_text(false, ""))
+
+
+func test_connecting_a_gamepad_switches_the_prompts() -> void:
+	game.call(&"_set_keyboard_active")
+	game.call(&"_on_joy_connection_changed", 17, true)
+	var title: TitleScreen = game.get_node(^"TitleScreen")
+	assert_true(game.get(&"_gamepad_active"))
+	assert_eq(game.get(&"_active_joypad"), 17)
+	assert_eq((title.get_node(^"%InputHint") as Label).text,
+		InputPrompts.title_hint(true, String(game.get(&"_joypad_name"))))
 
 
 func test_return_to_title_saves_and_continues_the_adventure() -> void:

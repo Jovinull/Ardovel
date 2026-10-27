@@ -17,18 +17,14 @@ const LABELS: Dictionary[Choice, String] = {
 	Choice.QUIT: "PAUSE_QUIT",
 	Choice.BACK: "PAUSE_BACK",
 }
-const CONTROL_KEYS: Array[String] = [
-	"PAUSE_CONTROL_MOVE",
-	"PAUSE_CONTROL_SWORD",
-	"PAUSE_CONTROL_INTERACT",
-	"PAUSE_CONTROL_MENU",
-]
 const SELECTED_COLOR := Color("f1c471")
 const IDLE_COLOR := Color("948a9c")
 
 var choices: Array[Choice] = []
 var _selected: int = 0
 var _showing_controls: bool = false
+var _gamepad_active: bool = false
+var _joypad_name: String = ""
 
 @onready var _root: Control = $Root
 @onready var _title: Label = %Title
@@ -66,6 +62,12 @@ func is_open() -> bool:
 
 func is_showing_controls() -> bool:
 	return _showing_controls
+
+
+func set_input_mode(gamepad: bool, joypad_name: String) -> void:
+	_gamepad_active = gamepad
+	_joypad_name = joypad_name
+	_update_translations()
 
 
 func show_notice(key: String) -> void:
@@ -156,10 +158,9 @@ func _update_translations() -> void:
 		label.text = tr(LABELS[Choice.LANGUAGE]) % tr("LANGUAGE_NAME")
 	if _showing_controls:
 		_controls.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-		var lines: PackedStringArray = []
-		for key in CONTROL_KEYS:
-			lines.append(tr(key))
-		_controls.text = "\n".join(lines)
+		_controls.text = InputPrompts.controls_text(_gamepad_active, _joypad_name)
+		_back.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		_back.text = tr("PAUSE_BACK") % InputPrompts.pause_label(_gamepad_active)
 
 
 func _select(index: int) -> void:

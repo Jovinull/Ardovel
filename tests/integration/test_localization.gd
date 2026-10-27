@@ -133,7 +133,9 @@ func test_first_step_guidance_fits_in_every_language() -> void:
 		TranslationServer.set_locale(locale)
 		await wait_process_frames(1)
 		assert_true(hud.is_guidance_visible(), locale)
-		assert_eq(label.text, expected[locale], locale)
+		var expected_first_line := String(expected[locale]).split("\n")[0]
+		assert_eq(label.text.split("\n")[0], expected_first_line, locale)
+		assert_true(label.text.split("\n")[1].contains("E: fechar" if locale == "pt_BR" else "E: hide"), locale)
 		assert_lte(label.get_line_count(), 2, locale)
 
 
@@ -157,7 +159,7 @@ func test_the_title_switches_language_at_once_and_remembers_it() -> void:
 	assert_eq(subtitle.atr(subtitle.text), "The Forgotten Shrine", "no restart needed")
 	var options := title.get_node(^"%Options")
 	var language: Label = options.get_child(title.choices.find(TitleScreen.Choice.LANGUAGE))
-	assert_eq(language.text, "Language: English")
+	assert_eq(language.text.trim_prefix("> ").strip_edges(), "Language: English")
 	assert_false(FileAccess.file_exists(game.save_path), "the language is not part of the adventure")
 	game.queue_free()
 	await wait_physics_frames(2)

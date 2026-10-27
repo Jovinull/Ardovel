@@ -41,16 +41,26 @@ MURAL_READ,"Cinco anéis ligados em roda. O que havia no centro foi arrancado a 
 TABLET_TEXT,"Riscos de criança na pedra: uma figura grande segurando a mão de uma pequena.\n\nEmbaixo, em letras tortas: ""a Vigia cuida da gente"".","A child's scratches on the stone: a big figure holding a small one's hand.\n\nUnderneath, in crooked letters: ""the Warden looks after us""."
 HEART_VESSEL_FOUND,Você encontrou um coração de cristal!\nSua vida máxima aumentou.,You found a crystal heart!\nYour maximum health went up.
 BOSS_ROOT_WARDEN,Vigia das Raízes,Root Warden
-FIRST_STEP_GUIDANCE,"Converse com Anselmo, perto da casa ao norte.\nEsc/B abre os controles.","Talk to Anselmo near the house to the north.\nEsc/B opens the controls."
+FIRST_STEP_GUIDANCE,"Converse com Anselmo, perto da casa ao norte.\n%s: controles | %s: fechar","Talk to Anselmo near the house to the north.\n%s: controls | %s: hide"
+TITLE_INPUT_KEYBOARD,"Setas/WASD: navegar | Enter: escolher","Arrows/WASD: move | Enter: choose"
+TITLE_INPUT_GAMEPAD,"Direcional | %s: escolher","D-pad | %s: choose"
+CONTROL_MOVE_KEYBOARD,"Mover: setas ou WASD","Move: arrows or WASD"
+CONTROL_SWORD_KEYBOARD,"Espada: Espaço ou J","Sword: Space or J"
+CONTROL_INTERACT_KEYBOARD,"Interagir/confirmar: E ou K","Interact/confirm: E or K"
+CONTROL_MENU_KEYBOARD,"Menus: setas | pausa/voltar: Esc","Menus: arrows | pause/back: Esc"
+CONTROL_MOVE_GAMEPAD,"Mover: direcional ou analógico","Move: D-pad or stick"
+CONTROL_SWORD_GAMEPAD,"Espada: %s","Sword: %s"
+CONTROL_INTERACT_GAMEPAD,"Interagir/confirmar: %s","Interact/confirm: %s"
+CONTROL_MENU_GAMEPAD,"Menus: direcional | pausa/voltar: Start","Menus: D-pad | pause/back: Start"
+CONTROL_BUTTON_SOUTH,"botão inferior","south button"
+CONTROL_BUTTON_EAST,"botão à direita","east button"
+CONTROL_BUTTON_WEST,"botão à esquerda","west button"
+CONTROL_BUTTON_NORTH,"botão superior","north button"
 PAUSE_TITLE,Pausado,Paused
 PAUSE_RESUME,Retomar,Resume
 PAUSE_CONTROLS,Controles,Controls
 PAUSE_LANGUAGE,Idioma: %s,Language: %s
 PAUSE_TITLE_SCREEN,Voltar à tela de título,Return to title
 PAUSE_QUIT,Encerrar jogo,Quit game
-PAUSE_BACK,Voltar,Back
-PAUSE_CONTROL_MOVE,"Mover: setas, WASD ou analógico","Move: arrows, WASD, or stick"
-PAUSE_CONTROL_SWORD,"Espada: Espaço, J ou X","Sword: Space, J, or X"
-PAUSE_CONTROL_INTERACT,"Interagir/confirmar: E, K ou A","Interact/confirm: E, K, or A"
-PAUSE_CONTROL_MENU,"Menus: setas/direcional; voltar: Esc ou B","Menus: arrows/d-pad; back: Esc or B"
+PAUSE_BACK,"%s: voltar","%s: back"
 PAUSE_SAVE_FAILED,"Não foi possível salvar. A aventura continua aberta.","Could not save. The adventure remains open."

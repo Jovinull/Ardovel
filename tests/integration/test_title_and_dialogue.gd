@@ -40,17 +40,46 @@ func test_first_launch_offers_a_new_adventure_and_quitting() -> void:
 	assert_eq(game.level.area_id, &"village")
 
 
-func test_first_step_guidance_stays_until_anselmo_is_heard() -> void:
+func test_title_selection_is_marked_after_navigation() -> void:
 	await _launch()
+	var down := InputEventAction.new()
+	down.action = &"move_down"
+	down.pressed = true
+	title.call(&"_unhandled_input", down)
+	await wait_physics_frames(2)
+	assert_eq(title.get(&"_selected"), 1)
+	var selected := title.get_node(^"%Options").get_child(1) as Label
+	assert_true(selected.text.begins_with("> "))
+
+
+func test_first_step_guidance_can_be_dismissed_and_clears_after_anselmo() -> void:
+	await _launch()
+	TranslationServer.set_locale("pt_BR")
 	title.choose(TitleScreen.Choice.NEW)
 	assert_true(hud.is_guidance_visible())
-	assert_eq((hud.get_node(^"%Guidance") as Label).text, tr("FIRST_STEP_GUIDANCE"))
+	assert_true((hud.get_node(^"%Guidance") as Label).text.contains("Esc: controles | E: fechar"))
+	var dismiss := InputEventAction.new()
+	dismiss.action = &"interact"
+	dismiss.pressed = true
+	hud.call(&"_unhandled_input", dismiss)
+	await get_tree().create_timer(Hud.GUIDANCE_FADE_TIME + 0.1).timeout
+	assert_false(hud.is_guidance_visible(), "the player can hide the hint with interact")
+	hud.set_guidance("FIRST_STEP_GUIDANCE")
+	assert_false(hud.is_guidance_visible(), "a dismissed hint does not pop back up")
 	var npc: Npc = game.level.get_node(^"Entities/Anselmo")
 	game.level.player.global_position = npc.global_position + Vector2(0, 14)
 	await wait_physics_frames(3)
 	assert_true(game.level.player.interactor.interact(game.level.player))
 	assert_false(hud.is_guidance_visible(), "the hint disappears after the first objective is learned")
 	assert_true(game.adventure.has_flag(&"heard_of_shrine"))
+
+
+func test_first_step_guidance_fades_after_nine_seconds() -> void:
+	await _launch()
+	title.choose(TitleScreen.Choice.NEW)
+	assert_true(hud.is_guidance_visible())
+	await get_tree().create_timer(Hud.GUIDANCE_HOLD_TIME + Hud.GUIDANCE_FADE_TIME + 0.1).timeout
+	assert_false(hud.is_guidance_visible())
 
 
 func test_a_saved_adventure_can_be_continued() -> void:

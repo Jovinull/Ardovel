@@ -7,6 +7,10 @@ signal restart_requested
 const FADE_TIME := 0.6
 
 @onready var _root: Control = $Root
+@onready var _keyboard_key: TextureRect = $Root/Retry/Key
+@onready var _gamepad_prompt: Label = $Root/Retry/Prompt
+
+var _gamepad_active: bool = false
 
 
 func _ready() -> void:
@@ -28,6 +32,13 @@ func close() -> void:
 
 func is_open() -> bool:
 	return _root.visible
+
+
+func set_input_mode(gamepad: bool) -> void:
+	_gamepad_active = gamepad
+	_keyboard_key.visible = not gamepad
+	_gamepad_prompt.visible = gamepad
+	_gamepad_prompt.text = "[ %s ]" % InputPrompts.restart_label(gamepad)
 
 
 func _unhandled_input(event: InputEvent) -> void:
