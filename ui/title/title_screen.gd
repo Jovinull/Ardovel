@@ -107,7 +107,7 @@ func _show_choices(list: Array[Choice]) -> void:
 	choices = list
 	for child in _options.get_children():
 		_options.remove_child(child)
-		child.queue_free()
+		child.free()
 	for choice in choices:
 		var label := Label.new()
 		label.text = LABELS[choice]
