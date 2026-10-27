@@ -39,10 +39,7 @@ func bind_adventure(adventure: Adventure) -> void:
 
 ## The line this villager would say now, or null.
 func current_line() -> DialogueLine:
-	for line in lines:
-		if line.applies(_adventure):
-			return line
-	return null
+	return DialogueLine.first_that_applies(lines, _adventure)
 
 
 ## Shows the sheet column for `direction` (pack character sheets: down, up, left, right).

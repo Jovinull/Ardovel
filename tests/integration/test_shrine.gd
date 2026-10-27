@@ -45,7 +45,7 @@ func test_first_interaction_awakens_and_restores_health() -> void:
 	assert_eq(shrine.state, Shrine.State.AWAKENED)
 	assert_eq(player.health.current, player.health.max_health)
 	assert_eq(messages, [shrine.awaken_message])
-	assert_eq((shrine.get_node(^"Sprite") as Sprite2D).texture, Shrine.AWAKENED_TEXTURE)
+	assert_eq((shrine.get_node(^"Sprite") as Sprite2D).texture, shrine.awakened_texture)
 
 
 func test_awakened_shrine_stays_awakened_and_does_not_heal_again() -> void:

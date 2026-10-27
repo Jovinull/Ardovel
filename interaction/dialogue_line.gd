@@ -12,6 +12,14 @@ extends Resource
 @export var sets: StringName
 
 
+## The first of `lines` that applies, or null: lists put the most specific line first.
+static func first_that_applies(lines: Array[DialogueLine], adventure: Adventure) -> DialogueLine:
+	for line in lines:
+		if line.applies(adventure):
+			return line
+	return null
+
+
 func applies(adventure: Adventure) -> bool:
 	if adventure == null:
 		return requires.is_empty()

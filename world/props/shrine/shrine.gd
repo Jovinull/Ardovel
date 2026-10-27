@@ -1,19 +1,24 @@
 class_name Shrine
 extends StaticBody2D
-## The forest wayshrine. The first interaction awakens it (restoring the actor's health) and
-## makes it the adventure's checkpoint; afterwards it stays awakened, also across saves, and
-## only answers with a short message.
+## A wayshrine (the forest's, or the heart of the ruin). The first interaction awakens it
+## (restoring the actor's health) and makes it the adventure's checkpoint; afterwards it stays
+## awakened, also across saves, and only answers with a short message. Some shrines can only
+## wake once something else has happened (`requires_flag`).
 
 signal awakened
 
 enum State { DORMANT, AWAKENED }
 
 const SPARK := preload("res://fx/awaken_spark.tscn")
-const AWAKENED_TEXTURE := preload("res://assets/ardovel/props/shrine_awakened.png")
 
+@export var awakened_texture: Texture2D = preload("res://assets/ardovel/props/shrine_awakened.png")
 ## Translation keys of the shrine's messages.
 @export var awaken_message: String = "SHRINE_AWAKEN"
 @export var awakened_message: String = "SHRINE_AWAKENED"
+## Said while `requires_flag` is missing.
+@export var asleep_message: String = ""
+## Flag the shrine needs before it can wake (empty: none).
+@export var requires_flag: StringName
 ## Adventure flag recording that this shrine is awake.
 @export var flag: StringName = &"forest_shrine_awakened"
 ## Entry of this area that becomes the checkpoint once the shrine is awake.
@@ -38,14 +43,16 @@ func bind_adventure(adventure: Adventure) -> void:
 	_adventure = adventure
 	if adventure.has_flag(flag):
 		state = State.AWAKENED
-		_sprite.texture = AWAKENED_TEXTURE
+		_sprite.texture = awakened_texture
 
 
 func _on_interact(actor: Node2D) -> String:
 	if state == State.AWAKENED:
 		return awakened_message
+	if not requires_flag.is_empty() and (_adventure == null or not _adventure.has_flag(requires_flag)):
+		return asleep_message
 	state = State.AWAKENED
-	_sprite.texture = AWAKENED_TEXTURE
+	_sprite.texture = awakened_texture
 	var spark: Node2D = SPARK.instantiate()
 	spark.position = _crystal.position
 	add_child(spark)
