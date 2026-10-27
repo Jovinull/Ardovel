@@ -117,7 +117,7 @@ func test_the_hero_pushes_the_block_by_leaning_on_it() -> void:
 	await _enter_ruin()
 	var block: PushBlock = _node("Entities/Block")
 	var start := block.position
-	_player().global_position = block.global_position + Vector2(-14, 0)
+	_player().global_position = block.global_position + Vector2(-14, 6)    # on the block's ground line
 	await wait_physics_frames(2)
 	Input.action_press(&"move_right")
 	await wait_seconds(0.8)

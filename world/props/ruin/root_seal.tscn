@@ -6,23 +6,23 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_on48h"]
 atlas = ExtResource("2_b2syx")
-region = Rect2(0, 0, 40, 20)
+region = Rect2(0, 0, 32, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6fsl4"]
 atlas = ExtResource("2_b2syx")
-region = Rect2(0, 0, 40, 20)
+region = Rect2(0, 0, 32, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qh2tj"]
 atlas = ExtResource("2_b2syx")
-region = Rect2(40, 0, 40, 20)
+region = Rect2(32, 0, 32, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_basgj"]
 atlas = ExtResource("2_b2syx")
-region = Rect2(80, 0, 40, 20)
+region = Rect2(64, 0, 32, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1fusn"]
 atlas = ExtResource("2_b2syx")
-region = Rect2(120, 0, 40, 20)
+region = Rect2(96, 0, 32, 16)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_htpfh"]
 animations = [{
@@ -55,18 +55,17 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wkilx"]
 size = Vector2(32, 16)
 
-[node name="RootSeal" type="StaticBody2D" unique_id=325066442]
+[node name="RootSeal" type="StaticBody2D" unique_id=275048644]
 collision_mask = 0
 script = ExtResource("1_lxeot")
 
-[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1199115098]
-z_index = 1
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1562635052]
 sprite_frames = SubResource("SpriteFrames_htpfh")
 animation = &"closed"
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=765112789]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1432059999]
 shape = SubResource("RectangleShape2D_wkilx")
 
-[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=1784920477]
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=1618945494]
 stream = ExtResource("3_q81lo")
 volume_db = -4.0
