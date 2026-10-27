@@ -21,7 +21,8 @@ was written for this project.
 | `Backgrounds/Tilesets/Interior/TilesetWallSimple.png` | the ruin's mossy walls |
 | `Backgrounds/Tilesets/Interior/TilesetInteriorFloor.png` | the ruin's cobble, slabs and the medallion floor |
 | `Backgrounds/Tilesets/TilesetDungeon.png` | the ruin's orbs on stands, pressure plate and push block |
-| `Backgrounds/Tilesets/TilesetTowers.png` | the crystal of the ruin's heart (dormant and awake) |
+| `Backgrounds/Tilesets/TilesetTowers.png` | the crystal of the ruin's heart, awake |
+| `Backgrounds/Tilesets/TilesetVillageAbandoned.png` | the ruin's pillars, broken walls and fallen guardian |
 | `Actor/Character/OldMan2/`, `Woman/`, `OldWoman/` (`SpriteSheet.png`, `Faceset.png`) | the villagers and their portraits |
 | `Actor/Character/Shadow.png` | character shadows |
 | `Ui/Receptacle/Heart.png` | health hearts |
@@ -62,7 +63,8 @@ production tools are kept outside this repository.
 | `ruin/spike_warning.png`, `root_spike.png` | the warden's root spike: cracks (warning) and eruption |
 | `ruin/heart_vessel.png` | crystal heart (more health), two frames |
 | `ruin/mural.png` | the heart chamber's carving, dark and lit |
-| `ruin/tablet.png` | a child's scratches on a small stone |
+| `ruin/tablet.png` | a child's scratches on a small slab |
+| `ruin/heart_crystal_dormant.png` | **modified copy** of the moss-covered crystal of Ninja Adventure's `TilesetTowers.png` (CC0): same pixels, with the crystal's lit colours replaced by master-palette stone so it reads as unlit (the original file is unchanged) |
 | `ruin/entrance.png` | the ruin's doorway among the great roots |
 | `ruin/beacon.png` | the column of light over the village statue, three frames |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
