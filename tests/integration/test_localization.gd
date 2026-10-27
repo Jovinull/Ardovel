@@ -5,6 +5,7 @@ extends GutTest
 const CSV := "res://locale/text.csv"
 const GameScene := preload("res://game/game.tscn")
 const HudScene := preload("res://ui/hud/hud.tscn")
+const PauseScene := preload("res://ui/pause/pause_screen.tscn")
 const DIR := "user://test_saves/localization"
 ## Folders holding the game's scripts and scenes.
 const GAME_DIRS: Array[String] = [
@@ -99,6 +100,27 @@ func test_every_page_fits_the_message_box_in_every_language() -> void:
 			for page in (table[key][locale] as String).split("\n\n", false):
 				label.text = page
 				assert_lte(label.get_line_count(), BOX_LINES, "%s %s: %s" % [locale, key, page])
+
+
+func test_pause_controls_fit_on_the_pause_screen_in_every_language() -> void:
+	var pause: PauseScreen = PauseScene.instantiate()
+	add_child_autofree(pause)
+	pause.open()
+	pause.choose(PauseScreen.Choice.CONTROLS)
+	var controls: Label = pause.get_node(^"%Controls")
+	for locale in Settings.LOCALES:
+		TranslationServer.set_locale(locale)
+		await wait_process_frames(1)
+		assert_eq(controls.get_line_count(), 4, locale)
+
+
+func test_pause_title_stays_centered_when_scaled() -> void:
+	var pause: PauseScreen = PauseScene.instantiate()
+	add_child_autofree(pause)
+	await wait_process_frames(1)
+	var title: Label = pause.get_node(^"%Title")
+	var center := title.get_global_transform_with_canvas() * (title.size / 2.0)
+	assert_almost_eq(center.x, get_viewport().get_visible_rect().size.x / 2.0, 0.1)
 
 
 func _launch(path: String) -> Game:

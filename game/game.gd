@@ -40,6 +40,7 @@ var _base_max_health: int = 0
 @onready var _hud: Hud = $HUD
 @onready var _death_screen: DeathScreen = $DeathScreen
 @onready var _title: TitleScreen = $TitleScreen
+@onready var _pause: PauseScreen = $PauseScreen
 @onready var _fade: ColorRect = %Fade
 @onready var _music: AudioStreamPlayer = $Music
 
@@ -56,12 +57,27 @@ func _ready() -> void:
 	_title.new_requested.connect(start_new)
 	_title.language_requested.connect(switch_language)
 	_title.quit_requested.connect(get_tree().quit)
+	_pause.resume_requested.connect(_resume_from_pause)
+	_pause.language_requested.connect(switch_language)
+	_pause.title_requested.connect(_return_to_title)
+	_pause.quit_requested.connect(_quit_safely)
 	if show_title:
 		open_title()
 
 
 func _exit_tree() -> void:
+	get_tree().paused = false
 	Engine.time_scale = 1.0
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_action_pressed(&"ui_cancel") or _title.is_open() or _pause.is_open():
+		return
+	if level == null or _travelling or _death_screen.is_open() or _hud.is_message_visible():
+		return
+	_pause.open()
+	_set_paused(true)
+	get_viewport().set_input_as_handled()
 
 
 func open_title() -> void:
@@ -137,15 +153,16 @@ func respawn() -> void:
 	_travelling = false
 
 
-func save_now() -> void:
+func save_now() -> Error:
 	_save_queued = false
 	if adventure == null:
-		return
+		return OK
 	if level != null and not level.player.health.is_dead():
 		adventure.health = level.player.health.current
 	var error := save_slot.save(adventure)
 	if error != OK:
 		push_warning("Could not save the adventure: %s" % error_string(error))
+	return error
 
 
 func is_travelling() -> bool:
@@ -165,6 +182,9 @@ func hit_stop() -> void:
 
 
 func _begin(state: Adventure) -> void:
+	_set_paused(false)
+	_pause.close()
+	Engine.time_scale = 1.0
 	adventure = state
 	adventure.changed.connect(_queue_save)
 	adventure.changed.connect(_apply_heart_vessels)
@@ -213,6 +233,42 @@ func _on_boss_fight_started(arena: BossArena) -> void:
 func _on_boss_fight_won() -> void:
 	_hud.hide_boss()
 	_play_music(level.music)
+
+
+func _resume_from_pause() -> void:
+	_pause.close()
+	_set_paused(false)
+
+
+func _return_to_title() -> void:
+	if adventure == null or level == null or _travelling:
+		return
+	if save_now() != OK:
+		_pause.show_notice("PAUSE_SAVE_FAILED")
+		return
+	_set_paused(false)
+	_pause.close()
+	_death_screen.close()
+	_hud.hide_boss()
+	_music.stop()
+	remove_child(level)
+	level.queue_free()
+	level = null
+	adventure = null
+	open_title()
+
+
+func _quit_safely() -> void:
+	if save_now() != OK:
+		_pause.show_notice("PAUSE_SAVE_FAILED")
+		return
+	_pause.close()
+	_set_paused(false)
+	get_tree().quit()
+
+
+func _set_paused(paused: bool) -> void:
+	get_tree().paused = paused
 
 
 ## Sizes the hero's health from the heart vessels found so far.

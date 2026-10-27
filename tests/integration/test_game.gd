@@ -27,6 +27,14 @@ func _hearts() -> Array[int]:
 	return quarters
 
 
+func _press_pause() -> PauseScreen:
+	var event := InputEventAction.new()
+	event.action = &"ui_cancel"
+	event.pressed = true
+	game.call(&"_unhandled_input", event)
+	return game.get_node(^"PauseScreen") as PauseScreen
+
+
 func test_hud_starts_with_three_full_hearts() -> void:
 	assert_eq(_hearts(), [4, 4, 4])
 
@@ -44,6 +52,129 @@ func test_interaction_messages_reach_the_hud() -> void:
 	assert_true(hud.is_message_visible())
 	player.interactor.interacted.emit(null, "")
 	assert_true(hud.is_message_visible(), "empty messages do not replace the current one")
+
+
+func test_pause_shows_controls_and_resumes_the_world() -> void:
+	var pause := _press_pause()
+	assert_true(pause.is_open())
+	assert_true(get_tree().paused)
+	pause.choose(PauseScreen.Choice.CONTROLS)
+	assert_true(pause.is_showing_controls())
+	assert_true((pause.get_node(^"%Controls") as Label).visible)
+	var cancel := InputEventAction.new()
+	cancel.action = &"ui_cancel"
+	cancel.pressed = true
+	pause.call(&"_unhandled_input", cancel)
+	assert_false(pause.is_showing_controls(), "cancel returns to the pause menu")
+	pause.choose(PauseScreen.Choice.RESUME)
+	assert_false(pause.is_open())
+	assert_false(get_tree().paused)
+
+
+func test_pause_does_not_interrupt_dialogue() -> void:
+	hud.show_message("A short test message.")
+	_press_pause()
+	assert_false((game.get_node(^"PauseScreen") as PauseScreen).is_open())
+
+
+func test_pause_menu_responds_to_keyboard_inputs() -> void:
+	var escape := InputEventKey.new()
+	escape.keycode = KEY_ESCAPE
+	escape.physical_keycode = KEY_ESCAPE
+	escape.pressed = true
+	game.call(&"_unhandled_input", escape)
+	var pause := game.get_node(^"PauseScreen") as PauseScreen
+	assert_true(pause.is_open())
+	var down := InputEventKey.new()
+	down.physical_keycode = KEY_S
+	down.pressed = true
+	pause.call(&"_unhandled_input", down)
+	assert_eq(pause.get(&"_selected"), 1)
+	var confirm := InputEventKey.new()
+	confirm.physical_keycode = KEY_E
+	confirm.pressed = true
+	pause.call(&"_unhandled_input", confirm)
+	assert_true(pause.is_showing_controls())
+	pause.call(&"_unhandled_input", escape)
+	assert_false(pause.is_showing_controls())
+	pause.call(&"_unhandled_input", escape)
+	assert_false(pause.is_open())
+	assert_false(get_tree().paused)
+
+
+func test_pause_menu_responds_to_joypad_inputs() -> void:
+	var open := InputEventJoypadButton.new()
+	open.button_index = JOY_BUTTON_B
+	open.pressed = true
+	game.call(&"_unhandled_input", open)
+	var pause := game.get_node(^"PauseScreen") as PauseScreen
+	assert_true(pause.is_open())
+	var down := InputEventJoypadButton.new()
+	down.button_index = JOY_BUTTON_DPAD_DOWN
+	down.pressed = true
+	pause.call(&"_unhandled_input", down)
+	assert_eq(pause.get(&"_selected"), 1)
+	var confirm := InputEventJoypadButton.new()
+	confirm.button_index = JOY_BUTTON_A
+	confirm.pressed = true
+	pause.call(&"_unhandled_input", confirm)
+	assert_true(pause.is_showing_controls())
+	var back := InputEventJoypadButton.new()
+	back.button_index = JOY_BUTTON_B
+	back.pressed = true
+	pause.call(&"_unhandled_input", back)
+	assert_false(pause.is_showing_controls())
+	pause.call(&"_unhandled_input", back)
+	assert_false(pause.is_open())
+	assert_false(get_tree().paused)
+
+
+func test_return_to_title_saves_and_continues_the_adventure() -> void:
+	game.adventure.set_flag(&"pause_return_test")
+	player.health.current = 6
+	var pause := _press_pause()
+	pause.choose(PauseScreen.Choice.TITLE)
+	assert_false(get_tree().paused)
+	assert_false(pause.is_open())
+	assert_null(game.level, "the old area is removed from the title screen")
+	assert_true((game.get_node(^"TitleScreen") as TitleScreen).is_open())
+	var saved := game.save_slot.load_adventure()
+	assert_eq(saved.health, 6)
+	assert_true(saved.has_flag(&"pause_return_test"))
+	await wait_process_frames(2)
+	(game.get_node(^"TitleScreen") as TitleScreen).choose(TitleScreen.Choice.CONTINUE)
+	await wait_process_frames(2)
+	assert_eq(game.level.area_id, &"village")
+	assert_eq(game.level.player.health.current, 6)
+	assert_true(game.adventure.has_flag(&"pause_return_test"))
+
+
+func test_pause_stays_open_if_saving_before_return_fails() -> void:
+	var temporary_path := ProjectSettings.globalize_path(game.save_slot.path + ".tmp")
+	assert_eq(DirAccess.make_dir_recursive_absolute(temporary_path), OK)
+	var pause := _press_pause()
+	pause.choose(PauseScreen.Choice.TITLE)
+	assert_true(pause.is_open())
+	assert_true(get_tree().paused)
+	assert_not_null(game.level)
+	assert_eq((pause.get_node(^"%Notice") as Label).text, "PAUSE_SAVE_FAILED")
+	pause.choose(PauseScreen.Choice.RESUME)
+	assert_eq(DirAccess.remove_absolute(temporary_path), OK)
+
+
+func test_language_change_updates_the_open_pause_menu() -> void:
+	var pause := _press_pause()
+	pause.choose(PauseScreen.Choice.LANGUAGE)
+	assert_eq(TranslationServer.get_locale(), "en")
+	var language_index := pause.choices.find(PauseScreen.Choice.LANGUAGE)
+	assert_eq((pause.get_node(^"%Options").get_child(language_index) as Label).text, "Language: English")
+	pause.choose(PauseScreen.Choice.CONTROLS)
+	assert_true((pause.get_node(^"%Controls") as Label).text.begins_with("Move:"))
+	game.switch_language()
+	assert_eq(TranslationServer.get_locale(), "pt_BR")
+	assert_true((pause.get_node(^"%Controls") as Label).text.begins_with("Mover:"))
+	pause.choose(PauseScreen.Choice.BACK)
+	pause.choose(PauseScreen.Choice.RESUME)
 
 
 func test_death_opens_the_death_screen() -> void:

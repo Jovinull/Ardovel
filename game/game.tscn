@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="3_hud"]
 [ext_resource type="PackedScene" path="res://ui/death_screen/death_screen.tscn" id="4_death"]
 [ext_resource type="PackedScene" path="res://ui/title/title_screen.tscn" id="5_title"]
+[ext_resource type="PackedScene" path="res://ui/pause/pause_screen.tscn" id="6_pause"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1_game")
@@ -30,3 +31,5 @@ color = Color(0.0784314, 0.105882, 0.105882, 1)
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 volume_db = -8.0
+
+[node name="PauseScreen" parent="." instance=ExtResource("6_pause")]
