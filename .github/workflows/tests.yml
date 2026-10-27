@@ -8,6 +8,8 @@ on:
 jobs:
   gut:
     runs-on: ubuntu-latest
+    # A normal run takes a few minutes; a hung engine must not hold the runner for hours.
+    timeout-minutes: 20
     env:
       GODOT_VERSION: 4.7.2
     steps:
