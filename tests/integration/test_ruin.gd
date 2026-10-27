@@ -351,3 +351,30 @@ func test_a_fall_after_the_crystal_heart_brings_the_hero_back_with_every_heart_f
 	await _fall_and_retry()
 	assert_eq(_player().health.max_health, 12 + Game.HEART_VESSEL_HEALTH)
 	assert_eq(_player().health.current, _player().health.max_health)
+
+
+func test_a_slam_decided_from_the_side_lands_there() -> void:
+	# Found in play: the slam was decided at 46px but only reached 30px, leaving a safe spot.
+	await _enter_ruin()
+	var warden := await _walk_into_the_hall()
+	var reach := ((warden.get_node(^"SlamHitbox/Shape") as CollisionShape2D).shape as CircleShape2D).radius
+	assert_eq(reach, warden.slam_range, "what triggers a slam is what it reaches")
+	_player().global_position = warden.global_position + Vector2(warden.slam_range - 4, 0)
+	var hp := _player().health.current
+	await wait_physics_frames(3)
+	assert_eq(warden.state, RootWarden.State.WINDUP)
+	await wait_seconds(warden.windup_time + 0.1)
+	assert_lt(_player().health.current, hp)
+
+
+func test_after_every_slam_roots_come_even_up_close() -> void:
+	# Found in play: fighting up close, the root spikes almost never came.
+	await _enter_ruin()
+	var warden := await _walk_into_the_hall()
+	warden.call(&"_enter", RootWarden.State.STUCK)
+	_player().global_position = warden.global_position + Vector2(0, 26)
+	await wait_seconds(warden.stuck_time + warden.idle_time + 0.2)
+	assert_eq(warden.state, RootWarden.State.CAST, "the roots, not another slam")
+	var spikes := game.level.find_children("*", "Node2D", true, false).filter(
+			func(n: Node) -> bool: return n is RootSpike)
+	assert_gt(spikes.size(), 0)

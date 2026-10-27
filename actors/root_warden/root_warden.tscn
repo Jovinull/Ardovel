@@ -138,37 +138,37 @@ size = Vector2(32, 42)
 size = Vector2(36, 16)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6dniw"]
-radius = 30.0
+radius = 40.0
 
-[node name="RootWarden" type="CharacterBody2D" unique_id=2032797739]
+[node name="RootWarden" type="CharacterBody2D" unique_id=1909657108]
 collision_layer = 4
 motion_mode = 1
 script = ExtResource("1_2xixl")
 
-[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=200935288]
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=2055128745]
 sprite_frames = SubResource("SpriteFrames_24m86")
 animation = &"idle"
 autoplay = "idle"
 offset = Vector2(0, -22)
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=1418572231]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1149919777]
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_h7slt")
 
-[node name="Health" type="Node" parent="." unique_id=689342036]
+[node name="Health" type="Node" parent="." unique_id=57166743]
 script = ExtResource("3_bo2q8")
 max_health = 8
 
-[node name="Hurtbox" type="Area2D" parent="." unique_id=1648641673]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=971999030]
 collision_layer = 16
 collision_mask = 0
 script = ExtResource("4_inqoe")
 
-[node name="Shape" type="CollisionShape2D" parent="Hurtbox" unique_id=1551584126]
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox" unique_id=1891289358]
 position = Vector2(0, -21)
 shape = SubResource("RectangleShape2D_5i04v")
 
-[node name="ContactHitbox" type="Area2D" parent="." unique_id=1954744132]
+[node name="ContactHitbox" type="Area2D" parent="." unique_id=905115884]
 collision_layer = 0
 collision_mask = 8
 script = ExtResource("5_mymmw")
@@ -176,11 +176,11 @@ damage = 2
 knockback = 140.0
 hit_once_per_activation = false
 
-[node name="Shape" type="CollisionShape2D" parent="ContactHitbox" unique_id=268428173]
+[node name="Shape" type="CollisionShape2D" parent="ContactHitbox" unique_id=636472032]
 position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_tixs8")
 
-[node name="SlamHitbox" type="Area2D" parent="." unique_id=1910706236]
+[node name="SlamHitbox" type="Area2D" parent="." unique_id=1227065004]
 position = Vector2(0, 2)
 collision_layer = 0
 collision_mask = 8
@@ -188,26 +188,26 @@ script = ExtResource("5_mymmw")
 damage = 4
 knockback = 180.0
 
-[node name="Shape" type="CollisionShape2D" parent="SlamHitbox" unique_id=992799447]
+[node name="Shape" type="CollisionShape2D" parent="SlamHitbox" unique_id=642373906]
 shape = SubResource("CircleShape2D_6dniw")
 
-[node name="Fists" type="Marker2D" parent="." unique_id=1401246811]
+[node name="Fists" type="Marker2D" parent="." unique_id=1698790678]
 position = Vector2(0, 8)
 
-[node name="HitFlash" type="Node" parent="." unique_id=531574842 node_paths=PackedStringArray("target")]
+[node name="HitFlash" type="Node" parent="." unique_id=845878368 node_paths=PackedStringArray("target")]
 script = ExtResource("6_ns03v")
 target = NodePath("../Sprite")
 
-[node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=60419640]
+[node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=464309287]
 stream = ExtResource("7_ag5yn")
 
-[node name="ClankSound" type="AudioStreamPlayer2D" parent="." unique_id=1447268900]
+[node name="ClankSound" type="AudioStreamPlayer2D" parent="." unique_id=2086535728]
 stream = ExtResource("8_5pcdo")
 volume_db = -2.0
 
-[node name="SlamSound" type="AudioStreamPlayer2D" parent="." unique_id=1948089134]
+[node name="SlamSound" type="AudioStreamPlayer2D" parent="." unique_id=1625011945]
 stream = ExtResource("9_8m3ik")
 volume_db = -4.0
 
-[node name="DeathSound" type="AudioStreamPlayer2D" parent="." unique_id=1891653948]
+[node name="DeathSound" type="AudioStreamPlayer2D" parent="." unique_id=1683164143]
 stream = ExtResource("10_sixho")

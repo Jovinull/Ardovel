@@ -2,9 +2,10 @@ class_name RootWarden
 extends CharacterBody2D
 ## The Root Warden, guardian of the first ruin: a stone sentinel taken over by roots. It drags
 ## itself after the hero; up close it raises its fists (the warning: light leaks from its
-## chest) and slams them down, then stays stuck with its core bare, the only time the sword
-## can hurt it (and, caught as it is, touching it does no harm then). From afar it drives its fists into the ground and roots burst up under the hero.
-## Below half health it gets quicker and the roots come in threes.
+## chest) and slams them down all around it, then stays stuck with its core bare, the only time
+## the sword can hurt it (and, caught as it is, touching it does no harm then). From afar, and
+## once after every slam, it drives its fists into the ground and roots burst up under the
+## hero. Below half health it gets quicker and the roots come in threes.
 
 signal defeated
 ## Health left after a hit (for the boss bar).
@@ -17,7 +18,9 @@ const DUST := preload("res://actors/root_warden/slam_dust.tscn")
 ## Where extra spikes land around the hero once it is enraged.
 const SPIKE_SPREAD := 28.0
 
-@export var slam_range: float = 46.0
+## How close the hero must be for a slam; also the slam's reach (SlamHitbox radius), so a slam
+## the warden decides on can always land.
+@export var slam_range: float = 40.0
 @export var move_speed: float = 18.0
 @export var idle_time: float = 0.9
 @export var windup_time: float = 0.75
@@ -31,6 +34,8 @@ const SPIKE_SPREAD := 28.0
 var state: State = State.DORMANT
 var target: Node2D
 var _state_left: float = 0.0
+## Set after a slam: the next attack is the roots, wherever the hero stands.
+var _owes_cast: bool = false
 
 @onready var health: Health = $Health
 @onready var _sprite: AnimatedSprite2D = $Sprite
@@ -76,7 +81,7 @@ func _physics_process(delta: float) -> void:
 			_chase(delta)
 			if not _target_alive():
 				return
-			if _near_target():
+			if _near_target() and not _owes_cast:
 				_enter(State.WINDUP)
 			elif _state_left <= 0.0:
 				_enter(State.CAST)
@@ -142,8 +147,10 @@ func _enter(next: State) -> void:
 			get_parent().add_child(dust)
 		State.STUCK:
 			_state_left = stuck_time * _pace()
+			_owes_cast = true
 			_sprite.play(&"stuck")
 		State.CAST:
+			_owes_cast = false
 			_state_left = cast_time * _pace()
 			_sprite.play(&"cast")
 			_slam_sound.play()
