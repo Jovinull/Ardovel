@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/FX/Smoke/SmokeCircular/SpriteSheet.png" id="1_fqoyg"]
+[ext_resource type="Script" path="res://fx/one_shot_effect.gd" id="2_mtef4"]
+
+[node name="SlamDust" type="Sprite2D" unique_id=940039291]
+texture = ExtResource("1_fqoyg")
+hframes = 6
+script = ExtResource("2_mtef4")
+fps = 14.0

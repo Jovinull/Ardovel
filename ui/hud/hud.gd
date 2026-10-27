@@ -1,7 +1,8 @@
 class_name Hud
 extends CanvasLayer
-## Heads-up display: hearts for the player's health and the dialogue box. Messages are shown
-## page by page (a blank line starts a new page) and wait for the player to read them.
+## Heads-up display: hearts for the player's health, the dialogue box and, during a boss fight,
+## the boss's name and health bar. Messages are shown page by page (a blank line starts a new
+## page) and wait for the player to read them.
 
 signal dialogue_started
 signal dialogue_finished
@@ -13,12 +14,15 @@ const HEART_SIZE := 16
 const REVEAL_CHARS_PER_SECOND := 50.0
 const SPEAKER_X := 34.0
 const SPEAKER_X_BESIDE_PORTRAIT := 82.0
+## Inner width of the boss health bar.
+const BOSS_BAR_WIDTH := 138.0
 
 var _heart_frames: Array[AtlasTexture] = []
 var _message_tween: Tween
 var _arrow_tween: Tween
 var _pages: PackedStringArray = []
 var _page: int = 0
+var _boss_health: Health
 
 @onready var _hearts: HBoxContainer = %Hearts
 @onready var _message_box: Control = %MessageBox
@@ -27,6 +31,9 @@ var _page: int = 0
 @onready var _portrait_box: Control = %PortraitBox
 @onready var _portrait: TextureRect = %Portrait
 @onready var _speaker: Label = %Speaker
+@onready var _boss_bar: Control = %BossBar
+@onready var _boss_name: Label = %Name
+@onready var _boss_fill: ColorRect = %Fill
 
 
 func _ready() -> void:
@@ -57,6 +64,35 @@ func show_health(current: int, maximum: int) -> void:
 	for i in heart_count:
 		var quarters := clampi(current - i * QUARTERS_PER_HEART, 0, QUARTERS_PER_HEART)
 		(_hearts.get_child(i) as TextureRect).texture = _heart_frames[quarters]
+
+
+## Shows the boss bar for `health` under the name `name_key` (a translation key).
+func show_boss(name_key: String, health: Health) -> void:
+	hide_boss()
+	_boss_health = health
+	_boss_name.text = name_key
+	health.changed.connect(_show_boss_health)
+	_show_boss_health(health.current, health.max_health)
+	_boss_bar.show()
+
+
+func hide_boss() -> void:
+	if is_instance_valid(_boss_health) and _boss_health.changed.is_connected(_show_boss_health):
+		_boss_health.changed.disconnect(_show_boss_health)
+	_boss_health = null
+	_boss_bar.hide()
+
+
+func is_boss_bar_visible() -> bool:
+	return _boss_bar.visible
+
+
+func boss_bar_fraction() -> float:
+	return _boss_fill.size.x / BOSS_BAR_WIDTH
+
+
+func _show_boss_health(current: int, maximum: int) -> void:
+	_boss_fill.size.x = BOSS_BAR_WIDTH * float(current) / maximum
 
 
 ## Number of filled quarters shown by heart `index` (for tests and debugging).

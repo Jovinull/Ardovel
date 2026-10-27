@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/entrance.png" id="1_aiak6"]
+[ext_resource type="PackedScene" path="res://world/props/ruin/root_seal.tscn" id="2_cicu5"]
+[ext_resource type="Script" path="res://world/props/ruin/root_seal.gd" id="3_tix8o"]
+[ext_resource type="Script" path="res://world/area_exit.gd" id="4_nxq8y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oddoh"]
+size = Vector2(20, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yuuu3"]
+size = Vector2(20, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b1nnf"]
+size = Vector2(64, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_diqg4"]
+size = Vector2(20, 8)
+
+[node name="RuinEntrance" type="StaticBody2D" unique_id=920882495]
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=2118523996]
+texture = ExtResource("1_aiak6")
+centered = false
+offset = Vector2(-32, -56)
+
+[node name="LeftCollision" type="CollisionShape2D" parent="." unique_id=1196498832]
+position = Vector2(-22, -7)
+shape = SubResource("RectangleShape2D_oddoh")
+
+[node name="RightCollision" type="CollisionShape2D" parent="." unique_id=1566598383]
+position = Vector2(22, -7)
+shape = SubResource("RectangleShape2D_yuuu3")
+
+[node name="BackCollision" type="CollisionShape2D" parent="." unique_id=575977323]
+position = Vector2(0, -42)
+shape = SubResource("RectangleShape2D_b1nnf")
+
+[node name="Roots" type="StaticBody2D" parent="." unique_id=325066442 instance=ExtResource("2_cicu5")]
+position = Vector2(0, -6)
+collision_mask = 0
+script = ExtResource("3_tix8o")
+open_flag = &"forest_shrine_awakened"
+
+[node name="ToRuin" type="Area2D" parent="." unique_id=1870605055]
+position = Vector2(0, -26)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("4_nxq8y")
+target_area = &"ruin"
+target_entry = &"gate"
+
+[node name="Shape" type="CollisionShape2D" parent="ToRuin" unique_id=1301600506]
+shape = SubResource("RectangleShape2D_diqg4")

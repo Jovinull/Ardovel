@@ -10,8 +10,11 @@ extends Node
 const AREAS: Dictionary[StringName, String] = {
 	&"village": "res://world/village/village.tscn",
 	&"forest": "res://world/forest/forest.tscn",
+	&"ruin": "res://world/ruin/ruin.tscn",
 }
 const FADE_TIME := 0.35
+## Health a heart vessel adds: one whole heart (four quarters).
+const HEART_VESSEL_HEALTH := 4
 const MUSIC_VOLUME_DB := -8.0
 const MUSIC_SILENT_DB := -40.0
 
@@ -31,6 +34,8 @@ var settings: Settings
 var _travelling: bool = false
 var _save_queued: bool = false
 var _hit_stop_token: int = 0
+## The hero's maximum health before heart vessels (as set in the player scene).
+var _base_max_health: int = 0
 
 @onready var _hud: Hud = $HUD
 @onready var _death_screen: DeathScreen = $DeathScreen
@@ -162,6 +167,7 @@ func hit_stop() -> void:
 func _begin(state: Adventure) -> void:
 	adventure = state
 	adventure.changed.connect(_queue_save)
+	adventure.changed.connect(_apply_heart_vessels)
 	_title.close()
 	_fade.modulate.a = 1.0
 	_load_area(adventure.area, adventure.entry)
@@ -180,13 +186,42 @@ func _load_area(area: StringName, entry: StringName) -> void:
 	if not level.place_player(entry):
 		push_warning("Area %s has no entry %s; using the scene's start." % [area, entry])
 	var player := level.player
+	_base_max_health = player.health.max_health
+	_apply_heart_vessels()
 	if adventure.health != Adventure.FULL_HEALTH:
 		player.health.current = clampi(adventure.health, 1, player.health.max_health)
 	player.died.connect(_death_screen.open)
 	player.hit_landed.connect(hit_stop)
 	level.exit_requested.connect(travel)
 	_hud.bind_player(player)
+	_hud.hide_boss()
+	for node in level.find_children("*", "", true, false):
+		if node is BossArena:
+			var arena := node as BossArena
+			arena.fight_started.connect(_on_boss_fight_started.bind(arena))
+			arena.fight_won.connect(_on_boss_fight_won)
 	_play_music(level.music)
+
+
+func _on_boss_fight_started(arena: BossArena) -> void:
+	_hud.show_boss(arena.boss_name, arena.warden.health)
+	_play_music(arena.music)
+
+
+func _on_boss_fight_won() -> void:
+	_hud.hide_boss()
+	_play_music(level.music)
+
+
+## Sizes the hero's health from the heart vessels found so far.
+func _apply_heart_vessels() -> void:
+	if level == null:
+		return
+	var vessels := adventure.flags().filter(
+			func(flag: StringName) -> bool: return String(flag).begins_with(HeartVessel.FLAG_PREFIX)).size()
+	var maximum := _base_max_health + vessels * HEART_VESSEL_HEALTH
+	if level.player.health.max_health != maximum:
+		level.player.health.set_maximum(maximum)
 
 
 func _play_music(stream: AudioStream) -> void:

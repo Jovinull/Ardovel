@@ -4,16 +4,13 @@
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Musics/33 - Calm Village.ogg" id="2_grfh4"]
 [ext_resource type="TileSet" path="res://world/ground_tileset.tres" id="3_kgam1"]
 [ext_resource type="PackedScene" path="res://actors/player/player.tscn" id="4_06hyu"]
-[ext_resource type="Script" path="res://actors/player/player.gd" id="5_314qi"]
 [ext_resource type="PackedScene" path="res://world/props/guardian_statue/guardian_statue.tscn" id="6_dmwuu"]
-[ext_resource type="Script" path="res://world/props/guardian_statue/guardian_statue.gd" id="7_ryily"]
 [ext_resource type="PackedScene" path="res://world/props/village/house_orange.tscn" id="8_m4c1f"]
 [ext_resource type="PackedScene" path="res://world/props/village/house_green.tscn" id="9_6j81e"]
 [ext_resource type="PackedScene" path="res://world/props/village/house_red.tscn" id="10_xtjuk"]
 [ext_resource type="PackedScene" path="res://world/props/village/shop.tscn" id="11_2dtv2"]
 [ext_resource type="PackedScene" path="res://world/props/village/arch.tscn" id="12_r86wq"]
 [ext_resource type="PackedScene" path="res://actors/npc/npc.tscn" id="13_ktrsl"]
-[ext_resource type="Script" path="res://actors/npc/npc.gd" id="14_28v0v"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/OldMan2/SpriteSheet.png" id="15_nhykk"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/OldMan2/Faceset.png" id="16_mywwm"]
 [ext_resource type="Script" path="res://interaction/dialogue_line.gd" id="17_aj1lm"]
@@ -38,6 +35,11 @@
 [ext_resource type="Script" path="res://world/area_entry.gd" id="36_w4yr1"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="37_ut0ve"]
 
+[sub_resource type="Resource" id="Resource_cyctb"]
+script = ExtResource("17_aj1lm")
+requires = &"ruin_heart_awakened"
+text = "ANSELMO_RUIN"
+
 [sub_resource type="Resource" id="Resource_cwave"]
 script = ExtResource("17_aj1lm")
 requires = &"elder_thanked"
@@ -59,6 +61,16 @@ script = ExtResource("17_aj1lm")
 text = "ANSELMO_RUMOR"
 sets = &"heard_of_shrine"
 
+[sub_resource type="Resource" id="Resource_tnib4"]
+script = ExtResource("17_aj1lm")
+requires = &"ruin_mural_read"
+text = "LIA_MURAL"
+
+[sub_resource type="Resource" id="Resource_1fkta"]
+script = ExtResource("17_aj1lm")
+requires = &"ruin_heart_awakened"
+text = "LIA_RUIN"
+
 [sub_resource type="Resource" id="Resource_01s4r"]
 script = ExtResource("17_aj1lm")
 requires = &"forest_shrine_awakened"
@@ -67,6 +79,11 @@ text = "LIA_AWAKENED"
 [sub_resource type="Resource" id="Resource_7wukx"]
 script = ExtResource("17_aj1lm")
 text = "LIA_STUDY"
+
+[sub_resource type="Resource" id="Resource_aq6ad"]
+script = ExtResource("17_aj1lm")
+requires = &"ruin_heart_awakened"
+text = "CIDA_RUIN"
 
 [sub_resource type="Resource" id="Resource_wa0am"]
 script = ExtResource("17_aj1lm")
@@ -110,268 +127,204 @@ tile_set = ExtResource("3_kgam1")
 [node name="Entities" type="Node2D" parent="." unique_id=883126179]
 y_sort_enabled = true
 
-[node name="Player" type="CharacterBody2D" parent="Entities" unique_id=771448493 instance=ExtResource("4_06hyu")]
+[node name="Player" parent="Entities" unique_id=771448493 instance=ExtResource("4_06hyu")]
 position = Vector2(128, 314)
-collision_layer = 2
-motion_mode = 1
-script = ExtResource("5_314qi")
 
-[node name="GuardianStatue" type="StaticBody2D" parent="Entities" unique_id=361133747 instance=ExtResource("6_dmwuu")]
+[node name="GuardianStatue" parent="Entities" unique_id=361133747 instance=ExtResource("6_dmwuu")]
 position = Vector2(240, 190)
-collision_mask = 0
-script = ExtResource("7_ryily")
 
-[node name="AnselmoHouse" type="StaticBody2D" parent="Entities" unique_id=2127198104 instance=ExtResource("8_m4c1f")]
+[node name="AnselmoHouse" parent="Entities" unique_id=2127198104 instance=ExtResource("8_m4c1f")]
 position = Vector2(120, 168)
-collision_mask = 0
 
-[node name="LiaHouse" type="StaticBody2D" parent="Entities" unique_id=332284584 instance=ExtResource("9_6j81e")]
+[node name="LiaHouse" parent="Entities" unique_id=332284584 instance=ExtResource("9_6j81e")]
 position = Vector2(360, 160)
-collision_mask = 0
 
-[node name="HeroHome" type="StaticBody2D" parent="Entities" unique_id=1801036818 instance=ExtResource("10_xtjuk")]
+[node name="HeroHome" parent="Entities" unique_id=1801036818 instance=ExtResource("10_xtjuk")]
 position = Vector2(128, 296)
-collision_mask = 0
 
-[node name="Shop" type="StaticBody2D" parent="Entities" unique_id=1747486597 instance=ExtResource("11_2dtv2")]
+[node name="Shop" parent="Entities" unique_id=1747486597 instance=ExtResource("11_2dtv2")]
 position = Vector2(352, 292)
-collision_mask = 0
 
-[node name="ForestArch" type="StaticBody2D" parent="Entities" unique_id=608913398 instance=ExtResource("12_r86wq")]
+[node name="ForestArch" parent="Entities" unique_id=608913398 instance=ExtResource("12_r86wq")]
 position = Vector2(240, 44)
-collision_mask = 0
 
-[node name="Anselmo" type="StaticBody2D" parent="Entities" unique_id=170614610 instance=ExtResource("13_ktrsl")]
+[node name="Anselmo" parent="Entities" unique_id=170614610 instance=ExtResource("13_ktrsl")]
 position = Vector2(150, 190)
-collision_mask = 0
-script = ExtResource("14_28v0v")
 display_name = "NPC_ANSELMO"
 sheet = ExtResource("15_nhykk")
 faceset = ExtResource("16_mywwm")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cwave"), SubResource("Resource_1bb0f"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cyctb"), SubResource("Resource_cwave"), SubResource("Resource_1bb0f"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g")])
 
-[node name="Lia" type="StaticBody2D" parent="Entities" unique_id=1122240069 instance=ExtResource("13_ktrsl")]
+[node name="Lia" parent="Entities" unique_id=1122240069 instance=ExtResource("13_ktrsl")]
 position = Vector2(276, 202)
-collision_mask = 0
-script = ExtResource("14_28v0v")
 display_name = "NPC_LIA"
 sheet = ExtResource("18_mvvu5")
 faceset = ExtResource("19_edwi0")
 facing = Vector2(-1, 0)
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_01s4r"), SubResource("Resource_7wukx")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_tnib4"), SubResource("Resource_1fkta"), SubResource("Resource_01s4r"), SubResource("Resource_7wukx")])
 
-[node name="Cida" type="StaticBody2D" parent="Entities" unique_id=654584627 instance=ExtResource("13_ktrsl")]
+[node name="Cida" parent="Entities" unique_id=654584627 instance=ExtResource("13_ktrsl")]
 position = Vector2(382, 306)
-collision_mask = 0
-script = ExtResource("14_28v0v")
 display_name = "NPC_CIDA"
 sheet = ExtResource("20_jram5")
 faceset = ExtResource("21_bnvwc")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
 
-[node name="PineGrove1" type="StaticBody2D" parent="Entities" unique_id=1507130039 instance=ExtResource("22_6sduw")]
+[node name="PineGrove1" parent="Entities" unique_id=1507130039 instance=ExtResource("22_6sduw")]
 position = Vector2(24, 40)
-collision_mask = 0
 
-[node name="Oak1" type="StaticBody2D" parent="Entities" unique_id=1722516237 instance=ExtResource("23_yo7gn")]
+[node name="Oak1" parent="Entities" unique_id=1722516237 instance=ExtResource("23_yo7gn")]
 position = Vector2(70, 46)
-collision_mask = 0
 
-[node name="Birch1" type="StaticBody2D" parent="Entities" unique_id=2130168020 instance=ExtResource("24_ttt2m")]
+[node name="Birch1" parent="Entities" unique_id=2130168020 instance=ExtResource("24_ttt2m")]
 position = Vector2(112, 36)
-collision_mask = 0
 
-[node name="RoundTree1" type="StaticBody2D" parent="Entities" unique_id=2082482920 instance=ExtResource("25_k7os6")]
+[node name="RoundTree1" parent="Entities" unique_id=2082482920 instance=ExtResource("25_k7os6")]
 position = Vector2(160, 42)
-collision_mask = 0
 
-[node name="Oak2" type="StaticBody2D" parent="Entities" unique_id=698027357 instance=ExtResource("23_yo7gn")]
+[node name="Oak2" parent="Entities" unique_id=698027357 instance=ExtResource("23_yo7gn")]
 position = Vector2(200, 48)
-collision_mask = 0
 
-[node name="Birch2" type="StaticBody2D" parent="Entities" unique_id=1423457189 instance=ExtResource("24_ttt2m")]
+[node name="Birch2" parent="Entities" unique_id=1423457189 instance=ExtResource("24_ttt2m")]
 position = Vector2(282, 40)
-collision_mask = 0
 
-[node name="Oak3" type="StaticBody2D" parent="Entities" unique_id=1648478356 instance=ExtResource("23_yo7gn")]
+[node name="Oak3" parent="Entities" unique_id=1648478356 instance=ExtResource("23_yo7gn")]
 position = Vector2(318, 46)
-collision_mask = 0
 
-[node name="PineGrove2" type="StaticBody2D" parent="Entities" unique_id=1245641429 instance=ExtResource("22_6sduw")]
+[node name="PineGrove2" parent="Entities" unique_id=1245641429 instance=ExtResource("22_6sduw")]
 position = Vector2(372, 38)
-collision_mask = 0
 
-[node name="Birch3" type="StaticBody2D" parent="Entities" unique_id=1015348137 instance=ExtResource("24_ttt2m")]
+[node name="Birch3" parent="Entities" unique_id=1015348137 instance=ExtResource("24_ttt2m")]
 position = Vector2(420, 44)
-collision_mask = 0
 
-[node name="Oak4" type="StaticBody2D" parent="Entities" unique_id=186337347 instance=ExtResource("23_yo7gn")]
+[node name="Oak4" parent="Entities" unique_id=186337347 instance=ExtResource("23_yo7gn")]
 position = Vector2(462, 40)
-collision_mask = 0
 
-[node name="Oak5" type="StaticBody2D" parent="Entities" unique_id=1659455512 instance=ExtResource("23_yo7gn")]
+[node name="Oak5" parent="Entities" unique_id=1659455512 instance=ExtResource("23_yo7gn")]
 position = Vector2(16, 112)
-collision_mask = 0
 
-[node name="Birch4" type="StaticBody2D" parent="Entities" unique_id=84161161 instance=ExtResource("24_ttt2m")]
+[node name="Birch4" parent="Entities" unique_id=84161161 instance=ExtResource("24_ttt2m")]
 position = Vector2(12, 172)
-collision_mask = 0
 
-[node name="PineGrove3" type="StaticBody2D" parent="Entities" unique_id=448175245 instance=ExtResource("22_6sduw")]
+[node name="PineGrove3" parent="Entities" unique_id=448175245 instance=ExtResource("22_6sduw")]
 position = Vector2(22, 236)
-collision_mask = 0
 
-[node name="Oak6" type="StaticBody2D" parent="Entities" unique_id=356724966 instance=ExtResource("23_yo7gn")]
+[node name="Oak6" parent="Entities" unique_id=356724966 instance=ExtResource("23_yo7gn")]
 position = Vector2(18, 300)
-collision_mask = 0
 
-[node name="RoundTree2" type="StaticBody2D" parent="Entities" unique_id=564648138 instance=ExtResource("25_k7os6")]
+[node name="RoundTree2" parent="Entities" unique_id=564648138 instance=ExtResource("25_k7os6")]
 position = Vector2(20, 356)
-collision_mask = 0
 
-[node name="RoundTree3" type="StaticBody2D" parent="Entities" unique_id=1747484900 instance=ExtResource("25_k7os6")]
+[node name="RoundTree3" parent="Entities" unique_id=1747484900 instance=ExtResource("25_k7os6")]
 position = Vector2(466, 116)
-collision_mask = 0
 
-[node name="Oak7" type="StaticBody2D" parent="Entities" unique_id=616366361 instance=ExtResource("23_yo7gn")]
+[node name="Oak7" parent="Entities" unique_id=616366361 instance=ExtResource("23_yo7gn")]
 position = Vector2(462, 186)
-collision_mask = 0
 
-[node name="Birch5" type="StaticBody2D" parent="Entities" unique_id=1543588434 instance=ExtResource("24_ttt2m")]
+[node name="Birch5" parent="Entities" unique_id=1543588434 instance=ExtResource("24_ttt2m")]
 position = Vector2(470, 236)
-collision_mask = 0
 
-[node name="PineGrove4" type="StaticBody2D" parent="Entities" unique_id=2062082299 instance=ExtResource("22_6sduw")]
+[node name="PineGrove4" parent="Entities" unique_id=2062082299 instance=ExtResource("22_6sduw")]
 position = Vector2(456, 304)
-collision_mask = 0
 
-[node name="Oak8" type="StaticBody2D" parent="Entities" unique_id=1582359228 instance=ExtResource("23_yo7gn")]
+[node name="Oak8" parent="Entities" unique_id=1582359228 instance=ExtResource("23_yo7gn")]
 position = Vector2(464, 360)
-collision_mask = 0
 
-[node name="PineGrove5" type="StaticBody2D" parent="Entities" unique_id=756546479 instance=ExtResource("22_6sduw")]
+[node name="PineGrove5" parent="Entities" unique_id=756546479 instance=ExtResource("22_6sduw")]
 position = Vector2(64, 380)
-collision_mask = 0
 
-[node name="Oak9" type="StaticBody2D" parent="Entities" unique_id=1882115361 instance=ExtResource("23_yo7gn")]
+[node name="Oak9" parent="Entities" unique_id=1882115361 instance=ExtResource("23_yo7gn")]
 position = Vector2(120, 386)
-collision_mask = 0
 
-[node name="Birch6" type="StaticBody2D" parent="Entities" unique_id=85742141 instance=ExtResource("24_ttt2m")]
+[node name="Birch6" parent="Entities" unique_id=85742141 instance=ExtResource("24_ttt2m")]
 position = Vector2(178, 378)
-collision_mask = 0
 
-[node name="RoundTree4" type="StaticBody2D" parent="Entities" unique_id=100382855 instance=ExtResource("25_k7os6")]
+[node name="RoundTree4" parent="Entities" unique_id=100382855 instance=ExtResource("25_k7os6")]
 position = Vector2(236, 384)
-collision_mask = 0
 
-[node name="Oak10" type="StaticBody2D" parent="Entities" unique_id=131163857 instance=ExtResource("23_yo7gn")]
+[node name="Oak10" parent="Entities" unique_id=131163857 instance=ExtResource("23_yo7gn")]
 position = Vector2(292, 386)
-collision_mask = 0
 
-[node name="Birch7" type="StaticBody2D" parent="Entities" unique_id=1162441993 instance=ExtResource("24_ttt2m")]
+[node name="Birch7" parent="Entities" unique_id=1162441993 instance=ExtResource("24_ttt2m")]
 position = Vector2(342, 378)
-collision_mask = 0
 
-[node name="PineGrove6" type="StaticBody2D" parent="Entities" unique_id=886305497 instance=ExtResource("22_6sduw")]
+[node name="PineGrove6" parent="Entities" unique_id=886305497 instance=ExtResource("22_6sduw")]
 position = Vector2(404, 382)
-collision_mask = 0
 
-[node name="Oak11" type="StaticBody2D" parent="Entities" unique_id=229683306 instance=ExtResource("23_yo7gn")]
+[node name="Oak11" parent="Entities" unique_id=229683306 instance=ExtResource("23_yo7gn")]
 position = Vector2(444, 386)
-collision_mask = 0
 
-[node name="SmallTree1" type="StaticBody2D" parent="Entities" unique_id=270604416 instance=ExtResource("26_xee8j")]
+[node name="SmallTree1" parent="Entities" unique_id=270604416 instance=ExtResource("26_xee8j")]
 position = Vector2(196, 118)
-collision_mask = 0
 
-[node name="Bush1" type="StaticBody2D" parent="Entities" unique_id=1422708861 instance=ExtResource("27_h77g1")]
+[node name="Bush1" parent="Entities" unique_id=1422708861 instance=ExtResource("27_h77g1")]
 position = Vector2(290, 126)
-collision_mask = 0
 
-[node name="Fern1" type="Node2D" parent="Entities" unique_id=154939461 instance=ExtResource("28_cjj3q")]
+[node name="Fern1" parent="Entities" unique_id=154939461 instance=ExtResource("28_cjj3q")]
 position = Vector2(300, 112)
 
-[node name="Bush2" type="StaticBody2D" parent="Entities" unique_id=878147982 instance=ExtResource("27_h77g1")]
+[node name="Bush2" parent="Entities" unique_id=878147982 instance=ExtResource("27_h77g1")]
 position = Vector2(40, 196)
-collision_mask = 0
 
-[node name="Fern2" type="Node2D" parent="Entities" unique_id=19042191 instance=ExtResource("28_cjj3q")]
+[node name="Fern2" parent="Entities" unique_id=19042191 instance=ExtResource("28_cjj3q")]
 position = Vector2(92, 200)
 
-[node name="Rock1" type="StaticBody2D" parent="Entities" unique_id=413872108 instance=ExtResource("29_4unj3")]
+[node name="Rock1" parent="Entities" unique_id=413872108 instance=ExtResource("29_4unj3")]
 position = Vector2(196, 268)
-collision_mask = 0
 
-[node name="Stump1" type="StaticBody2D" parent="Entities" unique_id=1333109770 instance=ExtResource("30_pvu8d")]
+[node name="Stump1" parent="Entities" unique_id=1333109770 instance=ExtResource("30_pvu8d")]
 position = Vector2(288, 268)
-collision_mask = 0
 
-[node name="Fern3" type="Node2D" parent="Entities" unique_id=1028474366 instance=ExtResource("28_cjj3q")]
+[node name="Fern3" parent="Entities" unique_id=1028474366 instance=ExtResource("28_cjj3q")]
 position = Vector2(278, 276)
 
-[node name="SmallTree2" type="StaticBody2D" parent="Entities" unique_id=1803123604 instance=ExtResource("26_xee8j")]
+[node name="SmallTree2" parent="Entities" unique_id=1803123604 instance=ExtResource("26_xee8j")]
 position = Vector2(416, 196)
-collision_mask = 0
 
-[node name="Bush3" type="StaticBody2D" parent="Entities" unique_id=151540230 instance=ExtResource("27_h77g1")]
+[node name="Bush3" parent="Entities" unique_id=151540230 instance=ExtResource("27_h77g1")]
 position = Vector2(404, 208)
-collision_mask = 0
 
-[node name="Bush4" type="StaticBody2D" parent="Entities" unique_id=455186257 instance=ExtResource("27_h77g1")]
+[node name="Bush4" parent="Entities" unique_id=455186257 instance=ExtResource("27_h77g1")]
 position = Vector2(58, 288)
-collision_mask = 0
 
-[node name="Fern4" type="Node2D" parent="Entities" unique_id=542046157 instance=ExtResource("28_cjj3q")]
+[node name="Fern4" parent="Entities" unique_id=542046157 instance=ExtResource("28_cjj3q")]
 position = Vector2(182, 304)
 
-[node name="Rock2" type="StaticBody2D" parent="Entities" unique_id=2133528806 instance=ExtResource("29_4unj3")]
+[node name="Rock2" parent="Entities" unique_id=2133528806 instance=ExtResource("29_4unj3")]
 position = Vector2(430, 330)
-collision_mask = 0
 
-[node name="Bush5" type="StaticBody2D" parent="Entities" unique_id=2066753480 instance=ExtResource("27_h77g1")]
+[node name="Bush5" parent="Entities" unique_id=2066753480 instance=ExtResource("27_h77g1")]
 position = Vector2(300, 332)
-collision_mask = 0
 
-[node name="Stall1" type="StaticBody2D" parent="Entities" unique_id=1560699389 instance=ExtResource("31_baqm2")]
+[node name="Stall1" parent="Entities" unique_id=1560699389 instance=ExtResource("31_baqm2")]
 position = Vector2(404, 300)
-collision_mask = 0
 
-[node name="Barrel1" type="StaticBody2D" parent="Entities" unique_id=908787293 instance=ExtResource("32_pmuh1")]
+[node name="Barrel1" parent="Entities" unique_id=908787293 instance=ExtResource("32_pmuh1")]
 position = Vector2(316, 296)
-collision_mask = 0
 
-[node name="BarrelOpen1" type="StaticBody2D" parent="Entities" unique_id=848453859 instance=ExtResource("33_wrdyj")]
+[node name="BarrelOpen1" parent="Entities" unique_id=848453859 instance=ExtResource("33_wrdyj")]
 position = Vector2(304, 288)
-collision_mask = 0
 
-[node name="Banner1" type="StaticBody2D" parent="Entities" unique_id=464344540 instance=ExtResource("34_r5wxm")]
+[node name="Banner1" parent="Entities" unique_id=464344540 instance=ExtResource("34_r5wxm")]
 position = Vector2(384, 290)
-collision_mask = 0
 
-[node name="Fence1" type="StaticBody2D" parent="Entities" unique_id=1461132076 instance=ExtResource("35_fo081")]
+[node name="Fence1" parent="Entities" unique_id=1461132076 instance=ExtResource("35_fo081")]
 position = Vector2(88, 328)
-collision_mask = 0
 
-[node name="Fence2" type="StaticBody2D" parent="Entities" unique_id=583401239 instance=ExtResource("35_fo081")]
+[node name="Fence2" parent="Entities" unique_id=583401239 instance=ExtResource("35_fo081")]
 position = Vector2(104, 328)
-collision_mask = 0
 
-[node name="Fence3" type="StaticBody2D" parent="Entities" unique_id=1068379880 instance=ExtResource("35_fo081")]
+[node name="Fence3" parent="Entities" unique_id=1068379880 instance=ExtResource("35_fo081")]
 position = Vector2(152, 328)
-collision_mask = 0
 
-[node name="Fence4" type="StaticBody2D" parent="Entities" unique_id=863985606 instance=ExtResource("35_fo081")]
+[node name="Fence4" parent="Entities" unique_id=863985606 instance=ExtResource("35_fo081")]
 position = Vector2(168, 328)
-collision_mask = 0
 
-[node name="Fence5" type="StaticBody2D" parent="Entities" unique_id=1459494578 instance=ExtResource("35_fo081")]
+[node name="Fence5" parent="Entities" unique_id=1459494578 instance=ExtResource("35_fo081")]
 position = Vector2(56, 176)
-collision_mask = 0
 
-[node name="Fence6" type="StaticBody2D" parent="Entities" unique_id=1199676966 instance=ExtResource("35_fo081")]
+[node name="Fence6" parent="Entities" unique_id=1199676966 instance=ExtResource("35_fo081")]
 position = Vector2(72, 176)
-collision_mask = 0
 
 [node name="Entries" type="Node2D" parent="." unique_id=235929784]
 

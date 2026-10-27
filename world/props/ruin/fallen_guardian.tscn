@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetVillageAbandoned.png" id="1_2qvm5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g8muh"]
+size = Vector2(26, 8)
+
+[node name="FallenGuardian" type="StaticBody2D" unique_id=1330297152]
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1871790159]
+texture = ExtResource("1_2qvm5")
+offset = Vector2(0, -24)
+region_enabled = true
+region_rect = Rect2(0, 48, 32, 48)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=445928888]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_g8muh")

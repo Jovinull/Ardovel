@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/inscription.gd" id="1_iekr2"]
+[ext_resource type="Script" path="res://interaction/dialogue_line.gd" id="2_lhr0a"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/tablet.png" id="3_anieg"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="4_jjr4h"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="5_3ruwo"]
+
+[sub_resource type="Resource" id="Resource_cgnay"]
+script = ExtResource("2_lhr0a")
+text = "TABLET_TEXT"
+sets = &"ruin_tablet_read"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ygc7k"]
+size = Vector2(12, 6)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v347n"]
+size = Vector2(24, 24)
+
+[node name="Tablet" type="StaticBody2D" unique_id=1653034219]
+collision_mask = 0
+script = ExtResource("1_iekr2")
+lines = Array[ExtResource("2_lhr0a")]([SubResource("Resource_cgnay")])
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1410002185]
+texture = ExtResource("3_anieg")
+offset = Vector2(0, -12)
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 24)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=894923054]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_ygc7k")
+
+[node name="Interactable" type="Area2D" parent="." unique_id=137218399 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("4_jjr4h")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=920428748]
+position = Vector2(0, -6)
+shape = SubResource("RectangleShape2D_v347n")
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=49499254]
+visible = false
+position = Vector2(0, -32)
+texture = ExtResource("5_3ruwo")

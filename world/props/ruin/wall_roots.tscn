@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/wall_roots.png" id="1_wwce1"]
+
+[node name="WallRoots" type="Sprite2D" unique_id=184437787]
+texture = ExtResource("1_wwce1")
+offset = Vector2(0, -12)

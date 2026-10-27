@@ -1,0 +1,63 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/shrine/shrine.gd" id="1_0bxrd"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetTowers.png" id="2_cnth1"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="3_0jx7f"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="4_p6c7u"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Spirit.wav" id="5_huuf7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_krgnv"]
+atlas = ExtResource("2_cnth1")
+region = Rect2(288, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_60hqq"]
+atlas = ExtResource("2_cnth1")
+region = Rect2(352, 64, 32, 32)
+
+[sub_resource type="RectangleShape2D" id="base"]
+size = Vector2(26, 8)
+
+[sub_resource type="RectangleShape2D" id="reach"]
+size = Vector2(36, 26)
+
+[node name="RootHeart" type="StaticBody2D" unique_id=912016690]
+collision_mask = 0
+script = ExtResource("1_0bxrd")
+awakened_texture = SubResource("AtlasTexture_krgnv")
+awaken_message = "HEART_AWAKEN"
+awakened_message = "HEART_AWAKENED"
+asleep_message = "HEART_DORMANT"
+requires_flag = &"ruin_warden_defeated"
+flag = &"ruin_heart_awakened"
+return_entry = &"heart"
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=37383651]
+texture = SubResource("AtlasTexture_60hqq")
+centered = false
+offset = Vector2(-16, -32)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1081902292]
+position = Vector2(0, -4)
+shape = SubResource("base")
+
+[node name="Crystal" type="Marker2D" parent="." unique_id=671791298]
+position = Vector2(0, -16)
+
+[node name="Interactable" type="Area2D" parent="." unique_id=1471314620 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("3_0jx7f")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=1389354789]
+position = Vector2(0, -6)
+shape = SubResource("reach")
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=2063919867]
+visible = false
+position = Vector2(0, -40)
+texture = ExtResource("4_p6c7u")
+
+[node name="AwakenSound" type="AudioStreamPlayer2D" parent="." unique_id=534233940]
+stream = ExtResource("5_huuf7")
+volume_db = -3.0

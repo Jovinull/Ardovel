@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/push_block.gd" id="1_0rhgu"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetDungeon.png" id="2_iudpj"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact2.wav" id="3_rmxeg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e5d7p"]
+size = Vector2(14, 14)
+
+[node name="PushBlock" type="AnimatableBody2D" unique_id=700188648]
+collision_mask = 0
+sync_to_physics = false
+script = ExtResource("1_0rhgu")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=523142630]
+texture = ExtResource("2_iudpj")
+region_enabled = true
+region_rect = Rect2(128, 48, 16, 16)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=2141246600]
+shape = SubResource("RectangleShape2D_e5d7p")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=1995664761]
+stream = ExtResource("3_rmxeg")
+volume_db = -6.0
