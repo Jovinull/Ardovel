@@ -342,3 +342,12 @@ func test_a_stuck_warden_can_be_struck_from_in_front_without_getting_hurt() -> v
 	Input.action_release(&"attack")
 	await wait_seconds(0.3)
 	assert_eq(warden.health.current, warden.health.max_health - 1, "a real swing reaches the core")
+
+
+func test_a_fall_after_the_crystal_heart_brings_the_hero_back_with_every_heart_full() -> void:
+	# Found in play: full health meant the scene's maximum, before the crystal heart was added.
+	await _enter_ruin()
+	(_node("Entities/HeartVessel/Interactable") as Interactable).interact(_player())
+	await _fall_and_retry()
+	assert_eq(_player().health.max_health, 12 + Game.HEART_VESSEL_HEALTH)
+	assert_eq(_player().health.current, _player().health.max_health)

@@ -188,7 +188,9 @@ func _load_area(area: StringName, entry: StringName) -> void:
 	var player := level.player
 	_base_max_health = player.health.max_health
 	_apply_heart_vessels()
-	if adventure.health != Adventure.FULL_HEALTH:
+	if adventure.health == Adventure.FULL_HEALTH:
+		player.health.restore_full()
+	else:
 		player.health.current = clampi(adventure.health, 1, player.health.max_health)
 	player.died.connect(_death_screen.open)
 	player.hit_landed.connect(hit_stop)
