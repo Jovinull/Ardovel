@@ -3,17 +3,17 @@
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetVillageAbandoned.png" id="1_g080j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cewp5"]
-size = Vector2(12, 6)
+size = Vector2(14, 9)
 
-[node name="Pillar" type="StaticBody2D" unique_id=1680919764]
+[node name="Pillar" type="StaticBody2D" unique_id=567512338]
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=584846683]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1233972220]
 texture = ExtResource("1_g080j")
 offset = Vector2(0, -24)
 region_enabled = true
 region_rect = Rect2(32, 48, 16, 48)
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=540149280]
-position = Vector2(0, -3)
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=839989028]
+position = Vector2(0, -4.5)
 shape = SubResource("RectangleShape2D_cewp5")

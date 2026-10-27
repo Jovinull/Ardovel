@@ -1,11 +1,10 @@
 [gd_resource type="TileSet" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/Interior/TilesetInteriorFloor.png" id="1_cptlt"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/Interior/TilesetWallSimple.png" id="2_skd1w"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetFloorDetail.png" id="3_biiqx"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/Interior/TilesetInteriorFloor.png" id="1_han6e"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/Interior/TilesetWallSimple.png" id="2_cptlt"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gug1p"]
-texture = ExtResource("1_cptlt")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_skd1w"]
+texture = ExtResource("1_han6e")
 16:13/0 = 0
 17:13/0 = 0
 16:14/0 = 0
@@ -40,8 +39,8 @@ texture = ExtResource("1_cptlt")
 12:8/0 = 0
 13:8/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5pl1k"]
-texture = ExtResource("2_skd1w")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_biiqx"]
+texture = ExtResource("2_cptlt")
 5:6/0 = 0
 5:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 8:6/0 = 0
@@ -75,17 +74,8 @@ texture = ExtResource("2_skd1w")
 7:10/0 = 0
 7:10/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mmmkp"]
-texture = ExtResource("3_biiqx")
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-4:2/0 = 0
-6:2/0 = 0
-
 [resource]
 physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 0
-sources/0 = SubResource("TileSetAtlasSource_gug1p")
-sources/2 = SubResource("TileSetAtlasSource_mmmkp")
-sources/1 = SubResource("TileSetAtlasSource_5pl1k")
+sources/0 = SubResource("TileSetAtlasSource_skd1w")
+sources/1 = SubResource("TileSetAtlasSource_biiqx")
