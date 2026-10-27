@@ -20,9 +20,11 @@ func before_each() -> void:
 
 
 func after_each() -> void:
-	# Seeds are spawned by the plant, not by the test, so they are not auto-freed.
+	# Seeds are spawned by the plant, not by the test, so they are not auto-freed. They are queued
+	# rather than freed on the spot: freeing monitoring areas in the middle of a frame preceded
+	# rare engine freezes in later tests (see test_checkpoints).
 	for seed in _seeds():
-		seed.free()
+		seed.queue_free()
 
 
 func _seeds() -> Array:
