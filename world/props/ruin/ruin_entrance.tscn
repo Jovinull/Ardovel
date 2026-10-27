@@ -17,33 +17,58 @@ size = Vector2(64, 12)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_diqg4"]
 size = Vector2(20, 8)
 
-[node name="RuinEntrance" type="StaticBody2D" unique_id=541642184]
+[node name="RuinEntrance" type="StaticBody2D" unique_id=1585951070]
+y_sort_enabled = true
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=462121613]
+[node name="Inside" type="Sprite2D" parent="." unique_id=102893602]
+position = Vector2(0, -36)
+texture = ExtResource("1_aiak6")
+centered = false
+offset = Vector2(-16, 2)
+region_enabled = true
+region_rect = Rect2(16, 22, 32, 34)
+
+[node name="FrameLeft" type="Sprite2D" parent="." unique_id=463099818]
 texture = ExtResource("1_aiak6")
 centered = false
 offset = Vector2(-32, -56)
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 56)
 
-[node name="LeftCollision" type="CollisionShape2D" parent="." unique_id=9640621]
+[node name="FrameRight" type="Sprite2D" parent="." unique_id=1527832275]
+texture = ExtResource("1_aiak6")
+centered = false
+offset = Vector2(16, -56)
+region_enabled = true
+region_rect = Rect2(48, 0, 16, 56)
+
+[node name="Lintel" type="Sprite2D" parent="." unique_id=599393060]
+texture = ExtResource("1_aiak6")
+centered = false
+offset = Vector2(-16, -56)
+region_enabled = true
+region_rect = Rect2(16, 0, 32, 22)
+
+[node name="LeftCollision" type="CollisionShape2D" parent="." unique_id=951586022]
 position = Vector2(-24, -7)
 shape = SubResource("RectangleShape2D_oddoh")
 
-[node name="RightCollision" type="CollisionShape2D" parent="." unique_id=1551229879]
+[node name="RightCollision" type="CollisionShape2D" parent="." unique_id=260923626]
 position = Vector2(24, -7)
 shape = SubResource("RectangleShape2D_yuuu3")
 
-[node name="BackCollision" type="CollisionShape2D" parent="." unique_id=57517720]
+[node name="BackCollision" type="CollisionShape2D" parent="." unique_id=1764733615]
 position = Vector2(0, -42)
 shape = SubResource("RectangleShape2D_b1nnf")
 
-[node name="Roots" type="StaticBody2D" parent="." unique_id=1274329167 instance=ExtResource("2_cicu5")]
+[node name="Roots" type="StaticBody2D" parent="." unique_id=452178112 instance=ExtResource("2_cicu5")]
 position = Vector2(0, -14)
 collision_mask = 0
 script = ExtResource("3_tix8o")
 open_flag = &"forest_shrine_awakened"
 
-[node name="ToRuin" type="Area2D" parent="." unique_id=518014493]
+[node name="ToRuin" type="Area2D" parent="." unique_id=972283257]
 position = Vector2(0, -28)
 collision_layer = 0
 collision_mask = 2
@@ -51,5 +76,5 @@ script = ExtResource("4_nxq8y")
 target_area = &"ruin"
 target_entry = &"gate"
 
-[node name="Shape" type="CollisionShape2D" parent="ToRuin" unique_id=1273944744]
+[node name="Shape" type="CollisionShape2D" parent="ToRuin" unique_id=1087798291]
 shape = SubResource("RectangleShape2D_diqg4")
