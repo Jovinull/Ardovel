@@ -93,7 +93,7 @@ func choose(choice: Choice) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_open():
 		return
-	if event.is_action_pressed(&"ui_cancel"):
+	if event.is_action_pressed(&"ui_cancel") or event.is_action_pressed(&"pause"):
 		get_viewport().set_input_as_handled()
 		if _showing_controls:
 			_show_main_menu()
@@ -160,7 +160,9 @@ func _update_translations() -> void:
 		_controls.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		_controls.text = InputPrompts.controls_text(_gamepad_active, _joypad_name)
 		_back.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-		_back.text = tr("PAUSE_BACK") % InputPrompts.pause_label(_gamepad_active)
+		_back.text = InputPrompts.format_template(tr("PAUSE_BACK"), [
+			InputPrompts.cancel_label(_gamepad_active, _joypad_name),
+		])
 
 
 func _select(index: int) -> void:

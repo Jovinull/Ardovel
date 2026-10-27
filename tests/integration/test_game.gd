@@ -29,7 +29,7 @@ func _hearts() -> Array[int]:
 
 func _press_pause() -> PauseScreen:
 	var event := InputEventAction.new()
-	event.action = &"ui_cancel"
+	event.action = &"pause"
 	event.pressed = true
 	game.call(&"_unhandled_input", event)
 	return game.get_node(^"PauseScreen") as PauseScreen
@@ -121,13 +121,46 @@ func test_pause_menu_responds_to_joypad_inputs() -> void:
 	pause.call(&"_unhandled_input", confirm)
 	assert_true(pause.is_showing_controls())
 	var back := InputEventJoypadButton.new()
-	back.button_index = JOY_BUTTON_START
+	back.button_index = JOY_BUTTON_B
 	back.pressed = true
 	pause.call(&"_unhandled_input", back)
 	assert_false(pause.is_showing_controls())
 	pause.call(&"_unhandled_input", back)
 	assert_false(pause.is_open())
 	assert_false(get_tree().paused)
+
+
+func test_pause_and_cancel_have_separate_gamepad_bindings() -> void:
+	var start := InputEventJoypadButton.new()
+	start.button_index = JOY_BUTTON_START
+	assert_true(start.is_action(&"pause"))
+	assert_false(start.is_action(&"ui_cancel"))
+	var back := InputEventJoypadButton.new()
+	back.button_index = JOY_BUTTON_B
+	assert_true(back.is_action(&"ui_cancel"))
+	assert_false(back.is_action(&"pause"))
+
+
+func test_start_toggles_the_open_pause_menu() -> void:
+	var pause := _press_pause()
+	var start := InputEventJoypadButton.new()
+	start.button_index = JOY_BUTTON_START
+	start.pressed = true
+	pause.call(&"_unhandled_input", start)
+	assert_false(pause.is_open())
+	assert_false(get_tree().paused)
+
+
+func test_keyboard_prompts_follow_the_input_map() -> void:
+	var original_events := InputMap.action_get_events(&"interact")
+	for event in original_events:
+		InputMap.action_erase_event(&"interact", event)
+	var custom_key := InputEventKey.new()
+	custom_key.physical_keycode = KEY_Q
+	InputMap.action_add_event(&"interact", custom_key)
+	assert_eq(InputPrompts.dismiss_label(false, ""), OS.get_keycode_string(KEY_Q))
+	for event in original_events:
+		InputMap.action_add_event(&"interact", event)
 
 
 func test_input_mode_switches_between_keyboard_and_gamepad() -> void:
@@ -155,7 +188,7 @@ func test_input_mode_switches_between_keyboard_and_gamepad() -> void:
 	key.pressed = true
 	game.call(&"_input", key)
 	assert_false(pause.get(&"_gamepad_active"))
-	assert_true(guidance.text.contains("E: fechar"))
+	assert_true(guidance.text.contains(InputPrompts.dismiss_label(false, "")))
 	assert_eq((title.get_node(^"%InputHint") as Label).text,
 		InputPrompts.title_hint(false, ""))
 	assert_false((death.get_node(^"%Prompt") as Label).visible)

@@ -184,9 +184,9 @@ func _update_guidance() -> void:
 	if _guidance_key.is_empty():
 		_guidance.text = ""
 		return
-	var pause := InputPrompts.pause_label(_gamepad_active)
+	var pause := InputPrompts.pause_label(_gamepad_active, _joypad_name)
 	var dismiss := InputPrompts.dismiss_label(_gamepad_active, _joypad_name)
-	_guidance.text = tr(_guidance_key) % [pause, dismiss]
+	_guidance.text = InputPrompts.format_template(tr(_guidance_key), [pause, dismiss])
 
 
 func _unhandled_input(event: InputEvent) -> void:

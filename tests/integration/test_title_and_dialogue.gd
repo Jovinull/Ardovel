@@ -57,7 +57,12 @@ func test_first_step_guidance_can_be_dismissed_and_clears_after_anselmo() -> voi
 	TranslationServer.set_locale("pt_BR")
 	title.choose(TitleScreen.Choice.NEW)
 	assert_true(hud.is_guidance_visible())
-	assert_true((hud.get_node(^"%Guidance") as Label).text.contains("Esc: controles | E: fechar"))
+	var guidance := (hud.get_node(^"%Guidance") as Label).text
+	var expected_guidance := InputPrompts.format_template(tr("FIRST_STEP_GUIDANCE"), [
+		InputPrompts.pause_label(false),
+		InputPrompts.dismiss_label(false, ""),
+	])
+	assert_eq(guidance, expected_guidance)
 	var dismiss := InputEventAction.new()
 	dismiss.action = &"interact"
 	dismiss.pressed = true

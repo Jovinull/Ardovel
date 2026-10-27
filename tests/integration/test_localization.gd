@@ -135,8 +135,21 @@ func test_first_step_guidance_fits_in_every_language() -> void:
 		assert_true(hud.is_guidance_visible(), locale)
 		var expected_first_line := String(expected[locale]).split("\n")[0]
 		assert_eq(label.text.split("\n")[0], expected_first_line, locale)
-		assert_true(label.text.split("\n")[1].contains("E: fechar" if locale == "pt_BR" else "E: hide"), locale)
+		var expected_guidance := InputPrompts.format_template(String(expected[locale]), [
+			InputPrompts.pause_label(false),
+			InputPrompts.dismiss_label(false, ""),
+		])
+		assert_eq(label.text, expected_guidance, locale)
 		assert_lte(label.get_line_count(), 2, locale)
+
+
+func test_guidance_without_placeholders_is_displayed_unchanged() -> void:
+	var hud: Hud = HudScene.instantiate()
+	add_child_autofree(hud)
+	TranslationServer.set_locale("en")
+	hud.set_guidance("BOSS_ROOT_WARDEN")
+	var label: Label = hud.get_node(^"%Guidance")
+	assert_eq(label.text, "Root Warden")
 
 
 func _launch(path: String) -> Game:

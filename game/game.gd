@@ -90,7 +90,7 @@ func _exit_tree() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed(&"ui_cancel") or _title.is_open() or _pause.is_open():
+	if not event.is_action_pressed(&"pause") or _title.is_open() or _pause.is_open():
 		return
 	if level == null or _travelling or _death_screen.is_open() or _hud.is_message_visible():
 		return
