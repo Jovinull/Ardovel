@@ -1,9 +1,7 @@
 extends GutTest
-## The UI bitmap font: glyph shapes that once read wrong, and coverage of the game's text.
+## The UI bitmap font: glyph shapes that once read wrong, and coverage of every translation.
 
 const FNT := "res://assets/ardovel/ui/fonts/ardovel_8.fnt"
-## Folders holding player-facing text (scripts and scenes).
-const TEXT_DIRS: Array[String] = ["res://actors", "res://game", "res://interaction", "res://ui", "res://world"]
 
 # The imported font, as the game draws it: its glyph sheet and the size it was built at.
 var _font: FontFile
@@ -61,25 +59,14 @@ func test_capital_accents_float_above_their_letter() -> void:
 		assert_true(rows.has(top) and not rows.has(top + 1), "%s: a blank row between mark and letter" % ch)
 
 
-func test_every_character_in_the_game_text_has_a_glyph() -> void:
-	# Player-facing text lives in string literals (script constants, exported scene properties).
-	var strings := RegEx.create_from_string("\"(?:[^\"\\\\]|\\\\.)*\"")
+func test_every_character_of_every_translation_has_a_glyph() -> void:
 	var missing := {}
-	for dir in TEXT_DIRS:
-		for path in _text_files(dir):
-			for literal in strings.search_all(FileAccess.get_file_as_string(path)):
-				for ch in literal.get_string():
-					var code := ch.unicode_at(0)
-					if code > 126 and not _font.has_char(code):
-						missing[ch] = path
-	assert_eq(missing, {}, "characters without a glyph (and where they appear)")
-
-
-func _text_files(dir: String) -> Array[String]:
-	var files: Array[String] = []
-	for file in DirAccess.get_files_at(dir):
-		if file.get_extension() in ["gd", "tscn", "tres"]:
-			files.append(dir.path_join(file))
-	for sub in DirAccess.get_directories_at(dir):
-		files.append_array(_text_files(dir.path_join(sub)))
-	return files
+	for locale in Settings.LOCALES:
+		var translation := TranslationServer.get_translation_object(locale)
+		assert_eq(translation.locale, locale, "%s is loaded" % locale)
+		for message in translation.get_translated_message_list():
+			for ch in message:
+				var code := ch.unicode_at(0)
+				if code > 126 and not _font.has_char(code):
+					missing[ch] = locale
+	assert_eq(missing, {}, "characters without a glyph (and the language using them)")

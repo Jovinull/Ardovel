@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://interaction/interactable.gd" id="3_interactable"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="4_key"]
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Spirit.wav" id="5_spirit"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/beacon.png" id="6_27l7j"]
 
 [sub_resource type="RectangleShape2D" id="base"]
 size = Vector2(26, 8)
@@ -12,39 +13,78 @@ size = Vector2(26, 8)
 [sub_resource type="RectangleShape2D" id="reach"]
 size = Vector2(36, 26)
 
-[node name="GuardianStatue" type="StaticBody2D"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_113pp"]
+atlas = ExtResource("6_27l7j")
+region = Rect2(0, 0, 12, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x6nru"]
+atlas = ExtResource("6_27l7j")
+region = Rect2(12, 0, 12, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_be7ik"]
+atlas = ExtResource("6_27l7j")
+region = Rect2(24, 0, 12, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_be760"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_113pp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x6nru")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_be7ik")
+}],
+"loop": 1,
+"name": &"shine",
+"speed": 6.0
+}]
+
+[node name="GuardianStatue" type="StaticBody2D" unique_id=1087401361]
 collision_mask = 0
 script = ExtResource("1_statue")
 
-[node name="Sprite" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=732069437]
 texture = ExtResource("2_tex")
 centered = false
 offset = Vector2(-16, -32)
 region_enabled = true
 region_rect = Rect2(80, 304, 32, 32)
 
-[node name="Collision" type="CollisionShape2D" parent="."]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=2145065467]
 position = Vector2(0, -4)
 shape = SubResource("base")
 
-[node name="Orb" type="Marker2D" parent="."]
+[node name="Orb" type="Marker2D" parent="." unique_id=1106541719]
 position = Vector2(0, -12)
 
-[node name="Interactable" type="Area2D" parent="." node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="." unique_id=2097938441 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("3_interactable")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Interactable"]
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=956427658]
 position = Vector2(0, -6)
 shape = SubResource("reach")
 
-[node name="Prompt" type="Sprite2D" parent="."]
+[node name="Prompt" type="Sprite2D" parent="." unique_id=1021890860]
 visible = false
 position = Vector2(0, -40)
 texture = ExtResource("4_key")
 
-[node name="RestoreSound" type="AudioStreamPlayer2D" parent="."]
+[node name="RestoreSound" type="AudioStreamPlayer2D" parent="." unique_id=833596337]
 stream = ExtResource("5_spirit")
 volume_db = -3.0
+
+[node name="Beacon" type="AnimatedSprite2D" parent="." unique_id=817317914]
+visible = false
+modulate = Color(1, 1, 1, 0.7)
+z_index = 2
+position = Vector2(0, -12)
+sprite_frames = SubResource("SpriteFrames_be760")
+animation = &"shine"
+autoplay = "shine"
+offset = Vector2(0, -48)

@@ -1,0 +1,108 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/root_warden/root_spike.gd" id="1_x6qup"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/spike_warning.png" id="2_s0tm8"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/root_spike.png" id="3_nukmg"]
+[ext_resource type="Script" path="res://combat/hitbox.gd" id="4_cu15c"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact3.wav" id="5_5xn62"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i4key"]
+atlas = ExtResource("2_s0tm8")
+region = Rect2(0, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6tnt"]
+atlas = ExtResource("2_s0tm8")
+region = Rect2(32, 0, 32, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_niugv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i4key")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6tnt")
+}],
+"loop": 1,
+"name": &"warn",
+"speed": 6.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tg3wj"]
+atlas = ExtResource("3_nukmg")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qgw8u"]
+atlas = ExtResource("3_nukmg")
+region = Rect2(16, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1de6o"]
+atlas = ExtResource("3_nukmg")
+region = Rect2(32, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_prfwx"]
+atlas = ExtResource("3_nukmg")
+region = Rect2(48, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qsh2k"]
+atlas = ExtResource("3_nukmg")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_m1g8u"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tg3wj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qgw8u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1de6o")
+}],
+"loop": 0,
+"name": &"erupt",
+"speed": 18.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_prfwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qsh2k")
+}],
+"loop": 0,
+"name": &"sink",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o58hm"]
+size = Vector2(12, 10)
+
+[node name="RootSpike" type="Node2D" unique_id=2119984932]
+script = ExtResource("1_x6qup")
+
+[node name="Warning" type="AnimatedSprite2D" parent="." unique_id=887938518]
+sprite_frames = SubResource("SpriteFrames_niugv")
+animation = &"warn"
+offset = Vector2(0, -6)
+
+[node name="Spike" type="AnimatedSprite2D" parent="." unique_id=1140479749]
+sprite_frames = SubResource("SpriteFrames_m1g8u")
+animation = &"erupt"
+offset = Vector2(0, -14)
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=2014050620]
+collision_layer = 0
+collision_mask = 8
+script = ExtResource("4_cu15c")
+damage = 2
+knockback = 120.0
+
+[node name="Shape" type="CollisionShape2D" parent="Hitbox" unique_id=1957984581]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_o58hm")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=993834450]
+stream = ExtResource("5_5xn62")
+volume_db = -4.0

@@ -1,0 +1,53 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/mural.gd" id="1_evtbi"]
+[ext_resource type="Script" path="res://interaction/dialogue_line.gd" id="2_fqrpb"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/mural.png" id="3_mg4ng"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="4_6hp0j"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="5_m0wa0"]
+
+[sub_resource type="Resource" id="Resource_wim0o"]
+script = ExtResource("2_fqrpb")
+requires = &"ruin_heart_awakened"
+text = "MURAL_READ"
+sets = &"ruin_mural_read"
+
+[sub_resource type="Resource" id="Resource_n4kci"]
+script = ExtResource("2_fqrpb")
+text = "MURAL_DARK"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rkbti"]
+size = Vector2(46, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v11ad"]
+size = Vector2(50, 26)
+
+[node name="Mural" type="StaticBody2D" unique_id=1060478856]
+collision_mask = 0
+script = ExtResource("1_evtbi")
+lines = Array[ExtResource("2_fqrpb")]([SubResource("Resource_wim0o"), SubResource("Resource_n4kci")])
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=572718847]
+texture = ExtResource("3_mg4ng")
+offset = Vector2(0, -16)
+region_enabled = true
+region_rect = Rect2(0, 0, 48, 32)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=2088308430]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_rkbti")
+
+[node name="Interactable" type="Area2D" parent="." unique_id=14660650 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("4_6hp0j")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=582548688]
+position = Vector2(0, -6)
+shape = SubResource("RectangleShape2D_v11ad")
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=428654116]
+visible = false
+position = Vector2(0, -40)
+texture = ExtResource("5_m0wa0")

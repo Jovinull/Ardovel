@@ -1,14 +1,16 @@
 class_name Interactable
 extends Area2D
 ## Something the player can interact with. The owning object supplies the behaviour through
-## `action` (a Callable taking the actor and returning a message to show, possibly empty).
+## `action` (a Callable taking the actor and returning the translation key of a message to show,
+## possibly empty).
 
 const PROMPT_BOB := 2.0
 
 @export var enabled: bool = true
 ## Optional indicator shown (and gently bobbing) while this is the player's current target.
 @export var prompt: Node2D
-## Name and portrait shown with this object's messages (for characters; empty for things).
+## Name (a translation key) and portrait shown with this object's messages (for characters;
+## empty for things).
 @export var speaker: String = ""
 @export var portrait: Texture2D
 

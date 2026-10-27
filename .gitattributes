@@ -6,6 +6,7 @@
 *.wav binary
 *.ogg binary
 *.ttf binary
+*.translation binary
 
 # Third-party files are stored byte-for-byte as distributed
 assets/ninja_adventure/** -text

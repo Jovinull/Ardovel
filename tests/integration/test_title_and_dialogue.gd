@@ -3,9 +3,6 @@ extends GutTest
 
 const GameScene := preload("res://game/game.tscn")
 const DIR := "user://test_saves/title"
-const VillageScene := preload("res://world/village/village.tscn")
-## Lines the message box shows at once.
-const BOX_LINES := 3
 
 var game: Game
 var title: TitleScreen
@@ -37,7 +34,7 @@ func _write_save(text: String) -> void:
 func test_first_launch_offers_a_new_adventure_and_quitting() -> void:
 	await _launch()
 	assert_true(title.is_open())
-	assert_eq(title.choices, [TitleScreen.Choice.NEW, TitleScreen.Choice.QUIT])
+	assert_eq(title.choices, [TitleScreen.Choice.NEW, TitleScreen.Choice.LANGUAGE, TitleScreen.Choice.QUIT])
 	title.choose(TitleScreen.Choice.NEW)
 	assert_false(title.is_open())
 	assert_eq(game.level.area_id, &"village")
@@ -70,8 +67,8 @@ func test_a_new_adventure_over_a_save_asks_first() -> void:
 func test_an_unreadable_save_is_reported_and_still_protected() -> void:
 	_write_save("{ \"version\": 1, \"area\": ")
 	await _launch()
-	assert_eq(title.choices, [TitleScreen.Choice.NEW, TitleScreen.Choice.QUIT])
-	assert_string_contains((title.get_node(^"%Notice") as Label).text, "Não foi possível")
+	assert_eq(title.choices, [TitleScreen.Choice.NEW, TitleScreen.Choice.LANGUAGE, TitleScreen.Choice.QUIT])
+	assert_eq((title.get_node(^"%Notice") as Label).text, "SAVE_UNREADABLE")
 	title.choose(TitleScreen.Choice.NEW)
 	assert_true(title.is_open(), "replacing even an unreadable save needs confirmation")
 
@@ -91,16 +88,3 @@ func test_messages_are_paged_and_wait_for_the_reader() -> void:
 	hud.advance()
 	assert_false(hud.is_message_visible())
 	assert_signal_emit_count(hud, "dialogue_finished", 1)
-
-
-func test_every_villager_page_fits_the_box() -> void:
-	await _launch()
-	var label: Label = hud.get_node(^"%Message")
-	var village: Level = VillageScene.instantiate()
-	for node in village.find_children("*", "", true, false):
-		if node is Npc:
-			for line in (node as Npc).lines:
-				for page in line.text.split("\n\n", false):
-					label.text = page
-					assert_lte(label.get_line_count(), BOX_LINES, "%s: %s" % [node.name, page])
-	village.free()

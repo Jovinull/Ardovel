@@ -31,7 +31,7 @@ layout_mode = 0
 offset_top = 70.0
 offset_right = 320.0
 offset_bottom = 80.0
-text = "Você caiu na floresta."
+text = "DEATH_TITLE"
 horizontal_alignment = 1
 
 [node name="Retry" type="HBoxContainer" parent="Root"]
@@ -50,5 +50,5 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="Root/Retry"]
 layout_mode = 2
-text = "Tentar de novo"
+text = "DEATH_RETRY"
 vertical_alignment = 1

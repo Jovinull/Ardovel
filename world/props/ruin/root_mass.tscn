@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/root_mass.png" id="1_mr33i"]
+
+[node name="RootMass" type="Sprite2D" unique_id=1377909932]
+texture = ExtResource("1_mr33i")
+offset = Vector2(0, -20)

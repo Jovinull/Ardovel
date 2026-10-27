@@ -5,6 +5,7 @@ extends StaticBody2D
 
 const FRAME_SIZE := 16
 
+## Translation key of the name shown in the dialogue box.
 @export var display_name: String
 ## Pack character sheet (16x16 frames; columns down, up, left, right; idle pose on the first row).
 @export var sheet: Texture2D
@@ -38,10 +39,7 @@ func bind_adventure(adventure: Adventure) -> void:
 
 ## The line this villager would say now, or null.
 func current_line() -> DialogueLine:
-	for line in lines:
-		if line.applies(_adventure):
-			return line
-	return null
+	return DialogueLine.first_that_applies(lines, _adventure)
 
 
 ## Shows the sheet column for `direction` (pack character sheets: down, up, left, right).

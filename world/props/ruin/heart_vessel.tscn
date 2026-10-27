@@ -1,0 +1,59 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/heart_vessel.gd" id="1_x0bvt"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/heart_vessel.png" id="2_cipqn"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="3_7d1xo"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="4_awlce"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Bonus/PowerUp1.wav" id="5_eg04d"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_32c81"]
+atlas = ExtResource("2_cipqn")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ppo8e"]
+atlas = ExtResource("2_cipqn")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vcte5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_32c81")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ppo8e")
+}],
+"loop": 1,
+"name": &"shine",
+"speed": 2.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1ilo8"]
+size = Vector2(22, 20)
+
+[node name="HeartVessel" type="Node2D" unique_id=1413667213]
+script = ExtResource("1_x0bvt")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=388665146]
+sprite_frames = SubResource("SpriteFrames_vcte5")
+animation = &"shine"
+autoplay = "shine"
+offset = Vector2(0, -8)
+
+[node name="Interactable" type="Area2D" parent="." unique_id=100244904 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("3_7d1xo")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=2011840772]
+position = Vector2(0, -6)
+shape = SubResource("RectangleShape2D_1ilo8")
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=1788856722]
+visible = false
+position = Vector2(0, -22)
+texture = ExtResource("4_awlce")
+
+[node name="Sound" type="AudioStreamPlayer" parent="." unique_id=1879964272]
+stream = ExtResource("5_eg04d")

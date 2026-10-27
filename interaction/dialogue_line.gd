@@ -1,15 +1,23 @@
 class_name DialogueLine
 extends Resource
-## One thing a character can say, depending on the adventure's flags. A blank line in `text`
-## starts a new page of the dialogue box.
+## One thing a character can say, depending on the adventure's flags. `text` is a translation
+## key; a blank line in the translated text starts a new page of the dialogue box.
 
 ## Said only once this flag is set (empty: no requirement).
 @export var requires: StringName
 ## Not said once this flag is set (empty: no restriction).
 @export var unless: StringName
-@export_multiline var text: String
+@export var text: String
 ## Flag set when this line is said (empty: none).
 @export var sets: StringName
+
+
+## The first of `lines` that applies, or null: lists put the most specific line first.
+static func first_that_applies(lines: Array[DialogueLine], adventure: Adventure) -> DialogueLine:
+	for line in lines:
+		if line.applies(adventure):
+			return line
+	return null
 
 
 func applies(adventure: Adventure) -> bool:

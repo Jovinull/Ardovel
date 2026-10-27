@@ -1,0 +1,12 @@
+{
+	"area": "village",
+	"entry": "north",
+	"flags": [
+		"elder_thanked",
+		"forest_shrine_awakened",
+		"heard_of_shrine",
+		"village_statue_seen_restored"
+	],
+	"health": 7,
+	"version": 1
+}

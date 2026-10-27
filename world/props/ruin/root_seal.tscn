@@ -1,0 +1,71 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/root_seal.gd" id="1_lxeot"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/root_seal.png" id="2_b2syx"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Elemental/Grass2.wav" id="3_q81lo"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_on48h"]
+atlas = ExtResource("2_b2syx")
+region = Rect2(0, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6fsl4"]
+atlas = ExtResource("2_b2syx")
+region = Rect2(0, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qh2tj"]
+atlas = ExtResource("2_b2syx")
+region = Rect2(32, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_basgj"]
+atlas = ExtResource("2_b2syx")
+region = Rect2(64, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1fusn"]
+atlas = ExtResource("2_b2syx")
+region = Rect2(96, 0, 32, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_htpfh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_on48h")
+}],
+"loop": 0,
+"name": &"closed",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6fsl4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qh2tj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_basgj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1fusn")
+}],
+"loop": 0,
+"name": &"open",
+"speed": 12.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wkilx"]
+size = Vector2(32, 16)
+
+[node name="RootSeal" type="StaticBody2D" unique_id=275048644]
+collision_mask = 0
+script = ExtResource("1_lxeot")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1562635052]
+sprite_frames = SubResource("SpriteFrames_htpfh")
+animation = &"closed"
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1432059999]
+shape = SubResource("RectangleShape2D_wkilx")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=1618945494]
+stream = ExtResource("3_q81lo")
+volume_db = -4.0

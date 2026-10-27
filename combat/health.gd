@@ -58,3 +58,10 @@ func heal(amount: int) -> void:
 
 func restore_full() -> void:
 	heal(max_health)
+
+
+## Changes the maximum (a heart vessel, for example); current health never exceeds it.
+func set_maximum(value: int) -> void:
+	max_health = maxi(value, 1)
+	current = mini(current, max_health)
+	changed.emit(current, max_health)

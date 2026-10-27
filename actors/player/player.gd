@@ -86,9 +86,19 @@ func _process_move(delta: float) -> void:
 		interactor.interact(self)
 	velocity = PlayerMotion.next_velocity(velocity, input, max_speed, acceleration, friction, delta)
 	move_and_slide()
+	_lean_on_blocks(input, delta)
 	facing = PlayerMotion.next_facing(input, facing)
 	var prefix := "walk_" if input != Vector2.ZERO else "idle_"
 	_sprite.play(StringName(prefix + Facing.name_of(facing)))
+
+
+## Leans on any push block the hero is walking straight into; it slides after a moment.
+func _lean_on_blocks(input: Vector2, delta: float) -> void:
+	for i in get_slide_collision_count():
+		var collision := get_slide_collision(i)
+		var block := collision.get_collider() as PushBlock
+		if block != null and input.dot(-collision.get_normal()) > 0.7:
+			block.lean(-collision.get_normal(), delta)
 
 
 func _brake(delta: float) -> void:

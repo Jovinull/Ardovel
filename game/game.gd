@@ -1,16 +1,20 @@
 class_name Game
 extends Node
-## Root of a play session. Owns the adventure state, its save slot and the current area: shows
-## the title, loads areas (one at a time, swapped behind a fade), sends the hero back to the
-## return point after a fall, and freezes the area while a dialogue is open. Also owns the
-## brief hit-stop when the sword connects.
+## Root of a play session. Owns the adventure state, its save slot, the player's settings and
+## the current area: shows the title (and applies the chosen language), loads areas (one at a
+## time, swapped behind a fade), sends the hero back to the checkpoint after a fall, and
+## freezes the area while a dialogue is open. Also owns the brief hit-stop when the sword
+## connects.
 
 ## Stable area ids (as written in saves and passages) and their scenes.
 const AREAS: Dictionary[StringName, String] = {
 	&"village": "res://world/village/village.tscn",
 	&"forest": "res://world/forest/forest.tscn",
+	&"ruin": "res://world/ruin/ruin.tscn",
 }
 const FADE_TIME := 0.35
+## Health a heart vessel adds: one whole heart (four quarters).
+const HEART_VESSEL_HEALTH := 4
 const MUSIC_VOLUME_DB := -8.0
 const MUSIC_SILENT_DB := -40.0
 
@@ -18,15 +22,20 @@ const MUSIC_SILENT_DB := -40.0
 @export var hit_stop_time: float = 0.06
 ## Save slot path; empty uses SaveFile.default_path.
 @export var save_path: String = ""
+## Settings file path; empty uses Settings.default_path.
+@export var settings_path: String = ""
 ## Opens the title menu on start. Tests and tools turn this off and start adventures directly.
 @export var show_title: bool = true
 
 var adventure: Adventure
 var level: Level
 var save_slot: SaveFile
+var settings: Settings
 var _travelling: bool = false
 var _save_queued: bool = false
 var _hit_stop_token: int = 0
+## The hero's maximum health before heart vessels (as set in the player scene).
+var _base_max_health: int = 0
 
 @onready var _hud: Hud = $HUD
 @onready var _death_screen: DeathScreen = $DeathScreen
@@ -37,11 +46,15 @@ var _hit_stop_token: int = 0
 
 func _ready() -> void:
 	save_slot = SaveFile.new(save_path)
+	settings = Settings.new(settings_path)
+	settings.load_settings()
+	TranslationServer.set_locale(settings.effective_locale())
 	_death_screen.restart_requested.connect(respawn)
 	_hud.dialogue_started.connect(_set_area_frozen.bind(true))
 	_hud.dialogue_finished.connect(_set_area_frozen.bind(false))
 	_title.continue_requested.connect(continue_saved)
 	_title.new_requested.connect(start_new)
+	_title.language_requested.connect(switch_language)
 	_title.quit_requested.connect(get_tree().quit)
 	if show_title:
 		open_title()
@@ -56,10 +69,19 @@ func open_title() -> void:
 	var notice := ""
 	match save_slot.status:
 		SaveFile.Status.RECOVERED:
-			notice = "A aventura foi recuperada da cópia de segurança."
+			notice = "SAVE_RECOVERED"
 		SaveFile.Status.CORRUPT, SaveFile.Status.INCOMPATIBLE:
-			notice = "Não foi possível ler a aventura salva."
+			notice = "SAVE_UNREADABLE"
 	_title.open(saved != null and AREAS.has(saved.area), save_slot.exists(), notice)
+
+
+## Shows the game in the next language and remembers the choice.
+func switch_language() -> void:
+	settings.locale = Settings.next_locale(settings.effective_locale())
+	var error := settings.save()
+	if error != OK:
+		push_warning("Could not save the settings: %s" % error_string(error))
+	TranslationServer.set_locale(settings.locale)
 
 
 ## Starts a fresh adventure in the village and saves it right away.
@@ -68,7 +90,8 @@ func start_new() -> void:
 	save_now()
 
 
-## Resumes the saved adventure at its return point. False if there is nothing usable.
+## Resumes the saved adventure where it was left (its resume point). False if there is nothing
+## usable.
 func continue_saved() -> bool:
 	var saved := save_slot.load_adventure()
 	if saved == null or not AREAS.has(saved.area):
@@ -91,15 +114,24 @@ func travel(area: StringName, entry: StringName) -> void:
 	_travelling = false
 
 
-## Back to the adventure's return point with full health; everything earned is kept.
+## Back to safety with full health, everything earned kept: to the checkpoint (the last shrine
+## awakened, wherever it is), or before any shrine to the entry the hero last arrived through.
 func respawn() -> void:
 	if _travelling:
 		return
 	_travelling = true
 	await _fade_to(1.0)
 	_death_screen.close()
+	var area := adventure.area
+	var entry := adventure.entry
+	if adventure.has_checkpoint() and AREAS.has(adventure.checkpoint_area):
+		area = adventure.checkpoint_area
+		entry = adventure.checkpoint_entry
+	elif adventure.has_checkpoint():
+		push_warning("Checkpoint area %s is unknown; returning to %s." % [adventure.checkpoint_area, area])
 	adventure.health = Adventure.FULL_HEALTH
-	_load_area(adventure.area, adventure.entry)
+	_load_area(area, entry)
+	adventure.enter(area, entry)
 	save_now()
 	await _fade_to(0.0)
 	_travelling = false
@@ -135,6 +167,7 @@ func hit_stop() -> void:
 func _begin(state: Adventure) -> void:
 	adventure = state
 	adventure.changed.connect(_queue_save)
+	adventure.changed.connect(_apply_heart_vessels)
 	_title.close()
 	_fade.modulate.a = 1.0
 	_load_area(adventure.area, adventure.entry)
@@ -153,13 +186,44 @@ func _load_area(area: StringName, entry: StringName) -> void:
 	if not level.place_player(entry):
 		push_warning("Area %s has no entry %s; using the scene's start." % [area, entry])
 	var player := level.player
-	if adventure.health != Adventure.FULL_HEALTH:
+	_base_max_health = player.health.max_health
+	_apply_heart_vessels()
+	if adventure.health == Adventure.FULL_HEALTH:
+		player.health.restore_full()
+	else:
 		player.health.current = clampi(adventure.health, 1, player.health.max_health)
 	player.died.connect(_death_screen.open)
 	player.hit_landed.connect(hit_stop)
 	level.exit_requested.connect(travel)
 	_hud.bind_player(player)
+	_hud.hide_boss()
+	for node in level.find_children("*", "", true, false):
+		if node is BossArena:
+			var arena := node as BossArena
+			arena.fight_started.connect(_on_boss_fight_started.bind(arena))
+			arena.fight_won.connect(_on_boss_fight_won)
 	_play_music(level.music)
+
+
+func _on_boss_fight_started(arena: BossArena) -> void:
+	_hud.show_boss(arena.boss_name, arena.warden.health)
+	_play_music(arena.music)
+
+
+func _on_boss_fight_won() -> void:
+	_hud.hide_boss()
+	_play_music(level.music)
+
+
+## Sizes the hero's health from the heart vessels found so far.
+func _apply_heart_vessels() -> void:
+	if level == null:
+		return
+	var vessels := adventure.flags().filter(
+			func(flag: StringName) -> bool: return String(flag).begins_with(HeartVessel.FLAG_PREFIX)).size()
+	var maximum := _base_max_health + vessels * HEART_VESSEL_HEALTH
+	if level.player.health.max_health != maximum:
+		level.player.health.set_maximum(maximum)
 
 
 func _play_music(stream: AudioStream) -> void:
@@ -189,4 +253,10 @@ func _set_area_frozen(frozen: bool) -> void:
 func _queue_save() -> void:
 	if not _save_queued:
 		_save_queued = true
-		save_now.call_deferred()
+		_save_if_still_queued.call_deferred()
+
+
+## A save_now() in between already wrote the change; writing again would only rotate the backup.
+func _save_if_still_queued() -> void:
+	if _save_queued:
+		save_now()

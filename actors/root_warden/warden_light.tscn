@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/root_warden/warden_light.gd" id="1_s3gsh"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/FX/Magic/Spirit/SpriteSheetBlue.png" id="2_itf33"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g8lhg"]
+atlas = ExtResource("2_itf33")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wnu0w"]
+atlas = ExtResource("2_itf33")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ayqk6"]
+atlas = ExtResource("2_itf33")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y7uad"]
+atlas = ExtResource("2_itf33")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_62aau"]
+atlas = ExtResource("2_itf33")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d3ag6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g8lhg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wnu0w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ayqk6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y7uad")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_62aau")
+}],
+"loop": 1,
+"name": &"float",
+"speed": 10.0
+}]
+
+[node name="WardenLight" type="Node2D" unique_id=958118856]
+z_index = 2
+script = ExtResource("1_s3gsh")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=2069120831]
+sprite_frames = SubResource("SpriteFrames_d3ag6")
+animation = &"float"

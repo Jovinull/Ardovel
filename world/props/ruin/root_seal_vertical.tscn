@@ -1,0 +1,71 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/root_seal.gd" id="1_v283k"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/root_seal_vertical.png" id="2_j2mym"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Elemental/Grass2.wav" id="3_igcna"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36b17"]
+atlas = ExtResource("2_j2mym")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rqd0n"]
+atlas = ExtResource("2_j2mym")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_na34d"]
+atlas = ExtResource("2_j2mym")
+region = Rect2(16, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a07xc"]
+atlas = ExtResource("2_j2mym")
+region = Rect2(32, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ou60t"]
+atlas = ExtResource("2_j2mym")
+region = Rect2(48, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lac5p"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36b17")
+}],
+"loop": 0,
+"name": &"closed",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rqd0n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_na34d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a07xc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ou60t")
+}],
+"loop": 0,
+"name": &"open",
+"speed": 12.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kjaxb"]
+size = Vector2(16, 32)
+
+[node name="RootSealVertical" type="StaticBody2D" unique_id=1097047159]
+collision_mask = 0
+script = ExtResource("1_v283k")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1360712416]
+sprite_frames = SubResource("SpriteFrames_lac5p")
+animation = &"closed"
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1822362564]
+shape = SubResource("RectangleShape2D_kjaxb")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=158076894]
+stream = ExtResource("3_igcna")
+volume_db = -4.0

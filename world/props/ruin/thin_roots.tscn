@@ -1,0 +1,77 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/thin_roots.gd" id="1_h871d"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/ruin/thin_roots.png" id="2_0oj2s"]
+[ext_resource type="Script" path="res://combat/hurtbox.gd" id="3_nn2qw"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Elemental/Grass.wav" id="4_bhfqs"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0kgcr"]
+atlas = ExtResource("2_0oj2s")
+region = Rect2(16, 0, 16, 36)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ojbn"]
+atlas = ExtResource("2_0oj2s")
+region = Rect2(32, 0, 16, 36)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_26nfy"]
+atlas = ExtResource("2_0oj2s")
+region = Rect2(48, 0, 16, 36)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_whuqo"]
+atlas = ExtResource("2_0oj2s")
+region = Rect2(0, 0, 16, 36)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uq13m"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0kgcr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4ojbn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_26nfy")
+}],
+"loop": 0,
+"name": &"cut",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_whuqo")
+}],
+"loop": 0,
+"name": &"hanging",
+"speed": 1.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ogpbm"]
+size = Vector2(16, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oeaal"]
+size = Vector2(14, 30)
+
+[node name="ThinRoots" type="StaticBody2D" unique_id=1034836252]
+collision_mask = 0
+script = ExtResource("1_h871d")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=52068232]
+sprite_frames = SubResource("SpriteFrames_uq13m")
+animation = &"hanging"
+offset = Vector2(0, -2)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=323653059]
+shape = SubResource("RectangleShape2D_ogpbm")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=2055430081]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_nn2qw")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox" unique_id=612925373]
+shape = SubResource("RectangleShape2D_oeaal")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=472809661]
+stream = ExtResource("4_bhfqs")
+volume_db = -4.0

@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/pressure_plate.gd" id="1_feio8"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetDungeon.png" id="2_vh6bw"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact.wav" id="3_r84el"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4yoj7"]
+size = Vector2(8, 8)
+
+[node name="PressurePlate" type="Area2D" unique_id=1094255324]
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("1_feio8")
+
+[node name="Shape" type="CollisionShape2D" parent="." unique_id=1872175989]
+shape = SubResource("RectangleShape2D_4yoj7")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1189057655]
+texture = ExtResource("2_vh6bw")
+region_enabled = true
+region_rect = Rect2(0, 16, 16, 16)
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=717846349]
+stream = ExtResource("3_r84el")
+volume_db = -8.0

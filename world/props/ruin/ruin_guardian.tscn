@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/ruin_guardian.gd" id="1_aieka"]
+[ext_resource type="Script" path="res://interaction/dialogue_line.gd" id="2_6vl2l"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetHouse.png" id="3_yai8w"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="4_463s8"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="5_ftfp8"]
+
+[sub_resource type="Resource" id="Resource_48sup"]
+script = ExtResource("2_6vl2l")
+text = "STATUE_RUIN"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t0my6"]
+size = Vector2(26, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_laxvl"]
+size = Vector2(34, 26)
+
+[node name="RuinGuardian" type="StaticBody2D" unique_id=1990519589]
+collision_mask = 0
+script = ExtResource("1_aieka")
+lines = Array[ExtResource("2_6vl2l")]([SubResource("Resource_48sup")])
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=834675693]
+texture = ExtResource("3_yai8w")
+offset = Vector2(0, -16)
+region_enabled = true
+region_rect = Rect2(48, 304, 32, 32)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1910922467]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_t0my6")
+
+[node name="Interactable" type="Area2D" parent="." unique_id=291472906 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("4_463s8")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=1254102588]
+position = Vector2(0, -6)
+shape = SubResource("RectangleShape2D_laxvl")
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=1240255777]
+visible = false
+position = Vector2(0, -40)
+texture = ExtResource("5_ftfp8")

@@ -133,3 +133,21 @@ func test_village_has_its_cast() -> void:
 	assert_eq(village.find_children("*", "", true, false).filter(func(n: Node) -> bool: return n is GuardianStatue).size(), 1)
 	assert_eq(village.find_children("*", "", true, false).filter(func(n: Node) -> bool: return n is Player).size(), 1)
 	village.free()
+
+
+func test_the_ruin_has_its_pieces() -> void:
+	var ruin: Level = load(Game.AREAS[&"ruin"]).instantiate()
+	var count := func(type: Variant) -> int:
+		return ruin.find_children("*", "", true, false).filter(func(n: Node) -> bool: return is_instance_of(n, type)).size()
+	assert_eq(count.call(RuinGuardian), 4, "the clue")
+	assert_eq(count.call(LightPedestal), 4, "the answer")
+	assert_eq(count.call(PressurePlate), 1)
+	assert_eq(count.call(PushBlock), 1)
+	assert_eq(count.call(RootWarden), 1)
+	assert_eq(count.call(Player), 1)
+	assert_eq(count.call(HeartVessel), 1)
+	var heart: Shrine = ruin.get_node(^"Entities/RootHeart")
+	assert_not_null(ruin.entry(heart.return_entry), "the heart is a checkpoint with a real entry")
+	var puzzle: LightsPuzzle = ruin.get_node(^"LightsPuzzle")
+	assert_eq(puzzle.pedestals.size(), puzzle.clues.size(), "one orb per guardian")
+	ruin.free()

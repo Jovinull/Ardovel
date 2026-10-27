@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/ruin/light_pedestal.gd" id="1_rvgdj"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetDungeon.png" id="2_5eb37"]
+[ext_resource type="Script" path="res://combat/hurtbox.gd" id="3_jd848"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Magic1.wav" id="4_1dh22"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q4dpq"]
+size = Vector2(12, 6)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ntwf6"]
+size = Vector2(14, 14)
+
+[node name="LightPedestal" type="StaticBody2D" unique_id=926976552]
+collision_mask = 0
+script = ExtResource("1_rvgdj")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1288839354]
+texture = ExtResource("2_5eb37")
+offset = Vector2(0, -8)
+region_enabled = true
+region_rect = Rect2(48, 32, 16, 16)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1373239020]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_q4dpq")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1834550227]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_jd848")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox" unique_id=371159403]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_ntwf6")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=1661711136]
+stream = ExtResource("4_1dh22")
+volume_db = -6.0
