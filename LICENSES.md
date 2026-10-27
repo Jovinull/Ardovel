@@ -17,7 +17,11 @@ was written for this project.
 | --- | --- |
 | `Backgrounds/Tilesets/TilesetFloor.png` | grass and dirt paths (terrain) |
 | `Backgrounds/Tilesets/TilesetNature.png` | the pack's trees, bushes, flowers, rocks and stumps |
-| `Backgrounds/Tilesets/TilesetHouse.png` | village houses, shop, arch, stall, barrels, banner, fence and the guardian statue |
+| `Backgrounds/Tilesets/TilesetHouse.png` | village houses, shop, arch, stall, barrels, banner, fence, the guardian statue and the ruin's grey guardians |
+| `Backgrounds/Tilesets/Interior/TilesetWallSimple.png` | the ruin's mossy walls |
+| `Backgrounds/Tilesets/Interior/TilesetInteriorFloor.png` | the ruin's cobble, slabs and the medallion floor |
+| `Backgrounds/Tilesets/TilesetDungeon.png` | the ruin's orbs on stands, pressure plate and push block |
+| `Backgrounds/Tilesets/TilesetTowers.png` | the crystal of the ruin's heart (dormant and awake) |
 | `Actor/Character/OldMan2/`, `Woman/`, `OldWoman/` (`SpriteSheet.png`, `Faceset.png`) | the villagers and their portraits |
 | `Actor/Character/Shadow.png` | character shadows |
 | `Ui/Receptacle/Heart.png` | health hearts |
@@ -27,8 +31,10 @@ was written for this project.
 | `Ui/Font/font8x8.png` | basis of the UI font (see below) |
 | `FX/Smoke/Smoke/SpriteSheet.png` | enemy death puff |
 | `FX/Magic/Circle/SpriteSheetSpark.png` | shrine awakening spark |
-| `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact3`, `Spirit`, `Launch`) | sound effects |
-| `Audio/Musics/33 - Calm Village.ogg`, `11 - Clearing.ogg` | village and forest music |
+| `FX/Smoke/SmokeCircular/SpriteSheet.png` | dust of the warden's slam |
+| `FX/Magic/Spirit/SpriteSheetBlue.png` | the warden's light flying to the ruin's heart |
+| `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact2`, `Impact3`, `Impact4`, `Spirit`, `Launch`, `Magic1`, `Bonus`, `PowerUp1`, `Grass`, `Grass2`, `Explosion`, `Explosion2`) | sound effects |
+| `Audio/Musics/33 - Calm Village.ogg`, `11 - Clearing.ogg`, `30 - Ruins.ogg`, `17 - Fight.ogg` | village, forest, ruin and warden fight music |
 
 ## Ardovel original art — `assets/ardovel/`
 
@@ -49,6 +55,16 @@ production tools are kept outside this repository.
 | `fx/hit_spark.png` | sword impact spark, three frames |
 | `vegetation/oak.png`, `birch.png`, `fern.png` | oak, birch, fern |
 | `props/shrine.png`, `shrine_awakened.png` | shrine (dormant / awakened) |
+| `monsters/root_warden.png` | the Root Warden, 48×48: idle, wind-up, slam, stuck (core bare), cast, crumbling |
+| `ruin/root_seal.png`, `root_seal_vertical.png` | roots across a doorway, pulling back (4 frames) |
+| `ruin/thin_roots.png` | thin hanging roots: whole, cut, falling, stubs |
+| `ruin/wall_roots.png`, `floor_root.png` | roots grown over walls and floors |
+| `ruin/spike_warning.png`, `root_spike.png` | the warden's root spike: cracks (warning) and eruption |
+| `ruin/heart_vessel.png` | crystal heart (more health), two frames |
+| `ruin/mural.png` | the heart chamber's carving, dark and lit |
+| `ruin/tablet.png` | a child's scratches on a small stone |
+| `ruin/entrance.png` | the ruin's doorway among the great roots |
+| `ruin/beacon.png` | the column of light over the village statue, three frames |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
 
 ## Third-party tools
