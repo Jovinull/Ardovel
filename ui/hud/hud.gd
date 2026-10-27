@@ -22,6 +22,7 @@ var _message_tween: Tween
 var _arrow_tween: Tween
 var _pages: PackedStringArray = []
 var _page: int = 0
+var _guidance_key: String = ""
 var _boss_health: Health
 
 @onready var _hearts: HBoxContainer = %Hearts
@@ -31,6 +32,8 @@ var _boss_health: Health
 @onready var _portrait_box: Control = %PortraitBox
 @onready var _portrait: TextureRect = %Portrait
 @onready var _speaker: Label = %Speaker
+@onready var _guidance_box: NinePatchRect = %GuidanceBox
+@onready var _guidance: Label = %Guidance
 @onready var _boss_bar: Control = %BossBar
 @onready var _boss_name: Label = %Name
 @onready var _boss_fill: ColorRect = %Fill
@@ -43,6 +46,11 @@ func _ready() -> void:
 		frame.region = Rect2(quarter * HEART_SIZE, 0, HEART_SIZE, HEART_SIZE)
 		_heart_frames.append(frame)
 	_close_box()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		_update_guidance()
 
 
 func bind_player(player: Player) -> void:
@@ -137,6 +145,21 @@ func advance() -> void:
 
 func is_message_visible() -> bool:
 	return _message_box.visible
+
+
+## Shows or hides a short translated first-step hint without interrupting movement.
+func set_guidance(message_key: String) -> void:
+	_guidance_key = message_key
+	_update_guidance()
+	_guidance_box.visible = not message_key.is_empty()
+
+
+func is_guidance_visible() -> bool:
+	return _guidance_box.visible
+
+
+func _update_guidance() -> void:
+	_guidance.text = tr(_guidance_key) if not _guidance_key.is_empty() else ""
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -123,6 +123,20 @@ func test_pause_title_stays_centered_when_scaled() -> void:
 	assert_almost_eq(center.x, get_viewport().get_visible_rect().size.x / 2.0, 0.1)
 
 
+func test_first_step_guidance_fits_in_every_language() -> void:
+	var hud: Hud = HudScene.instantiate()
+	add_child_autofree(hud)
+	hud.set_guidance("FIRST_STEP_GUIDANCE")
+	var label: Label = hud.get_node(^"%Guidance")
+	var expected: Dictionary = _source_table()["FIRST_STEP_GUIDANCE"]
+	for locale in Settings.LOCALES:
+		TranslationServer.set_locale(locale)
+		await wait_process_frames(1)
+		assert_true(hud.is_guidance_visible(), locale)
+		assert_eq(label.text, expected[locale], locale)
+		assert_lte(label.get_line_count(), 2, locale)
+
+
 func _launch(path: String) -> Game:
 	var game: Game = GameScene.instantiate()
 	game.save_path = DIR.path_join("save.json")

@@ -41,6 +41,7 @@ MURAL_READ,"Cinco anéis ligados em roda. O que havia no centro foi arrancado a 
 TABLET_TEXT,"Riscos de criança na pedra: uma figura grande segurando a mão de uma pequena.\n\nEmbaixo, em letras tortas: ""a Vigia cuida da gente"".","A child's scratches on the stone: a big figure holding a small one's hand.\n\nUnderneath, in crooked letters: ""the Warden looks after us""."
 HEART_VESSEL_FOUND,Você encontrou um coração de cristal!\nSua vida máxima aumentou.,You found a crystal heart!\nYour maximum health went up.
 BOSS_ROOT_WARDEN,Vigia das Raízes,Root Warden
+FIRST_STEP_GUIDANCE,"Converse com Anselmo, perto da casa ao norte.\nEsc/B abre os controles.","Talk to Anselmo near the house to the north.\nEsc/B opens the controls."
 PAUSE_TITLE,Pausado,Paused
 PAUSE_RESUME,Retomar,Resume
 PAUSE_CONTROLS,Controles,Controls

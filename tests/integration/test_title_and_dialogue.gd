@@ -40,12 +40,26 @@ func test_first_launch_offers_a_new_adventure_and_quitting() -> void:
 	assert_eq(game.level.area_id, &"village")
 
 
+func test_first_step_guidance_stays_until_anselmo_is_heard() -> void:
+	await _launch()
+	title.choose(TitleScreen.Choice.NEW)
+	assert_true(hud.is_guidance_visible())
+	assert_eq((hud.get_node(^"%Guidance") as Label).text, tr("FIRST_STEP_GUIDANCE"))
+	var npc: Npc = game.level.get_node(^"Entities/Anselmo")
+	game.level.player.global_position = npc.global_position + Vector2(0, 14)
+	await wait_physics_frames(3)
+	assert_true(game.level.player.interactor.interact(game.level.player))
+	assert_false(hud.is_guidance_visible(), "the hint disappears after the first objective is learned")
+	assert_true(game.adventure.has_flag(&"heard_of_shrine"))
+
+
 func test_a_saved_adventure_can_be_continued() -> void:
 	SaveFile.new(DIR.path_join("save.json")).save(Adventure.new(&"forest", &"south"))
 	await _launch()
 	assert_eq(title.choices[0], TitleScreen.Choice.CONTINUE)
 	title.choose(TitleScreen.Choice.CONTINUE)
 	assert_eq(game.level.area_id, &"forest")
+	assert_true(hud.is_guidance_visible(), "an unfinished first objective remains visible after Continue")
 
 
 func test_a_new_adventure_over_a_save_asks_first() -> void:

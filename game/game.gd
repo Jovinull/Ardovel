@@ -188,6 +188,7 @@ func _begin(state: Adventure) -> void:
 	adventure = state
 	adventure.changed.connect(_queue_save)
 	adventure.changed.connect(_apply_heart_vessels)
+	adventure.changed.connect(_refresh_first_step_guidance)
 	_title.close()
 	_fade.modulate.a = 1.0
 	_load_area(adventure.area, adventure.entry)
@@ -216,6 +217,7 @@ func _load_area(area: StringName, entry: StringName) -> void:
 	player.hit_landed.connect(hit_stop)
 	level.exit_requested.connect(travel)
 	_hud.bind_player(player)
+	_refresh_first_step_guidance()
 	_hud.hide_boss()
 	for node in level.find_children("*", "", true, false):
 		if node is BossArena:
@@ -251,6 +253,7 @@ func _return_to_title() -> void:
 	_death_screen.close()
 	_hud.hide_boss()
 	_music.stop()
+	_hud.set_guidance("")
 	remove_child(level)
 	level.queue_free()
 	level = null
@@ -269,6 +272,15 @@ func _quit_safely() -> void:
 
 func _set_paused(paused: bool) -> void:
 	get_tree().paused = paused
+
+
+func _refresh_first_step_guidance() -> void:
+	if adventure == null:
+		_hud.set_guidance("")
+		return
+	var needs_first_step := not adventure.has_flag(&"heard_of_shrine") \
+			and not adventure.has_flag(&"forest_shrine_awakened")
+	_hud.set_guidance("FIRST_STEP_GUIDANCE" if needs_first_step else "")
 
 
 ## Sizes the hero's health from the heart vessels found so far.
