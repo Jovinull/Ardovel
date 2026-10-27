@@ -91,6 +91,11 @@ restart={
 locale/translations=PackedStringArray("res://locale/text.pt_BR.translation", "res://locale/text.en.translation")
 locale/fallback="pt_BR"
 
+[navigation]
+
+world/map_use_async_iterations=false
+world/region_use_async_iterations=false
+
 [layer_names]
 
 2d_physics/layer_1="world"
