@@ -41,8 +41,9 @@
 [ext_resource type="PackedScene" path="res://world/props/ruin/tablet.tscn" id="39_owc3b"]
 [ext_resource type="Script" path="res://world/props/inscription.gd" id="40_0ohj6"]
 [ext_resource type="PackedScene" path="res://world/props/ruin/pillar.tscn" id="41_qfduh"]
-[ext_resource type="PackedScene" path="res://world/props/ruin/pillar_broken.tscn" id="42_0kaig"]
+[ext_resource type="PackedScene" path="res://world/props/ruin/ruin_fragment_round.tscn" id="42_iobw5"]
 [ext_resource type="PackedScene" path="res://world/props/ruin/wall_chunk.tscn" id="43_iobw5"]
+[ext_resource type="PackedScene" path="res://world/props/ruin/ruin_fragment_tall.tscn" id="44_hm1ld"]
 [ext_resource type="PackedScene" path="res://world/props/ruin/wall_low.tscn" id="44_k0whg"]
 [ext_resource type="PackedScene" path="res://world/props/ruin/fallen_guardian.tscn" id="45_hm1ld"]
 [ext_resource type="Script" path="res://world/ruin/lights_puzzle.gd" id="46_r3twd"]
@@ -349,36 +350,36 @@ collision_mask = 0
 position = Vector2(568, 576)
 collision_mask = 0
 
-[node name="PillarBroken1" type="StaticBody2D" parent="Entities" unique_id=1461120584 instance=ExtResource("42_0kaig")]
-position = Vector2(368, 588.8)
+[node name="RuinFragmentRound1" type="StaticBody2D" parent="Entities" unique_id=1766918819 instance=ExtResource("42_iobw5")]
+position = Vector2(376, 572.8)
 collision_mask = 0
 
 [node name="WallChunk1" type="StaticBody2D" parent="Entities" unique_id=473567970 instance=ExtResource("43_iobw5")]
 position = Vector2(64, 585.6)
 collision_mask = 0
 
-[node name="PillarBroken2" type="StaticBody2D" parent="Entities" unique_id=658665826 instance=ExtResource("42_0kaig")]
-position = Vector2(280, 585.6)
+[node name="RuinFragmentTall1" type="StaticBody2D" parent="Entities" unique_id=1048090816 instance=ExtResource("44_hm1ld")]
+position = Vector2(280, 569.6)
 collision_mask = 0
 
 [node name="WallLow1" type="StaticBody2D" parent="Entities" unique_id=81363375 instance=ExtResource("44_k0whg")]
 position = Vector2(64, 377.6)
 collision_mask = 0
 
-[node name="PillarBroken3" type="StaticBody2D" parent="Entities" unique_id=1220957604 instance=ExtResource("42_0kaig")]
-position = Vector2(280, 377.6)
+[node name="RuinFragmentRound2" type="StaticBody2D" parent="Entities" unique_id=182644361 instance=ExtResource("42_iobw5")]
+position = Vector2(280, 361.6)
 collision_mask = 0
 
 [node name="WallChunk2" type="StaticBody2D" parent="Entities" unique_id=1206825765 instance=ExtResource("43_iobw5")]
 position = Vector2(160, 278.4)
 collision_mask = 0
 
-[node name="PillarBroken4" type="StaticBody2D" parent="Entities" unique_id=869601629 instance=ExtResource("42_0kaig")]
-position = Vector2(56, 56)
+[node name="RuinFragmentTall2" type="StaticBody2D" parent="Entities" unique_id=1743441304 instance=ExtResource("44_hm1ld")]
+position = Vector2(56, 40)
 collision_mask = 0
 
-[node name="PillarBroken5" type="StaticBody2D" parent="Entities" unique_id=407989774 instance=ExtResource("42_0kaig")]
-position = Vector2(264, 56)
+[node name="RuinFragmentRound3" type="StaticBody2D" parent="Entities" unique_id=1599648312 instance=ExtResource("42_iobw5")]
+position = Vector2(248, 64)
 collision_mask = 0
 
 [node name="Pillar5" type="StaticBody2D" parent="Entities" unique_id=1031209387 instance=ExtResource("41_qfduh")]
@@ -405,8 +406,8 @@ collision_mask = 0
 position = Vector2(400, 371.2)
 collision_mask = 0
 
-[node name="PillarBroken6" type="StaticBody2D" parent="Entities" unique_id=1490731796 instance=ExtResource("42_0kaig")]
-position = Vector2(376, 265.6)
+[node name="RuinFragmentRound4" type="StaticBody2D" parent="Entities" unique_id=1751202969 instance=ExtResource("42_iobw5")]
+position = Vector2(616, 360)
 collision_mask = 0
 
 [node name="LightsPuzzle" type="Node" parent="." unique_id=472149319 node_paths=PackedStringArray("pedestals", "clues")]
