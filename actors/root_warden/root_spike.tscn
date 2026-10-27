@@ -8,11 +8,11 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i4key"]
 atlas = ExtResource("2_s0tm8")
-region = Rect2(0, 0, 16, 16)
+region = Rect2(0, 0, 32, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p6tnt"]
 atlas = ExtResource("2_s0tm8")
-region = Rect2(16, 0, 16, 16)
+region = Rect2(32, 0, 32, 16)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_niugv"]
 animations = [{
@@ -79,30 +79,30 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o58hm"]
 size = Vector2(12, 10)
 
-[node name="RootSpike" type="Node2D" unique_id=1039593473]
+[node name="RootSpike" type="Node2D" unique_id=2119984932]
 script = ExtResource("1_x6qup")
 
-[node name="Warning" type="AnimatedSprite2D" parent="." unique_id=1277467614]
+[node name="Warning" type="AnimatedSprite2D" parent="." unique_id=887938518]
 sprite_frames = SubResource("SpriteFrames_niugv")
 animation = &"warn"
 offset = Vector2(0, -6)
 
-[node name="Spike" type="AnimatedSprite2D" parent="." unique_id=682580319]
+[node name="Spike" type="AnimatedSprite2D" parent="." unique_id=1140479749]
 sprite_frames = SubResource("SpriteFrames_m1g8u")
 animation = &"erupt"
 offset = Vector2(0, -14)
 
-[node name="Hitbox" type="Area2D" parent="." unique_id=1560909740]
+[node name="Hitbox" type="Area2D" parent="." unique_id=2014050620]
 collision_layer = 0
 collision_mask = 8
 script = ExtResource("4_cu15c")
 damage = 2
 knockback = 120.0
 
-[node name="Shape" type="CollisionShape2D" parent="Hitbox" unique_id=1923316025]
+[node name="Shape" type="CollisionShape2D" parent="Hitbox" unique_id=1957984581]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_o58hm")
 
-[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=1547026643]
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=993834450]
 stream = ExtResource("5_5xn62")
 volume_db = -4.0
