@@ -4,6 +4,7 @@ extends GutTest
 ## falling. Not a test script itself (no "test_" prefix).
 
 const GameScene := preload("res://game/game.tscn")
+const WaitFor := preload("res://tests/support/wait_for.gd")
 
 var game: Game
 
@@ -91,7 +92,8 @@ func _talk(npc_name: String) -> String:
 ## The hero falls where they stand and the player picks "try again".
 func _fall_and_retry() -> void:
 	_player().health.take_damage(999)
-	await wait_for_signal(_player().died, 4.0)
+	# Not wait_for_signal(): the fallen hero is freed by the respawn (see WaitFor).
+	await WaitFor.signal_or_timeout(get_tree(), _player().died, 4.0)
 	game.respawn()
 	await _settle()
 

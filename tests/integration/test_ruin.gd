@@ -242,7 +242,7 @@ func _beat_the_warden(warden: RootWarden) -> void:
 	while warden.health.current > 0:
 		warden.call(&"_enter", RootWarden.State.STUCK)
 		_strike(warden)
-	await wait_for_signal(warden.defeated, 3.0)
+	await WaitFor.signal_or_timeout(get_tree(), warden.defeated, 3.0)  # the warden is freed after
 	await wait_physics_frames(3)
 
 
