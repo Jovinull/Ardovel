@@ -417,11 +417,21 @@ func test_with_firewood_at_the_stall_anselmo_mends_the_roof_with_it() -> void:
 			&"cida_stall_worked"]))
 	assert_eq((game.level.get_node(^"Entities/WoodStack") as WoodStack).frame, 0)
 	assert_eq(await _talk("Anselmo"), "ANSELMO_HENS_OFFER_WOOD")
+	var pile := game.level.get_node(^"Entities/WoodStack") as WoodStack
+	assert_false(game.adventure.has_flag(&"village_coop_wood_from_cida"), "not before he has it")
+	assert_eq(_line("Cida"), "CIDA_HENS_WAIT")
+	_player().global_position = Vector2(220, 340)
+	assert_true(await _wait_until(func() -> bool: return _anselmo().is_carrying_wood(), 20.0),
+			"he walks to the stall and lifts two logs")
 	assert_true(game.adventure.has_flag(&"village_coop_wood_from_cida"))
+	assert_eq(pile.frame, 1, "the pile shrinks as he lifts them")
 	assert_eq(_line("Cida"), "CIDA_HENS_WAIT_WOOD")
-	assert_eq((game.level.get_node(^"Entities/WoodStack") as WoodStack).frame, 0,
-			"the logs never vanish in front of the hero")
-	game.adventure.set_flag(&"village_coop_repaired")
+	assert_true(await _wait_until(func() -> bool: return not _yard().is_gate_closed(), 25.0),
+			"he carries them to the coop and frees the gate")
+	assert_false(_anselmo().is_carrying_wood(), "the logs are set down by the gate")
+	assert_true(await _wait_until(
+			func() -> bool: return game.adventure.has_flag(&"village_coop_repaired"), 15.0),
+			"he mends the roof with them")
 	game.adventure.set_flag(&"village_hens_settled")
 	assert_eq(game.save_now(), OK)
 	await _restart()
