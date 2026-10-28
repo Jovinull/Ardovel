@@ -196,14 +196,14 @@ func test_input_mode_switches_between_keyboard_and_gamepad() -> void:
 		InputPrompts.controls_text(false, ""))
 
 
-func test_connecting_a_gamepad_switches_the_prompts() -> void:
+func test_connecting_a_gamepad_keeps_the_last_input_mode() -> void:
 	game.call(&"_set_keyboard_active")
 	game.call(&"_on_joy_connection_changed", 17, true)
 	var title: TitleScreen = game.get_node(^"TitleScreen")
-	assert_true(game.get(&"_gamepad_active"))
-	assert_eq(game.get(&"_active_joypad"), 17)
+	assert_false(game.get(&"_gamepad_active"))
+	assert_eq(game.get(&"_active_joypad"), -1)
 	assert_eq((title.get_node(^"%InputHint") as Label).text,
-		InputPrompts.title_hint(true, String(game.get(&"_joypad_name"))))
+		InputPrompts.title_hint(false, ""))
 
 
 func test_return_to_title_saves_and_continues_the_adventure() -> void:

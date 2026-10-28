@@ -308,21 +308,17 @@ func _set_keyboard_active() -> void:
 
 
 func _on_joy_connection_changed(device: int, connected: bool) -> void:
-	if connected:
-		_active_joypad = device
-		_gamepad_active = true
-		_joypad_name = Input.get_joy_name(device)
+	# A connection is not input: keep prompts for the device the player last used.
+	if connected or device != _active_joypad:
+		return
+	var connected_joypads := Input.get_connected_joypads()
+	if connected_joypads.is_empty():
+		_gamepad_active = false
+		_active_joypad = -1
+		_joypad_name = ""
 	else:
-		if device != _active_joypad:
-			return
-		var connected_joypads := Input.get_connected_joypads()
-		if connected_joypads.is_empty():
-			_gamepad_active = false
-			_active_joypad = -1
-			_joypad_name = ""
-		else:
-			_active_joypad = connected_joypads[0]
-			_joypad_name = Input.get_joy_name(_active_joypad)
+		_active_joypad = connected_joypads[0]
+		_joypad_name = Input.get_joy_name(_active_joypad)
 	_update_input_prompts()
 
 
