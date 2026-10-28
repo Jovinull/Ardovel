@@ -41,6 +41,7 @@
 [ext_resource type="Script" path="res://actors/npc/anselmo_helper.gd" id="42_anselmo_helper"]
 [ext_resource type="PackedScene" path="res://world/props/village/hen_yard.tscn" id="43_hen_yard"]
 [ext_resource type="PackedScene" path="res://world/props/village/egg_basket.tscn" id="44_egg_basket"]
+[ext_resource type="PackedScene" path="res://world/props/village/hen_pen.tscn" id="45_hen_pen"]
 
 [sub_resource type="Resource" id="Resource_cida_hens_after"]
 script = ExtResource("17_aj1lm")
@@ -110,6 +111,29 @@ script = ExtResource("17_aj1lm")
 requires = &"village_beacon_night"
 unless = &"village_coop_offered"
 text = "ANSELMO_HENS_OFFER"
+sets = &"village_coop_offered"
+
+[sub_resource type="Resource" id="Resource_cida_hens_wait_wood"]
+script = ExtResource("17_aj1lm")
+requires = &"village_coop_offered"
+also_requires = &"village_coop_wood_from_cida"
+unless = &"village_coop_repaired"
+text = "CIDA_HENS_WAIT_WOOD"
+
+[sub_resource type="Resource" id="Resource_anselmo_hens_after_wood"]
+script = ExtResource("17_aj1lm")
+requires = &"village_hens_settled"
+also_requires = &"village_coop_wood_from_cida"
+unless = &"anselmo_mothers_recalled"
+text = "ANSELMO_HENS_AFTER_WOOD"
+sets = &"anselmo_mothers_recalled"
+
+[sub_resource type="Resource" id="Resource_anselmo_hens_offer_wood"]
+script = ExtResource("17_aj1lm")
+requires = &"village_beacon_night"
+also_requires = &"cida_path_acknowledged"
+unless = &"village_coop_offered"
+text = "ANSELMO_HENS_OFFER_WOOD"
 sets = &"village_coop_offered"
 
 [sub_resource type="Resource" id="Resource_anselmo_work"]
@@ -265,8 +289,12 @@ position = Vector2(352, 292)
 [node name="ForestArch" parent="Entities" unique_id=608913398 instance=ExtResource("12_r86wq")]
 position = Vector2(240, 44)
 
-[node name="HenYard" parent="Entities" instance=ExtResource("43_hen_yard")]
+[node name="HenPen" parent="Entities" instance=ExtResource("45_hen_pen")]
+position = Vector2(330, 184)
+
+[node name="HenYard" parent="Entities" node_paths=PackedStringArray("home_pen") instance=ExtResource("43_hen_yard")]
 position = Vector2(40, 44)
+home_pen = NodePath("../HenPen")
 
 [node name="EggBasket" parent="Entities" instance=ExtResource("44_egg_basket")]
 position = Vector2(102, 172)
@@ -277,7 +305,7 @@ script = ExtResource("42_anselmo_helper")
 display_name = "NPC_ANSELMO"
 sheet = ExtResource("15_nhykk")
 faceset = ExtResource("16_mywwm")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_anselmo_hens_after"), SubResource("Resource_anselmo_coop_ready"), SubResource("Resource_anselmo_coop_work"), SubResource("Resource_anselmo_hens_offer"), SubResource("Resource_cyctb"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g"), SubResource("Resource_anselmo_work"), SubResource("Resource_anselmo_path"), SubResource("Resource_cwave"), SubResource("Resource_1bb0f")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_anselmo_hens_after_wood"), SubResource("Resource_anselmo_hens_after"), SubResource("Resource_anselmo_coop_ready"), SubResource("Resource_anselmo_coop_work"), SubResource("Resource_anselmo_hens_offer_wood"), SubResource("Resource_anselmo_hens_offer"), SubResource("Resource_cyctb"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g"), SubResource("Resource_anselmo_work"), SubResource("Resource_anselmo_path"), SubResource("Resource_cwave"), SubResource("Resource_1bb0f")])
 
 [node name="Lia" parent="Entities" unique_id=1122240069 instance=ExtResource("13_ktrsl")]
 position = Vector2(276, 202)
@@ -294,7 +322,7 @@ script = ExtResource("40_cida_worker")
 display_name = "NPC_CIDA"
 sheet = ExtResource("20_jram5")
 faceset = ExtResource("21_bnvwc")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cida_hens_after"), SubResource("Resource_cida_hens_call"), SubResource("Resource_cida_hens_wait"), SubResource("Resource_cida_hens_loose"), SubResource("Resource_cida_worked"), SubResource("Resource_cida_path_after"), SubResource("Resource_cida_path_open"), SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cida_hens_after"), SubResource("Resource_cida_hens_call"), SubResource("Resource_cida_hens_wait_wood"), SubResource("Resource_cida_hens_wait"), SubResource("Resource_cida_hens_loose"), SubResource("Resource_cida_worked"), SubResource("Resource_cida_path_after"), SubResource("Resource_cida_path_open"), SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
 
 [node name="PineGrove1" parent="Entities" unique_id=1507130039 instance=ExtResource("22_6sduw")]
 position = Vector2(24, 40)
@@ -429,6 +457,7 @@ position = Vector2(404, 300)
 position = Vector2(411, 299)
 texture = ExtResource("39_wood_texture")
 offset = Vector2(0, 7)
+hframes = 2
 script = ExtResource("38_wood_script")
 
 [node name="Barrel1" parent="Entities" unique_id=908787293 instance=ExtResource("32_pmuh1")]

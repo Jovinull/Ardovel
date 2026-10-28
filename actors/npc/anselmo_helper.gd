@@ -1,10 +1,14 @@
 class_name AnselmoHelper
 extends Npc
 ## Anselmo keeps his word: once he has offered his mother's old coop he walks behind his house,
-## frees the gate that was nailed shut, mends the roof and walks back to his door.
+## frees the gate that was nailed shut, mends the roof (with some of Cida's firewood, if she has
+## any by then) and walks back to his door.
 
 const OFFERED_FLAG := &"village_coop_offered"
 const REPAIRED_FLAG := &"village_coop_repaired"
+## Cida's firewood (once the forest path is open) gives the roof its new wood.
+const CIDA_WOOD_FLAG := &"cida_path_acknowledged"
+const WOOD_USED_FLAG := &"village_coop_wood_from_cida"
 const HAMMER := preload("res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Hit1.wav")
 const SPEED := 32.0
 const TO_GATE: Array[Vector2] = [Vector2(172, 182), Vector2(172, 116), Vector2(88, 116)]
@@ -49,6 +53,8 @@ func _check_offer() -> void:
 	if _task != Task.NONE or _yard == null:
 		return
 	if _adventure.has_flag(OFFERED_FLAG) and not _adventure.has_flag(REPAIRED_FLAG):
+		if _adventure.has_flag(CIDA_WOOD_FLAG):
+			_adventure.set_flag(WOOD_USED_FLAG)
 		_begin(Task.TO_GATE, TO_GATE)
 
 

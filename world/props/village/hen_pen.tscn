@@ -1,0 +1,112 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/village/hen_pen.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetHouse.png" id="2_tiles"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/village/coop_gate.png" id="3_gate"]
+
+[sub_resource type="RectangleShape2D" id="fence_top"]
+size = Vector2(52, 4)
+
+[sub_resource type="RectangleShape2D" id="fence_left"]
+size = Vector2(4, 36)
+
+[sub_resource type="RectangleShape2D" id="fence_right"]
+size = Vector2(4, 36)
+
+[sub_resource type="RectangleShape2D" id="fence_bottomleft"]
+size = Vector2(10, 4)
+
+[sub_resource type="RectangleShape2D" id="fence_bottomright"]
+size = Vector2(10, 4)
+
+[sub_resource type="RectangleShape2D" id="gate_bar"]
+size = Vector2(32, 4)
+
+[node name="HenPen" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_script")
+
+[node name="TopLeft" type="Sprite2D" parent="."]
+position = Vector2(8, 8)
+texture = ExtResource("2_tiles")
+flip_h = true
+region_enabled = true
+region_rect = Rect2(144, 96, 16, 16)
+
+[node name="Top1" type="Sprite2D" parent="."]
+position = Vector2(24, 8)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 112, 16, 16)
+
+[node name="Top2" type="Sprite2D" parent="."]
+position = Vector2(40, 8)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 112, 16, 16)
+
+[node name="TopRight" type="Sprite2D" parent="."]
+position = Vector2(56, 8)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(144, 96, 16, 16)
+
+[node name="Left" type="Sprite2D" parent="."]
+position = Vector2(8, 24)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 96, 16, 16)
+
+[node name="Right" type="Sprite2D" parent="."]
+position = Vector2(56, 24)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 96, 16, 16)
+
+[node name="BottomLeft" type="Sprite2D" parent="."]
+position = Vector2(8, 40)
+texture = ExtResource("2_tiles")
+flip_h = true
+region_enabled = true
+region_rect = Rect2(144, 112, 16, 16)
+
+[node name="BottomRight" type="Sprite2D" parent="."]
+position = Vector2(56, 40)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(144, 112, 16, 16)
+
+[node name="Fence" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Fence"]
+position = Vector2(32, 8)
+shape = SubResource("fence_top")
+
+[node name="Left" type="CollisionShape2D" parent="Fence"]
+position = Vector2(8, 24)
+shape = SubResource("fence_left")
+
+[node name="Right" type="CollisionShape2D" parent="Fence"]
+position = Vector2(56, 24)
+shape = SubResource("fence_right")
+
+[node name="BottomLeft" type="CollisionShape2D" parent="Fence"]
+position = Vector2(11, 40)
+shape = SubResource("fence_bottomleft")
+
+[node name="BottomRight" type="CollisionShape2D" parent="Fence"]
+position = Vector2(53, 40)
+shape = SubResource("fence_bottomright")
+
+[node name="Gate" type="StaticBody2D" parent="."]
+position = Vector2(32, 40)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Gate"]
+texture = ExtResource("3_gate")
+hframes = 3
+frame = 2
+
+[node name="Collision" type="CollisionShape2D" parent="Gate"]
+shape = SubResource("gate_bar")

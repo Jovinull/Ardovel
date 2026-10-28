@@ -2,8 +2,9 @@ class_name HenYard
 extends Node2D
 ## The old coop behind Anselmo's house and Cida's three hens.
 ##
-## Once the village light has kept the hens awake for a night (the hero left the village after
-## the ruin's heart woke), they are found loose in the square. Anselmo offers this coop, where
+## The hens live in Cida's pen behind the shop. Once the village light has kept them awake for
+## a night (the hero left the village after the ruin's heart woke), they have jumped out and are
+## found loose in the square, the pen left open. Anselmo offers this coop, where
 ## the roof shades them from the light; when he has mended it, Cida scatters grain at the gate
 ## and the hero drives the hens in. They stay there from then on.
 
@@ -19,6 +20,9 @@ const PEN := Rect2(14, 39, 54, 10)
 const YARD := Rect2(8, 10, 66, 46)
 
 enum GateFrame { OLD, OPEN, NEW }
+
+## Cida's own pen, where the hens live until they flee the light.
+@export var home_pen: HenPen
 
 var _adventure: Adventure
 var _gate_opened := false
@@ -45,20 +49,20 @@ func _ready() -> void:
 func bind_adventure(adventure: Adventure) -> void:
 	_adventure = adventure
 	var level := owner as Level
-	var present := hens_loose() or calling() or settled()
 	for index in _hens.size():
 		var hen := _hens[index]
-		if not present:
-			hen.queue_free()
-			continue
 		hen.hero = level.player if level != null else null
 		if settled():
 			hen.settle_at(_pen().position + Vector2(8 + 19 * index, 4 + 6 * (index % 2)), _pen())
-		else:
+		elif hens_loose() or calling():
 			hen.global_position = LOOSE_SPOTS[index]
 			hen.reset_physics_interpolation()
-	if not present:
-		_hens.clear()
+		elif home_pen != null:
+			# Before the light kept them awake: at home in Cida's pen.
+			var home := home_pen.inside()
+			hen.settle_at(home.position + Vector2(4 + 16 * index, 6 + 6 * (index % 2)), home)
+	if home_pen != null:
+		home_pen.show_open(adventure.has_flag(NIGHT_FLAG))
 	adventure.changed.connect(_show_state)
 	_show_state()
 

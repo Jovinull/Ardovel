@@ -45,6 +45,20 @@ func _anselmo() -> AnselmoHelper:
 	return game.level.get_node(^"Entities/Anselmo") as AnselmoHelper
 
 
+func _pen() -> HenPen:
+	return game.level.get_node(^"Entities/HenPen") as HenPen
+
+
+## All three hens peck about inside Cida's own pen, its gate shut.
+func _assert_hens_at_home(context: String) -> void:
+	assert_eq(_hens().size(), 3, context)
+	assert_false(_pen().is_open(), context)
+	for hen in _hens():
+		assert_true(hen.penned, "%s: %s" % [context, hen.name])
+		assert_true(_pen().inside().grow(1.0).has_point(hen.global_position),
+				"%s: %s at home" % [context, hen.name])
+
+
 func _line(npc_name: String) -> String:
 	return (game.level.get_node("Entities/" + npc_name) as Npc).current_line().text
 
@@ -107,7 +121,7 @@ func _hen_can_reach(from: Vector2i, to: Vector2i) -> bool:
 func test_nothing_happens_until_a_night_has_passed_under_the_light() -> void:
 	await _load_village([&"forest_shrine_awakened", &"heard_of_shrine", &"elder_thanked",
 			&"ruin_warden_defeated", &"ruin_heart_awakened"])
-	assert_eq(_hens().size(), 0, "the hens are not out on the first evening")
+	_assert_hens_at_home("the hens are still in Cida's pen on the first evening")
 	assert_eq(_cida().position, CIDA_HOME)
 	assert_eq(_line("Cida"), "CIDA_RUIN", "the first reactions to the light stay as they were")
 	assert_eq(_line("Anselmo"), "ANSELMO_RUIN")
@@ -117,7 +131,10 @@ func test_nothing_happens_until_a_night_has_passed_under_the_light() -> void:
 	assert_true(game.adventure.has_flag(&"village_beacon_night"), "leaving lets a night pass")
 	game.travel(&"village", &"north")
 	await _settle()
-	assert_eq(_hens().size(), 3, "the hens are loose")
+	assert_eq(_hens().size(), 3)
+	for hen in _hens():
+		assert_false(hen.penned, "%s is loose" % hen.name)
+	assert_true(_pen().is_open(), "Cida's pen is left open")
 	assert_eq(_cida().position, CidaWorker.SQUARE_SPOT, "Cida is out after them")
 	assert_eq(_line("Cida"), "CIDA_HENS_LOOSE")
 	assert_eq(_line("Lia"), "LIA_HENS_LIGHT")
@@ -131,7 +148,9 @@ func test_no_night_passes_before_the_heart_wakes() -> void:
 	game.travel(&"village", &"north")
 	await _settle()
 	assert_false(game.adventure.has_flag(&"village_beacon_night"))
-	assert_eq(_hens().size(), 0)
+	_assert_hens_at_home("before the heart")
+	await wait_physics_frames(120)
+	_assert_hens_at_home("they stay in their pen")
 	assert_eq(_line("Cida"), "CIDA_AWAKENED")
 
 
@@ -275,7 +294,45 @@ func test_saves_from_before_this_event_load_unchanged() -> void:
 		file.close()
 		assert_true(game.continue_saved())
 		await _settle()
-		assert_eq(_hens().size(), 0, file_name)
+		_assert_hens_at_home(file_name)
 		assert_false(game.adventure.has_flag(&"village_beacon_night"), file_name)
 		assert_true(_yard().is_gate_closed(), file_name)
 		await _restart()
+
+
+func test_with_firewood_at_the_stall_anselmo_mends_the_roof_with_it() -> void:
+	await _load_village(_with([&"forest_echo_thicket_cut", &"cida_path_acknowledged",
+			&"cida_stall_worked"]))
+	assert_eq((game.level.get_node(^"Entities/WoodStack") as WoodStack).frame, 0)
+	assert_eq(await _talk("Anselmo"), "ANSELMO_HENS_OFFER_WOOD")
+	assert_true(game.adventure.has_flag(&"village_coop_wood_from_cida"))
+	assert_eq(_line("Cida"), "CIDA_HENS_WAIT_WOOD")
+	assert_eq((game.level.get_node(^"Entities/WoodStack") as WoodStack).frame, 0,
+			"the logs never vanish in front of the hero")
+	game.adventure.set_flag(&"village_coop_repaired")
+	game.adventure.set_flag(&"village_hens_settled")
+	assert_eq(game.save_now(), OK)
+	await _restart()
+	assert_true(game.continue_saved())
+	await _settle()
+	assert_eq((game.level.get_node(^"Entities/WoodStack") as WoodStack).frame, 1,
+			"part of the pile went into the roof")
+	assert_eq(await _talk("Anselmo"), "ANSELMO_HENS_AFTER_WOOD", "he thanks Cida and the hero")
+	assert_eq(_line("Anselmo"), "ANSELMO_RUIN", "then back to the light, as before the hens")
+
+
+func test_without_firewood_he_uses_his_own_old_boards() -> void:
+	await _load_village(_with([]))
+	assert_eq(await _talk("Anselmo"), "ANSELMO_HENS_OFFER")
+	assert_false(game.adventure.has_flag(&"village_coop_wood_from_cida"))
+	assert_eq(_line("Cida"), "CIDA_HENS_WAIT")
+	# The path opens only later: the pile stays whole.
+	for flag: StringName in [&"village_coop_repaired", &"village_hens_settled",
+			&"forest_echo_thicket_cut", &"cida_path_acknowledged"]:
+		game.adventure.set_flag(flag)
+	assert_eq(game.save_now(), OK)
+	await _restart()
+	assert_true(game.continue_saved())
+	await _settle()
+	assert_eq((game.level.get_node(^"Entities/WoodStack") as WoodStack).frame, 0)
+	assert_eq(await _talk("Anselmo"), "ANSELMO_HENS_AFTER")
