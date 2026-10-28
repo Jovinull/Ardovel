@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/forest/echo_thicket.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/forest/thicket.png" id="2_texture"]
+[ext_resource type="Script" path="res://combat/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Elemental/Grass.wav" id="4_sound"]
+
+[sub_resource type="RectangleShape2D" id="barrier"]
+size = Vector2(29, 11)
+
+[sub_resource type="RectangleShape2D" id="hit_area"]
+size = Vector2(31, 15)
+
+[node name="EchoThicket" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_script")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+offset = Vector2(0, -7)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 16)
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("barrier")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_hurtbox")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -6)
+shape = SubResource("hit_area")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_sound")
+volume_db = -5.0
