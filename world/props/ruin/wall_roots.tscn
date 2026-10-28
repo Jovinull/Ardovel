@@ -4,4 +4,4 @@
 
 [node name="WallRoots" type="Sprite2D" unique_id=184437787]
 texture = ExtResource("1_wwce1")
-offset = Vector2(0, -12)
+offset = Vector2(0, -14)
