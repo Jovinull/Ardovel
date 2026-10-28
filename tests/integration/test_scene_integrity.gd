@@ -19,7 +19,7 @@ func _scenes(dir: String) -> Array[String]:
 func _assert_always_has_something_to_say(npc: Npc) -> void:
 	var flags: Array[StringName] = []
 	for line in npc.lines:
-		for flag: StringName in [line.requires, line.unless]:
+		for flag: StringName in [line.requires, line.also_requires, line.unless]:
 			if not flag.is_empty() and not flags.has(flag):
 				flags.append(flag)
 	for combination in 1 << flags.size():

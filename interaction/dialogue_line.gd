@@ -5,6 +5,8 @@ extends Resource
 
 ## Said only once this flag is set (empty: no requirement).
 @export var requires: StringName
+## A second flag that must be set as well (empty: none), for lines that depend on two events.
+@export var also_requires: StringName
 ## Not said once this flag is set (empty: no restriction).
 @export var unless: StringName
 @export var text: String
@@ -22,7 +24,9 @@ static func first_that_applies(lines: Array[DialogueLine], adventure: Adventure)
 
 func applies(adventure: Adventure) -> bool:
 	if adventure == null:
-		return requires.is_empty()
+		return requires.is_empty() and also_requires.is_empty()
 	if not requires.is_empty() and not adventure.has_flag(requires):
+		return false
+	if not also_requires.is_empty() and not adventure.has_flag(also_requires):
 		return false
 	return unless.is_empty() or not adventure.has_flag(unless)

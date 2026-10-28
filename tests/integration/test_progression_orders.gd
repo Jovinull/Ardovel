@@ -202,6 +202,12 @@ func test_c_path_and_work_first_then_the_ruin_then_the_glint() -> void:
 	# The ruin is played in test_ruin.gd; here only its outcome matters.
 	for flag in RUIN_FLAGS:
 		game.adventure.set_flag(flag)
+	# The night under the light that follows (Cida's hens) is played in
+	# test_shared_responsibility.gd; here it is already behind the village.
+	for flag: StringName in [&"village_beacon_night", &"village_coop_offered",
+			&"village_coop_repaired", &"village_hens_settled", &"cida_eggs_promised",
+			&"lia_light_edge_noted", &"anselmo_mothers_recalled"]:
+		game.adventure.set_flag(flag)
 	assert_eq(_line("Anselmo"), "ANSELMO_RUIN", "the elder speaks of the light, not the logs")
 	assert_eq(_line("Lia"), "LIA_RUIN")
 	assert_eq(_line("Cida"), "CIDA_AT_WORK")

@@ -91,9 +91,12 @@ func test_cida_waits_for_the_hero_instead_of_walking_through_them() -> void:
 
 
 func test_the_work_and_new_positions_survive_continue_and_reentry() -> void:
+	# Travelling lets a night pass under the light; the hens are settled already, so that
+	# event (test_shared_responsibility.gd) does not take Cida away from her stall here.
 	await _load_village([&"forest_shrine_awakened", &"ruin_guardian_defeated",
 			&"ruin_heart_awakened", &"forest_echo_thicket_cut", &"forest_echo_found",
-			&"cida_path_acknowledged"])
+			&"cida_path_acknowledged", &"village_beacon_night", &"village_coop_offered",
+			&"village_coop_repaired", &"village_hens_settled", &"cida_eggs_promised"])
 	await wait_physics_frames(85)
 	assert_false(game.adventure.has_flag(&"cida_stall_worked"),
 			"an older save keeps the work visible until the hero reaches the stall")

@@ -111,6 +111,7 @@ locale/fallback="pt_BR"
 2d_physics/layer_4="player_hurtbox"
 2d_physics/layer_5="enemy_hurtbox"
 2d_physics/layer_6="interactables"
+2d_physics/layer_7="animals"
 
 [navigation]
 
