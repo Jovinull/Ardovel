@@ -164,11 +164,23 @@ func test_every_place_of_the_slope_can_be_reached_and_left() -> void:
 	var entry := Vector2i(EAST_ENTRY)
 	var places := {"the pass": Vector2i(210, 150), "the lookout": Vector2i(LOOKOUT),
 			"the fallen bridge": Vector2i(64, 84), "the fire ring": Vector2i(150, 84),
-			"the hollow in the pines": Vector2i(70, 372), "the cache": Vector2i(44, 364)}
+			"the hollow in the pines": Vector2i(90, 372), "the cache": Vector2i(62, 368)}
 	for place: String in places:
 		assert_true(_can_reach(entry, places[place]), "%s can be reached" % place)
 		assert_true(_can_reach(places[place], entry), "%s can be left" % place)
 	assert_false(_can_reach(entry, Vector2i(20, 60)), "nobody walks into the gorge")
+	assert_false(_can_reach(entry, Vector2i(20, 300)), "nor around its end: it runs the whole way down")
+
+
+func test_the_way_into_the_hollow_is_under_the_pines() -> void:
+	await _continue_in(&"west", &"east", [&"forest_shrine_awakened"])
+	_player().global_position = Vector2(200, 300)
+	await wait_physics_frames(3)
+	var route: Array[Vector2] = [Vector2(112, 318), Vector2(112, 352), Vector2(90, 370)]
+	assert_true(await _walk_through(route), "the end of the worn track leads in between the pines")
+	_player().global_position = Vector2(150, 366)
+	await wait_physics_frames(3)
+	assert_false(await _walk_through([Vector2(90, 370)], 2.0), "the pines close the hollow's east side")
 
 
 func test_the_hero_walks_up_through_the_pass_to_the_lookout() -> void:
@@ -188,12 +200,25 @@ func test_before_the_glint_the_disc_rests_and_turns_toward_the_forest() -> void:
 	assert_false((_node("Decals/Footprints") as Node2D).visible, "no fresh footprints yet")
 	assert_eq(await _press_interact(), "WEST_MIRROR_FIRST")
 	assert_true(game.adventure.has_flag(&"west_lookout_seen"))
-	assert_false(_mirror().is_reflecting(), "no reflection while it faces the slope")
+	assert_eq(await _gleam_heading(), Vector2.DOWN, "facing the slope, daylight runs down it")
 	assert_eq(await _press_interact(), "WEST_MIRROR_FOREST")
 	assert_eq(_mirror().turn, LookoutMirror.Turn.FOREST)
-	assert_true(_mirror().is_reflecting(), "turned to the forest, it throws daylight east")
+	assert_eq(await _gleam_heading(), Vector2.RIGHT, "turned to the forest, it throws daylight east")
 	assert_eq(await _press_interact(), "WEST_MIRROR_SOUTH")
+	assert_eq(await _gleam_heading(), Vector2.DOWN)
 	assert_eq(await _press_interact(), "WEST_MIRROR_FOREST", "it can be turned again and again")
+
+
+## Where the reflected patch is heading, rounded to a main direction, while it runs.
+func _gleam_heading() -> Vector2:
+	var gleam: Sprite2D = _mirror().get_node(^"Gleam")
+	assert_true(_mirror().is_reflecting() and gleam.visible, "a reflection is running")
+	var from := gleam.position
+	await wait_physics_frames(20)
+	var moved := gleam.position - from
+	if absf(moved.x) > absf(moved.y):
+		return Vector2.RIGHT if moved.x > 0.0 else Vector2.LEFT
+	return Vector2.DOWN if moved.y > 0.0 else Vector2.UP
 
 
 func test_after_the_glint_the_disc_already_faces_the_forest() -> void:
@@ -206,6 +231,8 @@ func test_after_the_glint_the_disc_already_faces_the_forest() -> void:
 	_mirror().reflected.connect(func() -> void: reflected[0] += 1)
 	assert_eq(await _press_interact(), "WEST_MIRROR_FIRST_GLINT")
 	assert_eq(reflected[0], 1, "the first look already shows the reflection")
+	assert_eq(await _press_interact(), "WEST_MIRROR_SOUTH")
+	assert_eq(await _press_interact(), "WEST_MIRROR_FOREST_GLINT", "now it names the glint seen there")
 	_player().global_position = Vector2(58, 50)
 	await wait_physics_frames(3)
 	assert_eq(await _press_interact(), "WEST_BRIDGE_GLINT")
@@ -217,10 +244,10 @@ func test_after_the_glint_the_disc_already_faces_the_forest() -> void:
 func test_the_heart_in_the_pines_is_taken_once() -> void:
 	await _continue_in(&"west", &"east", [&"forest_shrine_awakened"])
 	var max_before := _player().health.max_health
-	_player().global_position = Vector2(44, 366)
+	_player().global_position = Vector2(62, 368)
 	await wait_physics_frames(3)
 	assert_eq(await _press_interact(), "WEST_CACHE")
-	_player().global_position = Vector2(70, 372)
+	_player().global_position = Vector2(98, 376)
 	await wait_physics_frames(3)
 	assert_eq(await _press_interact(), "HEART_VESSEL_FOUND")
 	assert_true(game.adventure.has_flag(&"heart_vessel_west"))
