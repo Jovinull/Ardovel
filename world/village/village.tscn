@@ -136,6 +136,21 @@ unless = &"village_coop_offered"
 text = "ANSELMO_HENS_OFFER_WOOD"
 sets = &"village_coop_offered"
 
+[sub_resource type="Resource" id="Resource_cida_pen_wood_roof"]
+script = ExtResource("17_aj1lm")
+requires = &"village_pen_cleared"
+also_requires = &"village_coop_wood_from_cida"
+unless = &"cida_pen_wood_noted"
+text = "CIDA_PEN_WOOD_ROOF"
+sets = &"cida_pen_wood_noted"
+
+[sub_resource type="Resource" id="Resource_cida_pen_wood"]
+script = ExtResource("17_aj1lm")
+requires = &"village_pen_cleared"
+unless = &"cida_pen_wood_noted"
+text = "CIDA_PEN_WOOD"
+sets = &"cida_pen_wood_noted"
+
 [sub_resource type="Resource" id="Resource_anselmo_work"]
 script = ExtResource("17_aj1lm")
 requires = &"cida_stall_worked"
@@ -322,7 +337,7 @@ script = ExtResource("40_cida_worker")
 display_name = "NPC_CIDA"
 sheet = ExtResource("20_jram5")
 faceset = ExtResource("21_bnvwc")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cida_hens_after"), SubResource("Resource_cida_hens_call"), SubResource("Resource_cida_hens_wait_wood"), SubResource("Resource_cida_hens_wait"), SubResource("Resource_cida_hens_loose"), SubResource("Resource_cida_worked"), SubResource("Resource_cida_path_after"), SubResource("Resource_cida_path_open"), SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cida_hens_after"), SubResource("Resource_cida_pen_wood_roof"), SubResource("Resource_cida_pen_wood"), SubResource("Resource_cida_hens_call"), SubResource("Resource_cida_hens_wait_wood"), SubResource("Resource_cida_hens_wait"), SubResource("Resource_cida_hens_loose"), SubResource("Resource_cida_worked"), SubResource("Resource_cida_path_after"), SubResource("Resource_cida_path_open"), SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
 
 [node name="PineGrove1" parent="Entities" unique_id=1507130039 instance=ExtResource("22_6sduw")]
 position = Vector2(24, 40)

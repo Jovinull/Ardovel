@@ -658,3 +658,54 @@ func test_after_returning_with_hens_in_the_rest_are_driven_from_the_square() -> 
 		assert_true(await _drive_hens_in(150.0), "the rest driven in from the square")
 		assert_true(game.adventure.has_flag(&"village_hens_settled"))
 		await _restart()
+
+
+func _pen_standing() -> bool:
+	var pen := game.level.get_node_or_null(^"Entities/HenPen")
+	return pen != null and not pen.is_queued_for_deletion()
+
+
+func test_cidas_empty_pen_is_taken_apart_after_the_next_walk_out() -> void:
+	var flags := _with(REPAIRED)
+	flags.append_array([&"forest_echo_thicket_cut", &"cida_path_acknowledged",
+			&"cida_stall_worked", &"village_coop_wood_from_cida"])
+	await _load_village(flags)
+	assert_eq(await _talk("Anselmo"), "ANSELMO_COOP_READY", "he says he will take it apart")
+	# While hens are missing, walking out changes nothing.
+	await _take_exit("ToForest")
+	await _take_exit("ToVillage")
+	assert_false(game.adventure.has_flag(&"village_pen_cleared"))
+	assert_true(_pen_standing())
+	for hen in _hens():
+		await _push_in(hen)
+	assert_true(game.adventure.has_flag(&"village_hens_settled"))
+	assert_true(_pen_standing(), "nothing vanishes in front of the hero")
+	assert_eq((game.level.get_node(^"Entities/WoodStack") as WoodStack).frame, 1)
+	# Back to the title is not time away.
+	game.call(&"_return_to_title")
+	await wait_physics_frames(3)
+	assert_true(game.continue_saved())
+	await _settle()
+	assert_true(_pen_standing())
+	await _take_exit("ToForest")
+	assert_true(game.adventure.has_flag(&"village_pen_cleared"))
+	await _take_exit("ToVillage")
+	assert_false(_pen_standing(), "the old pen is gone")
+	assert_eq((game.level.get_node(^"Entities/WoodStack") as WoodStack).frame, 0,
+			"its wood fills Cida's pile again")
+	await _talk("Cida")  # her line about the hens settling in, said once
+	assert_eq(await _talk("Cida"), "CIDA_PEN_WOOD_ROOF")
+	assert_eq(_line("Cida"), "CIDA_AT_WORK", "said once, then her work again")
+	await _reload()
+	assert_false(_pen_standing())
+	assert_eq(_hens().size(), 3)
+	for hen in _hens():
+		assert_true(_in_coop(hen))
+
+
+func test_without_her_wood_in_the_roof_cida_tells_it_differently() -> void:
+	var flags := _with(REPAIRED)
+	flags.append_array([&"village_hens_settled", &"cida_eggs_promised", &"village_pen_cleared"])
+	await _load_village(flags)
+	assert_false(_pen_standing())
+	assert_eq(await _talk("Cida"), "CIDA_PEN_WOOD")
