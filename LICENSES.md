@@ -25,6 +25,7 @@ was written for this project.
 | `Backgrounds/Tilesets/TilesetVillageAbandoned.png` | the ruin's pillars, broken walls and fallen guardian |
 | `Actor/Character/OldMan2/`, `Woman/`, `OldWoman/` (`SpriteSheet.png`, `Faceset.png`) | the villagers and their portraits |
 | `Actor/Character/Shadow.png` | character shadows |
+| `Actor/Animal/Chicken/SpriteSheetWhite.png`, `SpriteSheetBrown.png`, `SpriteSheetBlack.png` | Cida's three hens |
 | `Ui/Receptacle/Heart.png` | health hearts |
 | `Ui/Input/Keyboard/KeyE.png`, `KeyEnter.png` | key prompts |
 | `Ui/Dialog/DialogueBoxSimple.png`, `FacesetBox.png` | dialogue box and portrait frame |
@@ -68,6 +69,8 @@ production tools are kept outside this repository.
 | `ruin/entrance.png` | the ruin's doorway among the great roots |
 | `ruin/beacon.png` | the column of light over the village statue, three frames |
 | `forest/thicket.png`, `forest/echo_stone.png`, `forest/light_traces.png`, `forest/distant_glint.png`, `forest/wood_stack.png` | hand drawn roots, signal stone, light traces, distant glint and firewood for the forest revisiting prototype |
+| `village/coop.png` | **modified copy** of the wooden hut of Ninja Adventure's `TilesetHouse.png` (CC0, region 3,120 to 45,159): two frames, one with two roof boards missing (a dark slot with its batten) and one with new, lighter boards in their place (the original file is unchanged) |
+| `village/coop_gate.png`, `village/egg_basket.png`, `village/grain.png` | hand drawn yard gate (nailed shut, open, new), basket of eggs and scattered grain, in the pack's idiom for wooden frames |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
 
 ## Third-party tools

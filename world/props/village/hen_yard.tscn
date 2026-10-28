@@ -1,0 +1,183 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/village/hen_yard.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetHouse.png" id="2_tiles"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/village/coop.png" id="3_coop"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/village/coop_gate.png" id="4_gate"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/village/grain.png" id="5_grain"]
+[ext_resource type="PackedScene" path="res://actors/hen/hen.tscn" id="6_hen"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Animal/Chicken/SpriteSheetBrown.png" id="7_brown"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Animal/Chicken/SpriteSheetBlack.png" id="8_black"]
+
+[sub_resource type="RectangleShape2D" id="coop_base"]
+size = Vector2(40, 30)
+
+[sub_resource type="RectangleShape2D" id="gate_bar"]
+size = Vector2(32, 4)
+
+[sub_resource type="RectangleShape2D" id="inside_front"]
+size = Vector2(58, 12)
+
+[sub_resource type="RectangleShape2D" id="inside_back"]
+size = Vector2(26, 24)
+
+[sub_resource type="RectangleShape2D" id="fence_left"]
+size = Vector2(4, 46)
+
+[sub_resource type="RectangleShape2D" id="fence_right"]
+size = Vector2(4, 54)
+
+[sub_resource type="RectangleShape2D" id="fence_top"]
+size = Vector2(40, 4)
+
+[sub_resource type="RectangleShape2D" id="fence_bottomleft"]
+size = Vector2(26, 4)
+
+[sub_resource type="RectangleShape2D" id="fence_bottomright"]
+size = Vector2(10, 4)
+
+[node name="HenYard" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_script")
+
+[node name="Coop" type="StaticBody2D" parent="."]
+position = Vector2(21, 36)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Coop"]
+texture = ExtResource("3_coop")
+centered = false
+offset = Vector2(-21, -39)
+hframes = 2
+
+[node name="Collision" type="CollisionShape2D" parent="Coop"]
+position = Vector2(0, -15)
+shape = SubResource("coop_base")
+
+[node name="TopRail1" type="Sprite2D" parent="."]
+position = Vector2(40, 8)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 112, 16, 16)
+
+[node name="TopRail2" type="Sprite2D" parent="."]
+position = Vector2(56, 8)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 112, 16, 16)
+
+[node name="TopRight" type="Sprite2D" parent="."]
+position = Vector2(72, 8)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(144, 96, 16, 16)
+
+[node name="Left1" type="Sprite2D" parent="."]
+position = Vector2(8, 24)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 96, 16, 16)
+
+[node name="Left2" type="Sprite2D" parent="."]
+position = Vector2(8, 40)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 96, 16, 16)
+
+[node name="Right1" type="Sprite2D" parent="."]
+position = Vector2(72, 24)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 96, 16, 16)
+
+[node name="Right2" type="Sprite2D" parent="."]
+position = Vector2(72, 40)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 96, 16, 16)
+
+[node name="BottomLeft" type="Sprite2D" parent="."]
+position = Vector2(8, 56)
+texture = ExtResource("2_tiles")
+flip_h = true
+region_enabled = true
+region_rect = Rect2(144, 112, 16, 16)
+
+[node name="BottomRail" type="Sprite2D" parent="."]
+position = Vector2(24, 56)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(176, 112, 16, 16)
+
+[node name="BottomRight" type="Sprite2D" parent="."]
+position = Vector2(72, 56)
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(144, 112, 16, 16)
+
+[node name="Fence" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="Left" type="CollisionShape2D" parent="Fence"]
+position = Vector2(8, 37)
+shape = SubResource("fence_left")
+
+[node name="Right" type="CollisionShape2D" parent="Fence"]
+position = Vector2(72, 33)
+shape = SubResource("fence_right")
+
+[node name="Top" type="CollisionShape2D" parent="Fence"]
+position = Vector2(54, 8)
+shape = SubResource("fence_top")
+
+[node name="BottomLeft" type="CollisionShape2D" parent="Fence"]
+position = Vector2(19, 56)
+shape = SubResource("fence_bottomleft")
+
+[node name="BottomRight" type="CollisionShape2D" parent="Fence"]
+position = Vector2(69, 56)
+shape = SubResource("fence_bottomright")
+
+[node name="Gate" type="StaticBody2D" parent="."]
+position = Vector2(48, 56)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Gate"]
+texture = ExtResource("4_gate")
+hframes = 3
+
+[node name="Collision" type="CollisionShape2D" parent="Gate"]
+shape = SubResource("gate_bar")
+
+[node name="Inside" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 64
+monitorable = false
+
+[node name="Front" type="CollisionShape2D" parent="Inside"]
+position = Vector2(41, 44)
+shape = SubResource("inside_front")
+
+[node name="Back" type="CollisionShape2D" parent="Inside"]
+position = Vector2(57, 24)
+shape = SubResource("inside_back")
+
+[node name="Grain" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(48, 44)
+z_index = -1
+texture = ExtResource("5_grain")
+
+[node name="Lure" type="Marker2D" parent="."]
+position = Vector2(48, 40)
+
+[node name="Mouth" type="Marker2D" parent="."]
+position = Vector2(48, 70)
+
+[node name="HenWhite" parent="." instance=ExtResource("6_hen")]
+
+[node name="HenBrown" parent="." instance=ExtResource("6_hen")]
+sheet = ExtResource("7_brown")
+
+[node name="HenBlack" parent="." instance=ExtResource("6_hen")]
+sheet = ExtResource("8_black")
