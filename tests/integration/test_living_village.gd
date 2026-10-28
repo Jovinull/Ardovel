@@ -116,3 +116,8 @@ func test_the_work_and_new_positions_survive_continue_and_reentry() -> void:
 	assert_true((game.level.get_node(^"Entities/WoodStack") as WoodStack).visible)
 	await _fall_and_retry()
 	_assert_at_entry(&"ruin", &"heart")
+	assert_true(game.adventure.has_flag(&"cida_stall_worked"))
+	game.travel(&"village", &"north")
+	await _settle()
+	assert_eq(_cida().position, WORK)
+	assert_eq(_lia().position, ARCH)
