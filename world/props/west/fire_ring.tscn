@@ -6,29 +6,38 @@
 [ext_resource type="Script" path="res://interaction/interactable.gd" id="4_m7aah"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x2g31"]
+size = Vector2(22, 10)
 
-[node name="FireRing" type="Node2D" unique_id=1223396097]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x86oa"]
+size = Vector2(26, 20)
+
+[node name="FireRing" type="StaticBody2D" unique_id=2021225209]
+collision_mask = 0
 script = ExtResource("1_3oxip")
 text = "WEST_FIRE_RING"
 text_after = "WEST_FIRE_RING_GLINT"
 after_flag = &"forest_echo_found"
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=1468550000]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1948879836]
 texture = ExtResource("2_4fxgr")
 centered = false
-offset = Vector2(-8, -12)
+offset = Vector2(-13, -20)
 
-[node name="Prompt" type="Sprite2D" parent="." unique_id=1781506183]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1076463620]
+position = Vector2(0, -9)
+shape = SubResource("RectangleShape2D_x2g31")
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=1752919745]
 visible = false
-position = Vector2(0, -18)
+position = Vector2(0, -26)
 texture = ExtResource("3_7leba")
 
-[node name="Interactable" type="Area2D" parent="." unique_id=1627282186 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="." unique_id=265845155 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("4_m7aah")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=98405980]
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=1160124341]
 position = Vector2(0, -10)
-shape = SubResource("RectangleShape2D_x2g31")
+shape = SubResource("RectangleShape2D_x86oa")

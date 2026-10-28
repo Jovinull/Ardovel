@@ -13,40 +13,40 @@ size = Vector2(10, 5)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s57r1"]
 size = Vector2(24, 26)
 
-[node name="LookoutMirror" type="StaticBody2D" unique_id=1359647196]
+[node name="LookoutMirror" type="StaticBody2D" unique_id=329871460]
 collision_mask = 0
 script = ExtResource("1_tqf8q")
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=624919076]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=896757561]
 texture = ExtResource("2_hksxd")
 centered = false
-offset = Vector2(-8, -19)
+offset = Vector2(-8, -21)
 hframes = 2
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=1014385997]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1615877316]
 position = Vector2(0, -2.5)
 shape = SubResource("RectangleShape2D_uqvwt")
 
-[node name="Gleam" type="Sprite2D" parent="." unique_id=2009212239]
+[node name="Gleam" type="Sprite2D" parent="." unique_id=478559147]
 z_index = 1
 texture = ExtResource("3_uhatw")
 hframes = 4
 
-[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=2095432622]
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=267214698]
 stream = ExtResource("4_axy0p")
 volume_db = -14.0
 
-[node name="Prompt" type="Sprite2D" parent="." unique_id=1903787668]
+[node name="Prompt" type="Sprite2D" parent="." unique_id=1306816299]
 visible = false
 position = Vector2(0, -30)
 texture = ExtResource("5_phee2")
 
-[node name="Interactable" type="Area2D" parent="." unique_id=930828809 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="." unique_id=440165279 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("6_pia6b")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=602128245]
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=1772883564]
 position = Vector2(0, -13)
 shape = SubResource("RectangleShape2D_s57r1")

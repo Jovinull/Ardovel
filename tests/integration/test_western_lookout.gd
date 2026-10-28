@@ -206,7 +206,7 @@ func test_after_the_glint_the_disc_already_faces_the_forest() -> void:
 	_mirror().reflected.connect(func() -> void: reflected[0] += 1)
 	assert_eq(await _press_interact(), "WEST_MIRROR_FIRST_GLINT")
 	assert_eq(reflected[0], 1, "the first look already shows the reflection")
-	_player().global_position = Vector2(64, 84)
+	_player().global_position = Vector2(58, 50)
 	await wait_physics_frames(3)
 	assert_eq(await _press_interact(), "WEST_BRIDGE_GLINT")
 	_player().global_position = Vector2(150, 84)
