@@ -52,6 +52,33 @@ func test_into_the_ruin_and_back_out() -> void:
 	_assert_at_entry(&"forest", &"ruin")
 
 
+func test_the_dark_between_the_rooms_is_closed() -> void:
+	await _enter_ruin()
+	var ground: TileMapLayer = _node("Ground")
+	var walls: TileMapLayer = _node("Walls")
+	var space := _player().get_world_2d().direct_space_state
+	var open := 0
+	var area := ground.get_used_rect().grow(1)
+	for y in range(area.position.y, area.end.y):
+		for x in range(area.position.x, area.end.x):
+			var cell := Vector2i(x, y)
+			if ground.get_cell_source_id(cell) != -1 or walls.get_cell_source_id(cell) != -1:
+				continue
+			var query := PhysicsPointQueryParameters2D.new()
+			query.position = ground.map_to_local(cell)
+			query.collision_mask = 1
+			if space.intersect_point(query, 1).is_empty():
+				open += 1
+	assert_eq(open, 2, "only the two cells below the way out stay open")
+	# With real input: along the corridor to the forest, a step sideways meets the dark's edge.
+	_player().global_position = Vector2(496, 600)
+	await wait_physics_frames(3)
+	Input.action_press(&"move_left")
+	await wait_physics_frames(60)
+	Input.action_release(&"move_left")
+	assert_gt(_player().global_position.x, 484.0, "the corridor's side holds")
+
+
 func test_the_light_puzzle_asks_for_the_guardians_pattern() -> void:
 	await _enter_ruin()
 	var puzzle: LightsPuzzle = _node("LightsPuzzle")
