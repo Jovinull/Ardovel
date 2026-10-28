@@ -1,0 +1,64 @@
+[gd_resource type="TileSet" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetFloor.png" id="1_floor"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetNature.png" id="2_nature"]
+
+[sub_resource type="TileSetAtlasSource" id="floor"]
+texture = ExtResource("1_floor")
+11:7/0 = 0
+11:8/0 = 0
+11:9/0 = 0
+11:11/0 = 0
+11:12/0 = 0
+11:14/0 = 0
+11:15/0 = 0
+11:16/0 = 0
+11:18/0 = 0
+11:19/0 = 0
+12:7/0 = 0
+12:8/0 = 0
+12:9/0 = 0
+12:11/0 = 0
+12:12/0 = 0
+12:14/0 = 0
+12:15/0 = 0
+12:16/0 = 0
+12:18/0 = 0
+12:19/0 = 0
+13:7/0 = 0
+13:8/0 = 0
+13:9/0 = 0
+13:12/0 = 0
+13:14/0 = 0
+13:15/0 = 0
+13:16/0 = 0
+13:19/0 = 0
+14:12/0 = 0
+14:19/0 = 0
+15:12/0 = 0
+15:19/0 = 0
+16:8/0 = 0
+16:9/0 = 0
+16:15/0 = 0
+16:16/0 = 0
+17:8/0 = 0
+17:9/0 = 0
+17:15/0 = 0
+17:16/0 = 0
+20:7/0 = 0
+20:8/0 = 0
+20:14/0 = 0
+20:15/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="nature"]
+texture = ExtResource("2_nature")
+3:10/0 = 0
+4:10/0 = 0
+0:11/0 = 0
+2:11/0 = 0
+3:11/0 = 0
+6:11/0 = 0
+
+[resource]
+sources/0 = SubResource("floor")
+sources/1 = SubResource("nature")

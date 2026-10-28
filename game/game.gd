@@ -11,6 +11,7 @@ const AREAS: Dictionary[StringName, String] = {
 	&"village": "res://world/village/village.tscn",
 	&"forest": "res://world/forest/forest.tscn",
 	&"ruin": "res://world/ruin/ruin.tscn",
+	&"west": "res://world/west/west.tscn",
 }
 const FADE_TIME := 0.35
 ## Health a heart vessel adds: one whole heart (four quarters).

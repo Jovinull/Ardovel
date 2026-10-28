@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/west/lookout_mirror.gd" id="1_tqf8q"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/west/lookout_disc.png" id="2_hksxd"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/west/gleam.png" id="3_uhatw"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Magic1.wav" id="4_axy0p"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="5_phee2"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="6_pia6b"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uqvwt"]
+size = Vector2(10, 5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s57r1"]
+size = Vector2(24, 26)
+
+[node name="LookoutMirror" type="StaticBody2D" unique_id=1359647196]
+collision_mask = 0
+script = ExtResource("1_tqf8q")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=624919076]
+texture = ExtResource("2_hksxd")
+centered = false
+offset = Vector2(-8, -19)
+hframes = 2
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1014385997]
+position = Vector2(0, -2.5)
+shape = SubResource("RectangleShape2D_uqvwt")
+
+[node name="Gleam" type="Sprite2D" parent="." unique_id=2009212239]
+z_index = 1
+texture = ExtResource("3_uhatw")
+hframes = 4
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=2095432622]
+stream = ExtResource("4_axy0p")
+volume_db = -14.0
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=1903787668]
+visible = false
+position = Vector2(0, -30)
+texture = ExtResource("5_phee2")
+
+[node name="Interactable" type="Area2D" parent="." unique_id=930828809 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("6_pia6b")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=602128245]
+position = Vector2(0, -13)
+shape = SubResource("RectangleShape2D_s57r1")

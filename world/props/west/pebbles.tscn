@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetNature.png" id="1_e8kgh"]
+
+[node name="Pebbles" type="StaticBody2D" unique_id=2052480822]
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=816117701]
+texture = ExtResource("1_e8kgh")
+centered = false
+offset = Vector2(-8, -16)
+region_enabled = true
+region_rect = Rect2(272, 272, 16, 16)
