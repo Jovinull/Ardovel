@@ -60,6 +60,10 @@ func test_the_light_puzzle_asks_for_the_guardians_pattern() -> void:
 		answer.append((_node("Entities/Guardian%d" % (i + 1)) as RuinGuardian).holds_orb)
 	assert_eq(puzzle.pattern(), answer, "the answer is what the hall shows")
 	assert_true(answer.has(true) and answer.has(false), "not all alike: there is something to notice")
+	for i in 4:  # and examining them tells which hands are empty
+		var guardian: RuinGuardian = _node("Entities/Guardian%d" % (i + 1))
+		var said: String = (guardian.get_node(^"Interactable") as Interactable).action.call(_player())
+		assert_eq(said, "STATUE_RUIN" if answer[i] else "STATUE_RUIN_EMPTY", guardian.name)
 	var seal: RootSeal = _node("Entities/LightsRoots")
 	for i in 4:                                            # all lit: not the answer
 		_strike(_node("Entities/Orb%d" % (i + 1)))
