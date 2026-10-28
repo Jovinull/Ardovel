@@ -24,8 +24,8 @@
 [ext_resource type="PackedScene" path="res://world/props/forest/echo_stone.tscn" id="26_stone"]
 [ext_resource type="Script" path="res://world/props/forest/echo_trail.gd" id="27_trail"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/forest/light_traces.png" id="28_traces"]
-[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Spirit.wav" id="29_echo_sound"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/forest/distant_glint.png" id="30_glint"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Magic1.wav" id="31_glint_sound"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_77kt1"]
 size = Vector2(672, 16)
@@ -303,8 +303,9 @@ position = Vector2(438, 404)
 [node name="RuinEntrance" type="StaticBody2D" parent="Entities" unique_id=833113053 instance=ExtResource("18_fynp5")]
 position = Vector2(448, 76)
 
-[node name="EchoTrail" type="Node2D" parent="Entities"]
+[node name="EchoTrail" type="Node2D" parent="Entities" node_paths=PackedStringArray("glint")]
 script = ExtResource("27_trail")
+glint = NodePath("../DistantGlint")
 
 [node name="TraceEast" type="Sprite2D" parent="Entities/EchoTrail"]
 position = Vector2(385, 219)
@@ -324,16 +325,16 @@ texture = ExtResource("28_traces")
 region_enabled = true
 region_rect = Rect2(32, 0, 16, 16)
 
-[node name="DistantGlint" type="Sprite2D" parent="Entities/EchoTrail"]
-visible = false
-position = Vector2(125, 211)
-z_index = 1
-texture = ExtResource("30_glint")
-
 [node name="DistantSound" type="AudioStreamPlayer2D" parent="Entities/EchoTrail"]
-position = Vector2(125, 211)
-stream = ExtResource("29_echo_sound")
-volume_db = -18.0
+position = Vector2(136, 222)
+stream = ExtResource("31_glint_sound")
+volume_db = -8.0
+
+[node name="DistantGlint" type="Sprite2D" parent="Entities"]
+visible = false
+position = Vector2(136, 222)
+texture = ExtResource("30_glint")
+hframes = 6
 
 [node name="EchoStone" parent="Entities" instance=ExtResource("26_stone")]
 position = Vector2(216, 248)
