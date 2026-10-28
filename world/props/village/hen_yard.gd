@@ -3,8 +3,8 @@ extends Node2D
 ## The old coop behind Anselmo's house and Cida's three hens.
 ##
 ## The hens live in Cida's pen behind the shop. Once the village light has kept them awake for
-## a night (the hero left the village after the ruin's heart woke), they have jumped out and are
-## found loose in the square, the pen left open. Anselmo offers this coop, where
+## a night (the hero walked out of the village after the ruin's heart woke), they have jumped
+## out and are found loose in the square, the pen left open. Anselmo offers this coop, where
 ## the roof shades them from the light; when he has mended it, Cida scatters grain at the gate
 ## and the hero drives the hens in. They stay there from then on.
 
@@ -63,14 +63,17 @@ func bind_adventure(adventure: Adventure) -> void:
 			hen.settle_at(home.position + Vector2(4 + 16 * index, 6 + 6 * (index % 2)), home)
 	if home_pen != null:
 		home_pen.show_open(adventure.has_flag(NIGHT_FLAG))
+	if level != null:
+		level.exit_requested.connect(_on_hero_walks_out)
 	adventure.changed.connect(_show_state)
 	_show_state()
 
 
-func _exit_tree() -> void:
-	# A night passes whenever the hero leaves the village once the light shines.
-	if _adventure != null and _adventure.has_flag(HEART_FLAG) \
-			and not _adventure.has_flag(NIGHT_FLAG):
+## The night passes while the hero is away: only when they walk out of the village through its
+## arch, after a visit under the new light. Unloading the village for any other reason (title,
+## loading, quitting, a restart) is not a night.
+func _on_hero_walks_out(_area: StringName, _entry: StringName) -> void:
+	if _adventure.has_flag(HEART_FLAG) and not _adventure.has_flag(NIGHT_FLAG):
 		_adventure.set_flag(NIGHT_FLAG)
 
 

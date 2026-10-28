@@ -126,11 +126,12 @@ func test_nothing_happens_until_a_night_has_passed_under_the_light() -> void:
 	assert_eq(_line("Cida"), "CIDA_RUIN", "the first reactions to the light stay as they were")
 	assert_eq(_line("Anselmo"), "ANSELMO_RUIN")
 	assert_true(_yard().is_gate_closed())
-	game.travel(&"forest", &"south")
-	await _settle()
+	# The hero walks out through the arch: the night passes while they are away.
+	await _take_exit("ToForest")
+	assert_eq(game.level.area_id, &"forest")
 	assert_true(game.adventure.has_flag(&"village_beacon_night"), "leaving lets a night pass")
-	game.travel(&"village", &"north")
-	await _settle()
+	await _take_exit("ToVillage")
+	assert_eq(game.level.area_id, &"village")
 	assert_eq(_hens().size(), 3)
 	for hen in _hens():
 		assert_false(hen.penned, "%s is loose" % hen.name)
@@ -143,15 +144,46 @@ func test_nothing_happens_until_a_night_has_passed_under_the_light() -> void:
 
 func test_no_night_passes_before_the_heart_wakes() -> void:
 	await _load_village([&"forest_shrine_awakened", &"heard_of_shrine"])
-	game.travel(&"forest", &"south")
-	await _settle()
-	game.travel(&"village", &"north")
-	await _settle()
+	await _take_exit("ToForest")
+	await _take_exit("ToVillage")
 	assert_false(game.adventure.has_flag(&"village_beacon_night"))
 	_assert_hens_at_home("before the heart")
 	await wait_physics_frames(120)
 	_assert_hens_at_home("they stay in their pen")
 	assert_eq(_line("Cida"), "CIDA_AWAKENED")
+
+
+func test_only_walking_out_of_the_village_lets_the_night_pass() -> void:
+	var first_evening: Array[StringName] = [&"forest_shrine_awakened", &"heard_of_shrine",
+			&"elder_thanked", &"ruin_warden_defeated", &"ruin_heart_awakened"]
+	await _load_village(first_evening)
+	# Loading the save again.
+	assert_true(game.continue_saved())
+	await _settle()
+	assert_false(game.adventure.has_flag(&"village_beacon_night"), "loading is not a night")
+	# Back to the title and continuing (saves on the way out).
+	game.call(&"_return_to_title")
+	await wait_physics_frames(3)
+	assert_null(game.level)
+	assert_true(game.continue_saved())
+	await _settle()
+	assert_false(game.adventure.has_flag(&"village_beacon_night"), "the title is not a night")
+	# Closing the game and opening it again.
+	assert_eq(game.save_now(), OK)
+	await _restart()
+	assert_true(game.continue_saved())
+	await _settle()
+	assert_false(game.adventure.has_flag(&"village_beacon_night"), "quitting is not a night")
+	# Falling in the village: the hero wakes at the ruin's heart.
+	await _fall_and_retry()
+	_assert_at_entry(&"ruin", &"heart")
+	assert_false(game.adventure.has_flag(&"village_beacon_night"), "a fall is not a night")
+	# Coming back by the forest path still finds the first evening.
+	game.travel(&"forest", &"south")
+	await _settle()
+	await _take_exit("ToVillage")
+	_assert_hens_at_home("still the first evening")
+	assert_eq(_line("Cida"), "CIDA_RUIN")
 
 
 func test_the_old_gate_keeps_the_hens_out_until_anselmo_frees_it() -> void:
