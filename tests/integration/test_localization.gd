@@ -5,6 +5,7 @@ extends GutTest
 const CSV := "res://locale/text.csv"
 const GameScene := preload("res://game/game.tscn")
 const HudScene := preload("res://ui/hud/hud.tscn")
+const PauseScene := preload("res://ui/pause/pause_screen.tscn")
 const DIR := "user://test_saves/localization"
 ## Folders holding the game's scripts and scenes.
 const GAME_DIRS: Array[String] = [
@@ -101,6 +102,56 @@ func test_every_page_fits_the_message_box_in_every_language() -> void:
 				assert_lte(label.get_line_count(), BOX_LINES, "%s %s: %s" % [locale, key, page])
 
 
+func test_pause_controls_fit_on_the_pause_screen_in_every_language() -> void:
+	var pause: PauseScreen = PauseScene.instantiate()
+	add_child_autofree(pause)
+	pause.open()
+	pause.choose(PauseScreen.Choice.CONTROLS)
+	var controls: Label = pause.get_node(^"%Controls")
+	for locale in Settings.LOCALES:
+		TranslationServer.set_locale(locale)
+		await wait_process_frames(1)
+		assert_eq(controls.get_line_count(), 4, locale)
+
+
+func test_pause_title_stays_centered_when_scaled() -> void:
+	var pause: PauseScreen = PauseScene.instantiate()
+	add_child_autofree(pause)
+	await wait_process_frames(1)
+	var title: Label = pause.get_node(^"%Title")
+	var center := title.get_global_transform_with_canvas() * (title.size / 2.0)
+	assert_almost_eq(center.x, get_viewport().get_visible_rect().size.x / 2.0, 0.1)
+
+
+func test_first_step_guidance_fits_in_every_language() -> void:
+	var hud: Hud = HudScene.instantiate()
+	add_child_autofree(hud)
+	hud.set_guidance("FIRST_STEP_GUIDANCE")
+	var label: Label = hud.get_node(^"%Guidance")
+	var expected: Dictionary = _source_table()["FIRST_STEP_GUIDANCE"]
+	for locale in Settings.LOCALES:
+		TranslationServer.set_locale(locale)
+		await wait_process_frames(1)
+		assert_true(hud.is_guidance_visible(), locale)
+		var expected_first_line := String(expected[locale]).split("\n")[0]
+		assert_eq(label.text.split("\n")[0], expected_first_line, locale)
+		var expected_guidance := InputPrompts.format_template(String(expected[locale]), [
+			InputPrompts.pause_label(false),
+			InputPrompts.dismiss_label(false, ""),
+		])
+		assert_eq(label.text, expected_guidance, locale)
+		assert_lte(label.get_line_count(), 2, locale)
+
+
+func test_guidance_without_placeholders_is_displayed_unchanged() -> void:
+	var hud: Hud = HudScene.instantiate()
+	add_child_autofree(hud)
+	TranslationServer.set_locale("en")
+	hud.set_guidance("BOSS_ROOT_WARDEN")
+	var label: Label = hud.get_node(^"%Guidance")
+	assert_eq(label.text, "Root Warden")
+
+
 func _launch(path: String) -> Game:
 	var game: Game = GameScene.instantiate()
 	game.save_path = DIR.path_join("save.json")
@@ -121,7 +172,7 @@ func test_the_title_switches_language_at_once_and_remembers_it() -> void:
 	assert_eq(subtitle.atr(subtitle.text), "The Forgotten Shrine", "no restart needed")
 	var options := title.get_node(^"%Options")
 	var language: Label = options.get_child(title.choices.find(TitleScreen.Choice.LANGUAGE))
-	assert_eq(language.text, "Language: English")
+	assert_eq(language.text.trim_prefix("> ").strip_edges(), "Language: English")
 	assert_false(FileAccess.file_exists(game.save_path), "the language is not part of the adventure")
 	game.queue_free()
 	await wait_physics_frames(2)

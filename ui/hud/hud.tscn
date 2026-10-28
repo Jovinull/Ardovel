@@ -29,6 +29,35 @@ offset_bottom = 20.0
 mouse_filter = 2
 theme_override_constants/separation = 0
 
+[node name="GuidanceBox" type="NinePatchRect" parent="Frame"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 23.0
+offset_right = 310.0
+offset_bottom = 55.0
+mouse_filter = 2
+texture = ExtResource("3_box")
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Guidance" type="Label" parent="Frame/GuidanceBox"]
+unique_name_in_owner = true
+auto_translate_mode = 2
+layout_mode = 0
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 282.0
+offset_bottom = 27.0
+theme_override_colors/font_color = Color(0.231373, 0.211765, 0.262745, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
 [node name="MessageBox" type="NinePatchRect" parent="Frame"]
 unique_name_in_owner = true
 layout_mode = 0

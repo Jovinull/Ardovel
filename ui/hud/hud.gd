@@ -14,6 +14,8 @@ const HEART_SIZE := 16
 const REVEAL_CHARS_PER_SECOND := 50.0
 const SPEAKER_X := 34.0
 const SPEAKER_X_BESIDE_PORTRAIT := 82.0
+const GUIDANCE_HOLD_TIME := 9.0
+const GUIDANCE_FADE_TIME := 0.7
 ## Inner width of the boss health bar.
 const BOSS_BAR_WIDTH := 138.0
 
@@ -22,6 +24,10 @@ var _message_tween: Tween
 var _arrow_tween: Tween
 var _pages: PackedStringArray = []
 var _page: int = 0
+var _guidance_key: String = ""
+var _guidance_tween: Tween
+var _gamepad_active: bool = false
+var _joypad_name: String = ""
 var _boss_health: Health
 
 @onready var _hearts: HBoxContainer = %Hearts
@@ -31,6 +37,8 @@ var _boss_health: Health
 @onready var _portrait_box: Control = %PortraitBox
 @onready var _portrait: TextureRect = %Portrait
 @onready var _speaker: Label = %Speaker
+@onready var _guidance_box: NinePatchRect = %GuidanceBox
+@onready var _guidance: Label = %Guidance
 @onready var _boss_bar: Control = %BossBar
 @onready var _boss_name: Label = %Name
 @onready var _boss_fill: ColorRect = %Fill
@@ -43,6 +51,11 @@ func _ready() -> void:
 		frame.region = Rect2(quarter * HEART_SIZE, 0, HEART_SIZE, HEART_SIZE)
 		_heart_frames.append(frame)
 	_close_box()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		_update_guidance()
 
 
 func bind_player(player: Player) -> void:
@@ -139,10 +152,57 @@ func is_message_visible() -> bool:
 	return _message_box.visible
 
 
+## Shows or hides a short translated first-step hint without interrupting movement.
+func set_guidance(message_key: String) -> void:
+	if message_key == _guidance_key:
+		_update_guidance()
+		return
+	if _guidance_tween != null:
+		_guidance_tween.kill()
+	_guidance_key = message_key
+	_update_guidance()
+	_guidance_box.visible = not message_key.is_empty()
+	_guidance_box.modulate.a = 1.0
+	if not message_key.is_empty():
+		_guidance_tween = create_tween()
+		_guidance_tween.tween_interval(GUIDANCE_HOLD_TIME)
+		_guidance_tween.tween_property(_guidance_box, ^"modulate:a", 0.0, GUIDANCE_FADE_TIME)
+		_guidance_tween.tween_callback(_guidance_box.hide)
+
+
+func set_input_mode(gamepad: bool, joypad_name: String) -> void:
+	_gamepad_active = gamepad
+	_joypad_name = joypad_name
+	_update_guidance()
+
+
+func is_guidance_visible() -> bool:
+	return _guidance_box.visible
+
+
+func _update_guidance() -> void:
+	if _guidance_key.is_empty():
+		_guidance.text = ""
+		return
+	var pause := InputPrompts.pause_label(_gamepad_active, _joypad_name)
+	var dismiss := InputPrompts.dismiss_label(_gamepad_active, _joypad_name)
+	_guidance.text = InputPrompts.format_template(tr(_guidance_key), [pause, dismiss])
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if is_message_visible() and (event.is_action_pressed(&"interact") or event.is_action_pressed(&"attack")):
 		get_viewport().set_input_as_handled()
 		advance()
+	elif is_guidance_visible() and event.is_action_pressed(&"interact"):
+		_dismiss_guidance()
+
+
+func _dismiss_guidance() -> void:
+	if _guidance_tween != null:
+		_guidance_tween.kill()
+	_guidance_tween = create_tween()
+	_guidance_tween.tween_property(_guidance_box, ^"modulate:a", 0.0, GUIDANCE_FADE_TIME)
+	_guidance_tween.tween_callback(_guidance_box.hide)
 
 
 func _show_page() -> void:
