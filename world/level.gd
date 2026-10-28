@@ -12,6 +12,10 @@ signal exit_requested(area: StringName, entry: StringName)
 @export var player: Player
 @export var ground: TileMapLayer
 
+## Text shown over the black between this area and the next, for the next trip only: something
+## that happens while the hero is on the road (a night passing).
+var interlude: String = ""
+
 
 func _ready() -> void:
 	var bounds := Rect2i(ground.get_used_rect().position * ground.tile_set.tile_size,

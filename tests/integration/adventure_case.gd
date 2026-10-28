@@ -46,7 +46,7 @@ func _player() -> Player:
 
 
 func _settle() -> void:
-	for i in 180:
+	for i in 360:
 		if not game.is_travelling():
 			break
 		await wait_physics_frames(1)

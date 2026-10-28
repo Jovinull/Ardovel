@@ -15,6 +15,8 @@ const SETTLED_FLAG := &"village_hens_settled"
 ## Set the next time the hero walks out after the hens are in: while they are away, Anselmo
 ## takes Cida's empty pen apart and brings her its wood as firewood.
 const PEN_CLEARED_FLAG := &"village_pen_cleared"
+## Said over the black as the hero walks out and the night falls.
+const NIGHT_TEXT := "VILLAGE_NIGHT_PASSES"
 ## Each hen driven into the coop is remembered on its own, so it never has to be driven again.
 const IN_FLAGS := {&"HenWhite": &"village_hen_white_in", &"HenBrown": &"village_hen_brown_in",
 		&"HenBlack": &"village_hen_black_in"}
@@ -87,6 +89,9 @@ func bind_adventure(adventure: Adventure) -> void:
 func _on_hero_walks_out(_area: StringName, _entry: StringName) -> void:
 	if _adventure.has_flag(HEART_FLAG) and not _adventure.has_flag(NIGHT_FLAG):
 		_adventure.set_flag(NIGHT_FLAG)
+		var level := owner as Level
+		if level != null:
+			level.interlude = NIGHT_TEXT
 	elif settled() and not _adventure.has_flag(PEN_CLEARED_FLAG):
 		_adventure.set_flag(PEN_CLEARED_FLAG)
 

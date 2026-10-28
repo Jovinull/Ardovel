@@ -14,6 +14,8 @@ const AREAS: Dictionary[StringName, String] = {
 	&"west": "res://world/west/west.tscn",
 }
 const FADE_TIME := 0.35
+## How long an interlude's text stays on the black between two areas.
+const INTERLUDE_TIME := 2.2
 ## Health a heart vessel adds: one whole heart (four quarters).
 const HEART_VESSEL_HEALTH := 4
 const MUSIC_VOLUME_DB := -8.0
@@ -46,6 +48,7 @@ var _base_max_health: int = 0
 @onready var _title: TitleScreen = $TitleScreen
 @onready var _pause: PauseScreen = $PauseScreen
 @onready var _fade: ColorRect = %Fade
+@onready var _interlude: Label = %Interlude
 @onready var _music: AudioStreamPlayer = $Music
 
 
@@ -143,11 +146,26 @@ func travel(area: StringName, entry: StringName) -> void:
 	_travelling = true
 	adventure.health = level.player.health.current
 	level.process_mode = Node.PROCESS_MODE_DISABLED
+	var interlude := level.interlude
 	await _fade_to(1.0)
+	if not interlude.is_empty():
+		await _show_interlude(interlude)
 	_load_area(area, entry)
 	adventure.enter(area, entry)
 	await _fade_to(0.0)
 	_travelling = false
+
+
+func is_showing_interlude() -> bool:
+	return _interlude.visible
+
+
+## Text on the black between two areas: something that happened on the road.
+func _show_interlude(text: String) -> void:
+	_interlude.text = text
+	_interlude.visible = true
+	await get_tree().create_timer(INTERLUDE_TIME).timeout
+	_interlude.visible = false
 
 
 ## Back to safety with full health, everything earned kept: to the checkpoint (the last shrine

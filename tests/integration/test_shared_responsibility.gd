@@ -206,11 +206,18 @@ func test_nothing_happens_until_a_night_has_passed_under_the_light() -> void:
 	assert_eq(_line("Cida"), "CIDA_RUIN", "the first reactions to the light stay as they were")
 	assert_eq(_line("Anselmo"), "ANSELMO_RUIN")
 	assert_true(_yard().is_gate_closed())
-	# The hero walks out through the arch: the night passes while they are away.
+	# The hero walks out through the arch: the night passes while they are away, and the
+	# screen says so on the black between the two areas.
+	var night_told := [false]
+	var watch := func() -> void: night_told[0] = night_told[0] or game.is_showing_interlude()
+	get_tree().physics_frame.connect(watch)
 	await _take_exit("ToForest")
+	get_tree().physics_frame.disconnect(watch)
+	assert_true(night_told[0], "the night is told on the black")
 	assert_eq(game.level.area_id, &"forest")
 	assert_true(game.adventure.has_flag(&"village_beacon_night"), "leaving lets a night pass")
 	await _take_exit("ToVillage")
+	assert_false(game.is_showing_interlude(), "and only on that trip")
 	assert_eq(game.level.area_id, &"village")
 	assert_eq(_hens().size(), 3)
 	for hen in _hens():
