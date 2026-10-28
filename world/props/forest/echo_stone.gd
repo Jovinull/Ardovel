@@ -1,6 +1,7 @@
 class_name EchoStone
 extends StaticBody2D
-## A carved stone that visibly answers after the nearby tangle is cut.
+## A carved stone behind the tangle. Reaching it only takes a sword; it answers only once the
+## ruin's heart is awake, and only the first time.
 
 signal answered
 

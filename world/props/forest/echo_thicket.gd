@@ -1,6 +1,7 @@
 class_name EchoThicket
 extends StaticBody2D
-## A living tangle that yields to a sword only after the ruin's heart responds.
+## A tangle of roots across an old path that any sword can cut. After the ruin's heart
+## wakes, a pale vein shows in it; the cut stays open either way.
 
 const HEART_FLAG := &"ruin_heart_awakened"
 const CUT_FLAG := &"forest_echo_thicket_cut"
@@ -33,7 +34,7 @@ func is_cut() -> bool:
 
 
 func _on_hit(_hit: Hit) -> void:
-	if _adventure == null or not _adventure.has_flag(HEART_FLAG) or is_cut():
+	if _adventure == null or is_cut():
 		return
 	_adventure.set_flag(CUT_FLAG)
 	_show_cut(true)
@@ -44,4 +45,4 @@ func _show_cut(cut: bool) -> void:
 	var frame := 2 if cut else 1 if _adventure.has_flag(HEART_FLAG) else 0
 	_sprite.region_rect = Rect2(frame * 32, 0, 32, 16)
 	_collision.set_deferred(&"disabled", cut)
-	_hurtbox.set_deferred(&"monitorable", not cut and _adventure.has_flag(HEART_FLAG))
+	_hurtbox.set_deferred(&"monitorable", not cut)
