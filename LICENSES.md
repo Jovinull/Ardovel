@@ -67,7 +67,7 @@ production tools are kept outside this repository.
 | `ruin/heart_crystal_dormant.png` | **modified copy** of the moss-covered crystal of Ninja Adventure's `TilesetTowers.png` (CC0): same pixels, with the crystal's lit colours replaced by master-palette stone so it reads as unlit (the original file is unchanged) |
 | `ruin/entrance.png` | the ruin's doorway among the great roots |
 | `ruin/beacon.png` | the column of light over the village statue, three frames |
-| `forest/thicket.png`, `forest/echo_stone.png`, `forest/light_traces.png`, `forest/wood_stack.png` | hand drawn roots, signal stone, light traces and firewood for the forest revisiting prototype |
+| `forest/thicket.png`, `forest/echo_stone.png`, `forest/light_traces.png`, `forest/distant_glint.png`, `forest/wood_stack.png` | hand drawn roots, signal stone, light traces, distant glint and firewood for the forest revisiting prototype |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
 
 ## Third-party tools
