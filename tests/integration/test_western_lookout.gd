@@ -216,6 +216,8 @@ func _gleam_heading() -> Vector2:
 	var from := gleam.position
 	await wait_physics_frames(20)
 	var moved := gleam.position - from
+	var long_axis := Vector2.RIGHT.rotated(gleam.rotation)
+	assert_almost_eq(absf(long_axis.dot(moved.normalized())), 1.0, 0.01, "it lies along its run")
 	if absf(moved.x) > absf(moved.y):
 		return Vector2.RIGHT if moved.x > 0.0 else Vector2.LEFT
 	return Vector2.DOWN if moved.y > 0.0 else Vector2.UP

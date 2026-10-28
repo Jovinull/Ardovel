@@ -71,6 +71,9 @@ func _throw_gleam() -> void:
 	if _gleam_tween != null:
 		_gleam_tween.kill()
 	_gleam.position = GLEAM_FROM
+	# The patch is drawn long along its run eastward; running down the slope it turns with it
+	# (a quarter turn keeps every pixel whole).
+	_gleam.rotation = 0.0 if turn == Turn.FOREST else PI / 2.0
 	_gleam.frame = 0
 	_gleam.visible = true
 	_sound.play()
