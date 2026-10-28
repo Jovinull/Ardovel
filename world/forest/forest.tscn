@@ -20,6 +20,10 @@
 [ext_resource type="Script" path="res://world/area_entry.gd" id="22_entry"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="23_exit"]
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Musics/11 - Clearing.ogg" id="24_music"]
+[ext_resource type="PackedScene" path="res://world/props/forest/echo_thicket.tscn" id="25_thicket"]
+[ext_resource type="PackedScene" path="res://world/props/forest/echo_stone.tscn" id="26_stone"]
+[ext_resource type="Script" path="res://world/props/forest/echo_trail.gd" id="27_trail"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/forest/light_traces.png" id="28_traces"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_77kt1"]
 size = Vector2(672, 16)
@@ -244,7 +248,7 @@ position = Vector2(430, 176)
 position = Vector2(452, 252)
 
 [node name="Rock3" parent="Entities" unique_id=1254331036 instance=ExtResource("15_cmhfg")]
-position = Vector2(576, 236)
+position = Vector2(576, 216)
 
 [node name="Oak13" parent="Entities" unique_id=544321195 instance=ExtResource("10_n1ala")]
 position = Vector2(476, 346)
@@ -296,6 +300,33 @@ position = Vector2(438, 404)
 
 [node name="RuinEntrance" type="StaticBody2D" parent="Entities" unique_id=833113053 instance=ExtResource("18_fynp5")]
 position = Vector2(448, 76)
+
+[node name="EchoTrail" type="Node2D" parent="Entities"]
+script = ExtResource("27_trail")
+
+[node name="TraceEast" type="Sprite2D" parent="Entities/EchoTrail"]
+position = Vector2(391, 227)
+texture = ExtResource("28_traces")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="TraceMiddle" type="Sprite2D" parent="Entities/EchoTrail"]
+position = Vector2(334, 251)
+texture = ExtResource("28_traces")
+region_enabled = true
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="TraceWest" type="Sprite2D" parent="Entities/EchoTrail"]
+position = Vector2(277, 254)
+texture = ExtResource("28_traces")
+region_enabled = true
+region_rect = Rect2(32, 0, 16, 16)
+
+[node name="EchoStone" parent="Entities" instance=ExtResource("26_stone")]
+position = Vector2(216, 245)
+
+[node name="EchoThicket" parent="Entities" instance=ExtResource("25_thicket")]
+position = Vector2(215, 260)
 collision_mask = 0
 
 [node name="Bounds" type="StaticBody2D" parent="." unique_id=2091794299]
@@ -345,3 +376,5 @@ target_entry = &"north"
 
 [node name="Shape" type="CollisionShape2D" parent="ToVillage" unique_id=555466974]
 shape = SubResource("exit_south")
+
+[connection signal="answered" from="Entities/EchoStone" to="Entities/EchoTrail" method="flash_reply"]

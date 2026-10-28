@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/props/forest/echo_stone.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/forest/echo_stone.png" id="2_texture"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="3_interactable"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="4_prompt"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Spirit.wav" id="5_sound"]
+
+[sub_resource type="RectangleShape2D" id="stone_base"]
+size = Vector2(17, 6)
+
+[sub_resource type="RectangleShape2D" id="stone_reach"]
+size = Vector2(27, 24)
+
+[node name="EchoStone" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_script")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+offset = Vector2(0, -15)
+region_enabled = true
+region_rect = Rect2(0, 0, 24, 30)
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("stone_base")
+
+[node name="Interactable" type="Area2D" parent="." node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("3_interactable")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable"]
+position = Vector2(0, -7)
+shape = SubResource("stone_reach")
+
+[node name="Prompt" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(0, -27)
+texture = ExtResource("4_prompt")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_sound")
+volume_db = -9.0
