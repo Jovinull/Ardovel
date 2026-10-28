@@ -16,6 +16,7 @@ const FRAME_SIZE := 16
 @export var lines: Array[DialogueLine] = []
 
 var _adventure: Adventure
+var _walked := 0.0
 
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _interactable: Interactable = $Interactable
@@ -44,7 +45,38 @@ func current_line() -> DialogueLine:
 
 ## Shows the sheet column for `direction` (pack character sheets: down, up, left, right).
 func face(direction: Vector2) -> void:
-	_sprite.frame = ["down", "up", "left", "right"].find(String(Facing.name_of(direction)))
+	_sprite.frame = _column(direction)
+
+
+## One step of a walk towards `point` at `speed`, with the walk cycle of the pack's sheets.
+## Waits while the hero or another villager stands in the way. True once there.
+func walk_towards(point: Vector2, speed: float, delta: float) -> bool:
+	var next := position.move_toward(point, speed * delta)
+	if next != position and step_is_clear(next):
+		_walked += delta
+		_sprite.frame = _column(next - position) + (4 if fmod(_walked, 0.28) >= 0.14 else 0)
+		position = next
+	return position.distance_to(point) <= 0.1
+
+
+## A short repeated gesture on the spot (sorting, hammering, scattering grain) facing
+## `direction`: the sheet's idle and step rows in turn.
+func gesture(direction: Vector2, elapsed: float, period: float = 0.3) -> void:
+	_sprite.frame = _column(direction) + (4 if fmod(elapsed, period) >= period * 0.5 else 0)
+
+
+func step_is_clear(next: Vector2) -> bool:
+	var body: CollisionShape2D = $Collision
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = body.shape
+	query.transform = Transform2D(0.0, next + body.position)
+	query.collision_mask = 3  # World and player bodies.
+	query.exclude = [get_rid()]
+	return get_world_2d().direct_space_state.intersect_shape(query, 1).is_empty()
+
+
+func _column(direction: Vector2) -> int:
+	return ["down", "up", "left", "right"].find(String(Facing.name_of(direction)))
 
 
 func _on_interact(actor: Node2D) -> String:
