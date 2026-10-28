@@ -1,6 +1,6 @@
 class_name EchoTrail
 extends Node2D
-## Three roots on the familiar trail show the ruin's light moving toward the old stone.
+## Carved stones carry a brief glow toward a second glint beyond the old path.
 
 const HEART_FLAG := &"ruin_heart_awakened"
 
@@ -29,9 +29,13 @@ func flash_reply() -> void:
 	var sequence := create_tween()
 	for sprite: Sprite2D in [$TraceEast, $TraceMiddle, $TraceWest]:
 		sequence.tween_callback(_show_reply.bind(sprite))
-		sequence.tween_interval(0.32)
+		sequence.tween_interval(0.30)
 		sequence.tween_callback(_show_normal.bind(sprite))
-		sequence.tween_interval(0.10)
+		sequence.tween_interval(0.08)
+	sequence.tween_callback(_show_distant_glint)
+	sequence.tween_property($DistantGlint, ^"position", Vector2(156, 222), 0.48)
+	sequence.tween_property($DistantGlint, ^"modulate:a", 0.0, 0.22)
+	sequence.tween_callback(_hide_distant_glint)
 
 
 func _show_reply(sprite: Sprite2D) -> void:
@@ -40,3 +44,14 @@ func _show_reply(sprite: Sprite2D) -> void:
 
 func _show_normal(sprite: Sprite2D) -> void:
 	sprite.region_rect = Rect2(sprite.region_rect.position - Vector2(0, 16), Vector2(16, 16))
+
+
+func _show_distant_glint() -> void:
+	$DistantGlint.visible = true
+	$DistantGlint.position = Vector2(125, 211)
+	$DistantGlint.modulate.a = 1.0
+	$DistantSound.play()
+
+
+func _hide_distant_glint() -> void:
+	$DistantGlint.visible = false

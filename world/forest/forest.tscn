@@ -24,6 +24,8 @@
 [ext_resource type="PackedScene" path="res://world/props/forest/echo_stone.tscn" id="26_stone"]
 [ext_resource type="Script" path="res://world/props/forest/echo_trail.gd" id="27_trail"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/forest/light_traces.png" id="28_traces"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Spirit.wav" id="29_echo_sound"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/forest/distant_glint.png" id="30_glint"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_77kt1"]
 size = Vector2(672, 16)
@@ -305,29 +307,67 @@ position = Vector2(448, 76)
 script = ExtResource("27_trail")
 
 [node name="TraceEast" type="Sprite2D" parent="Entities/EchoTrail"]
-position = Vector2(391, 227)
+position = Vector2(385, 219)
 texture = ExtResource("28_traces")
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 16)
 
 [node name="TraceMiddle" type="Sprite2D" parent="Entities/EchoTrail"]
-position = Vector2(334, 251)
+position = Vector2(329, 257)
 texture = ExtResource("28_traces")
 region_enabled = true
 region_rect = Rect2(16, 0, 16, 16)
 
 [node name="TraceWest" type="Sprite2D" parent="Entities/EchoTrail"]
-position = Vector2(277, 254)
+position = Vector2(276, 251)
 texture = ExtResource("28_traces")
 region_enabled = true
 region_rect = Rect2(32, 0, 16, 16)
 
+[node name="DistantGlint" type="Sprite2D" parent="Entities/EchoTrail"]
+visible = false
+position = Vector2(125, 211)
+z_index = 1
+texture = ExtResource("30_glint")
+
+[node name="DistantSound" type="AudioStreamPlayer2D" parent="Entities/EchoTrail"]
+position = Vector2(125, 211)
+stream = ExtResource("29_echo_sound")
+volume_db = -18.0
+
 [node name="EchoStone" parent="Entities" instance=ExtResource("26_stone")]
-position = Vector2(216, 245)
+position = Vector2(216, 248)
 
 [node name="EchoThicket" parent="Entities" instance=ExtResource("25_thicket")]
-position = Vector2(215, 260)
+position = Vector2(216, 280)
 collision_mask = 0
+
+[node name="EchoBankBack" parent="Entities" instance=ExtResource("9_h4u35")]
+position = Vector2(216, 228)
+
+[node name="EchoBankLeftUpper" parent="Entities" instance=ExtResource("18_xbfgq")]
+position = Vector2(182, 244)
+
+[node name="EchoBankLeftMiddle" parent="Entities" instance=ExtResource("18_xbfgq")]
+position = Vector2(184, 261)
+
+[node name="EchoBankLeftLower" parent="Entities" instance=ExtResource("18_xbfgq")]
+position = Vector2(182, 278)
+
+[node name="EchoBankRightUpper" parent="Entities" instance=ExtResource("18_xbfgq")]
+position = Vector2(250, 245)
+
+[node name="EchoBankRightMiddle" parent="Entities" instance=ExtResource("18_xbfgq")]
+position = Vector2(248, 262)
+
+[node name="EchoBankRightLower" parent="Entities" instance=ExtResource("18_xbfgq")]
+position = Vector2(250, 279)
+
+[node name="EchoBankFernLeft" parent="Entities" instance=ExtResource("13_b1lkh")]
+position = Vector2(170, 280)
+
+[node name="EchoBankFernRight" parent="Entities" instance=ExtResource("13_b1lkh")]
+position = Vector2(262, 275)
 
 [node name="Bounds" type="StaticBody2D" parent="." unique_id=2091794299]
 collision_mask = 0
