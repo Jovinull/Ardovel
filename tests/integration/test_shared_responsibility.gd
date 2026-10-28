@@ -523,24 +523,138 @@ func test_leaving_after_the_repair_finds_cida_waiting_at_the_gate() -> void:
 	assert_false(_anselmo().is_working(), "no second repair")
 
 
-func test_hens_driven_in_before_leaving_are_loose_again_but_nothing_else_is_lost() -> void:
-	await _load_village(_with(REPAIRED))
-	var first := _hens()[0]
-	first.global_position = BEHIND_HOUSE
-	first.reset_physics_interpolation()
+## The hen with this scene name (HenWhite, HenBrown, HenBlack).
+func _hen(hen_name: String) -> Hen:
+	return _yard().get_node(hen_name) as Hen
+
+
+## Whether `hen` is penned inside the coop's fence (not merely standing somewhere).
+func _in_coop(hen: Hen) -> bool:
+	return hen.penned and _yard().get_node(^"Inside").overlaps_body(hen)
+
+
+## Drives one hen in with the hero's input from just behind the house (not a full drive: the
+## whole drive from the square is covered by the tests above).
+func _push_in(hen: Hen) -> void:
+	hen.global_position = BEHIND_HOUSE
+	hen.reset_physics_interpolation()
 	_player().global_position = BEHIND_HOUSE + Vector2(30, 0)
 	_player().reset_physics_interpolation()
 	await wait_physics_frames(3)
 	Input.action_press(&"move_left")
 	await wait_physics_frames(24)
 	Input.action_release(&"move_left")
-	assert_true(await _wait_until(func() -> bool: return first.penned, 4.0))
-	assert_eq(_penned_count(), 1)
-	await _reload()
-	assert_eq(_hens().size(), 3, "no hen is lost or doubled")
-	assert_eq(_penned_count(), 0, "the gate was open overnight: all three are out again")
-	assert_true(game.adventure.has_flag(&"village_coop_repaired"), "the mended coop stays mended")
-	assert_eq(_cida().position, CidaWorker.COOP_ROUTE.back(), "Cida still waits with grain")
-	_player().global_position = Vector2(240, 70)
+	assert_true(await _wait_until(func() -> bool: return hen.penned, 4.0), "%s went in" % hen.name)
+	# The hero steps back out into the square, clear of the yard.
+	_player().global_position = Vector2(200, 230)
 	_player().reset_physics_interpolation()
-	assert_true(await _drive_hens_in(150.0), "and the drive can be done again")
+	await wait_physics_frames(30)
+
+
+func _assert_in_coop(names: Array[String], context: String) -> void:
+	assert_eq(_hens().size(), 3, "%s: no hen is lost or doubled" % context)
+	await wait_physics_frames(2)
+	for hen_name: String in HenYard.IN_FLAGS.keys().map(func(key: StringName) -> String: return String(key)):
+		await wait_physics_frames(1)
+		var hen := _hen(hen_name)
+		if hen_name in names:
+			assert_true(_in_coop(hen), "%s: %s stays in the coop" % [context, hen_name])
+		else:
+			assert_false(hen.penned, "%s: %s is still loose" % [context, hen_name])
+
+
+func test_a_hen_driven_in_stays_in_the_coop_after_a_reload() -> void:
+	await _load_village(_with(REPAIRED))
+	await _assert_in_coop([], "none driven in yet")
+	await _push_in(_hen("HenBrown"))
+	assert_true(game.adventure.has_flag(&"village_hen_brown_in"))
+	assert_false(game.adventure.has_flag(&"village_hens_settled"))
+	await _reload()
+	await _assert_in_coop(["HenBrown"], "after a reload")
+	assert_false(_yard().is_gate_closed(), "the gate stays open while hens are missing")
+	assert_eq(_cida().position, CidaWorker.COOP_ROUTE.back(), "Cida still waits with grain")
+	assert_true((_yard().get_node(^"Grain") as Sprite2D).visible)
+	await wait_physics_frames(120)
+	await _assert_in_coop(["HenBrown"], "it does not wander out through the open gate")
+
+
+func test_each_hen_is_remembered_on_its_own() -> void:
+	for hen_name: String in ["HenWhite", "HenBrown", "HenBlack"]:
+		var flags := _with(REPAIRED)
+		flags.append(HenYard.IN_FLAGS[StringName(hen_name)])
+		await _load_village(flags)
+		await _assert_in_coop([hen_name], "only %s remembered" % hen_name)
+		await _restart()
+
+
+func test_two_hens_remembered_both_stay_in_and_the_last_completes_the_event() -> void:
+	var flags := _with(REPAIRED)
+	flags.append_array([&"village_hen_white_in", &"village_hen_black_in"])
+	await _load_village(flags)
+	await _assert_in_coop(["HenWhite", "HenBlack"], "two remembered")
+	await _push_in(_hen("HenBrown"))
+	assert_true(game.adventure.has_flag(&"village_hens_settled"), "the third completes the event")
+	assert_true(await _wait_until(func() -> bool: return _yard().is_gate_closed(), 2.0))
+	await _reload()
+	await _assert_in_coop(["HenWhite", "HenBrown", "HenBlack"], "after the event")
+	assert_true(_yard().is_gate_closed())
+	assert_true((game.level.get_node(^"Entities/EggBasket") as EggBasket).visible)
+
+
+func test_three_remembered_without_the_event_flag_complete_it_on_arrival() -> void:
+	var flags := _with(REPAIRED)
+	flags.append_array([&"village_hen_white_in", &"village_hen_brown_in", &"village_hen_black_in"])
+	await _load_village(flags)
+	assert_true(game.adventure.has_flag(&"village_hens_settled"))
+	await _assert_in_coop(["HenWhite", "HenBrown", "HenBlack"], "all three remembered")
+	assert_true(await _wait_until(func() -> bool: return _yard().is_gate_closed(), 2.0),
+			"the gate shuts with the hero outside")
+	assert_eq(_cida().position, CIDA_HOME, "Cida is back at her stall")
+
+
+func test_hens_already_in_survive_travel_title_and_a_fall() -> void:
+	await _load_village(_with(REPAIRED))
+	await _push_in(_hen("HenWhite"))
+	await _take_exit("ToForest")
+	await _take_exit("ToVillage")
+	await _assert_in_coop(["HenWhite"], "after walking out and back")
+	game.call(&"_return_to_title")
+	await wait_physics_frames(3)
+	assert_true(game.continue_saved())
+	await _settle()
+	await _assert_in_coop(["HenWhite"], "after the title and Continue")
+	await _fall_and_retry()
+	_assert_at_entry(&"ruin", &"heart")
+	game.travel(&"village", &"north")
+	await _settle()
+	await _assert_in_coop(["HenWhite"], "after a fall")
+
+
+func test_an_old_save_with_the_event_done_has_all_three_in() -> void:
+	var flags := _with(REPAIRED)
+	flags.append(&"village_hens_settled")
+	await _load_village(flags)
+	await _assert_in_coop(["HenWhite", "HenBrown", "HenBlack"], "event done before hens had flags")
+	assert_true(_yard().is_gate_closed())
+	for hen_flag: StringName in HenYard.IN_FLAGS.values():
+		assert_false(game.adventure.has_flag(hen_flag), "no flag is added to the old save")
+
+
+func test_an_old_save_with_the_coop_mended_and_no_hen_in_has_three_loose() -> void:
+	await _load_village(_with(REPAIRED))
+	await _assert_in_coop([], "coop mended, no hen in")
+	assert_eq(_cida().position, CidaWorker.COOP_ROUTE.back())
+
+
+func test_after_returning_with_hens_in_the_rest_are_driven_from_the_square() -> void:
+	for remembered: Array in [[&"village_hen_white_in"],
+			[&"village_hen_white_in", &"village_hen_brown_in"]]:
+		var flags := _with(REPAIRED)
+		flags.append_array(remembered)
+		await _load_village(flags)
+		_player().global_position = Vector2(240, 70)
+		_player().reset_physics_interpolation()
+		await wait_physics_frames(2)
+		assert_true(await _drive_hens_in(150.0), "the rest driven in from the square")
+		assert_true(game.adventure.has_flag(&"village_hens_settled"))
+		await _restart()

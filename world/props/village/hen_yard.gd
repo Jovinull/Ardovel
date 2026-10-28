@@ -12,6 +12,9 @@ const HEART_FLAG := &"ruin_heart_awakened"
 const NIGHT_FLAG := &"village_beacon_night"
 const REPAIRED_FLAG := &"village_coop_repaired"
 const SETTLED_FLAG := &"village_hens_settled"
+## Each hen driven into the coop is remembered on its own, so it never has to be driven again.
+const IN_FLAGS := {&"HenWhite": &"village_hen_white_in", &"HenBrown": &"village_hen_brown_in",
+		&"HenBlack": &"village_hen_black_in"}
 ## Where the hens are found in the square.
 const LOOSE_SPOTS: Array[Vector2] = [Vector2(196, 172), Vector2(284, 236), Vector2(246, 262)]
 const LURE_RADIUS := 52.0
@@ -48,11 +51,14 @@ func _ready() -> void:
 
 func bind_adventure(adventure: Adventure) -> void:
 	_adventure = adventure
+	# All three remembered but the event not marked done (saved in between): it is done.
+	if calling() and _hens.all(func(hen: Hen) -> bool: return adventure.has_flag(IN_FLAGS[hen.name])):
+		adventure.set_flag(SETTLED_FLAG)
 	var level := owner as Level
 	for index in _hens.size():
 		var hen := _hens[index]
 		hen.hero = level.player if level != null else null
-		if settled():
+		if is_in_coop(hen):
 			hen.settle_at(_pen().position + Vector2(8 + 19 * index, 4 + 6 * (index % 2)), _pen())
 		elif hens_loose() or calling():
 			hen.global_position = LOOSE_SPOTS[index]
@@ -90,6 +96,12 @@ func calling() -> bool:
 
 func settled() -> bool:
 	return _adventure != null and _adventure.has_flag(SETTLED_FLAG)
+
+
+## Whether `hen` has been driven into the coop (all of them, for saves from before each hen
+## was remembered on its own).
+func is_in_coop(hen: Hen) -> bool:
+	return settled() or _adventure.has_flag(IN_FLAGS[hen.name])
 
 
 func hens() -> Array[Hen]:
@@ -155,9 +167,11 @@ func _on_body_entered(body: Node2D) -> void:
 	if hen == null or hen.penned or not calling():
 		return
 	hen.pen(_pen())
+	_adventure.set_flag(IN_FLAGS[hen.name])
 	for other in _hens:
 		if not other.penned:
 			return
+	# In the same change as the last hen's own flag, so both are saved together.
 	_adventure.set_flag(SETTLED_FLAG)
 
 
