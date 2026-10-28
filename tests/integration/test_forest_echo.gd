@@ -118,7 +118,7 @@ func test_cidas_change_survives_save_continue_and_respawn() -> void:
 	assert_eq(await _talk("Cida"), "CIDA_PATH_OPEN")
 	assert_true(stack.visible)
 	assert_eq(await _talk("Cida"), "CIDA_PATH_AFTER")
-	assert_eq(await _talk("Lia"), "LIA_ECHO_PATH")
+	assert_eq(await _talk("Lia"), "LIA_AT_ARCH")
 	assert_eq(await _talk("Anselmo"), "ANSELMO_ECHO_PATH")
 	assert_eq(game.save_now(), OK)
 	await _restart()
