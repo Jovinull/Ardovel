@@ -1,0 +1,22 @@
+{
+	"area": "village",
+	"checkpoint": {
+		"area": "ruin",
+		"entry": "heart"
+	},
+	"entry": "north",
+	"flags": [
+		"elder_thanked",
+		"forest_shrine_awakened",
+		"heard_of_shrine",
+		"heart_vessel_ruin",
+		"ruin_heart_awakened",
+		"ruin_lights_solved",
+		"ruin_mural_read",
+		"ruin_roots_solved",
+		"ruin_warden_defeated",
+		"village_statue_seen_restored"
+	],
+	"health": 11,
+	"version": 2
+}

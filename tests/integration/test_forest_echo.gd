@@ -1,5 +1,6 @@
 extends "res://tests/integration/adventure_case.gd"
-## The forest revisiting prototype uses the existing adventure flags and keeps both shrines intact.
+## The forest clearing: the roots are an ordinary obstacle that a sword opens at any time, the
+## stone answers only after the ruin's heart wakes, and both shrines stay reachable.
 
 
 func _continue_in_forest(heart_awake: bool) -> void:
@@ -72,16 +73,22 @@ func _can_reach(from: Vector2i, to: Vector2i, bounds: Rect2i) -> bool:
 	return false
 
 
-func test_the_old_forest_has_no_usable_echo_before_the_heart_wakes() -> void:
+func test_before_the_heart_wakes_the_roots_cut_but_the_stone_stays_dark() -> void:
 	await _continue_in_forest(false)
 	assert_false(_thicket().is_cut())
 	_strike_thicket()
-	assert_false(game.adventure.has_flag(&"forest_echo_thicket_cut"))
+	await wait_physics_frames(2)
+	assert_true(game.adventure.has_flag(&"forest_echo_thicket_cut"), "an ordinary obstacle")
+	assert_true((_thicket().get_node(^"Collision") as CollisionShape2D).disabled)
+	var answers := [0]
+	_stone().answered.connect(func() -> void: answers[0] += 1)
 	assert_eq((_stone().get_node(^"Interactable") as Interactable).interact(_player()),
 			"ECHO_STONE_DARK")
+	assert_eq(answers[0], 0)
 	assert_false(game.adventure.has_flag(&"forest_echo_found"))
 	assert_eq(game.adventure.checkpoint_area, &"forest")
 	assert_false((game.level.get_node(^"Entities/EchoTrail") as EchoTrail).visible)
+	assert_false((game.level.get_node(^"Entities/DistantGlint") as Sprite2D).visible)
 
 
 func test_a_returning_hero_opens_the_path_without_optional_readings() -> void:
@@ -118,7 +125,7 @@ func test_cidas_change_survives_save_continue_and_respawn() -> void:
 	assert_eq(await _talk("Cida"), "CIDA_PATH_OPEN")
 	assert_true(stack.visible)
 	assert_eq(await _talk("Cida"), "CIDA_PATH_AFTER")
-	assert_eq(await _talk("Lia"), "LIA_ECHO_PATH")
+	assert_eq(await _talk("Lia"), "LIA_AT_ARCH")
 	assert_eq(await _talk("Anselmo"), "ANSELMO_ECHO_PATH")
 	assert_eq(game.save_now(), OK)
 	await _restart()
@@ -138,6 +145,15 @@ func test_cidas_change_survives_save_continue_and_respawn() -> void:
 
 func test_the_clearing_is_physically_closed_until_the_sword_opens_it() -> void:
 	await _continue_in_forest(true)
+	await _check_the_closed_clearing_and_open_it()
+
+
+func test_before_the_ruin_the_clearing_closes_and_opens_the_same_way() -> void:
+	await _continue_in_forest(false)
+	await _check_the_closed_clearing_and_open_it(false)
+
+
+func _check_the_closed_clearing_and_open_it(heart_awake: bool = true) -> void:
 	# The four starts represent approaches from the south, west, east and north.
 	var pocket := Rect2i(116, 180, 200, 152)
 	for start in [Vector2i(216, 300), Vector2i(120, 252),
@@ -161,21 +177,28 @@ func test_the_clearing_is_physically_closed_until_the_sword_opens_it() -> void:
 	var answers := [0]
 	_stone().answered.connect(func() -> void: answers[0] += 1)
 	await _press(&"interact")
-	assert_true(game.adventure.has_flag(&"forest_echo_found"),
-			"the normal interaction discovers the stone")
-	assert_eq(answers[0], 1)
+	assert_eq(game.adventure.has_flag(&"forest_echo_found"), heart_awake,
+			"the normal interaction discovers the stone only after the heart wakes")
+	assert_eq(answers[0], 1 if heart_awake else 0)
 	var hud: Hud = game.get_node(^"HUD")
 	while hud.is_message_visible():
 		hud.advance()
 	await wait_physics_frames(3)
 	await _press(&"interact")
-	assert_eq(answers[0], 1, "the reply never repeats")
-	assert_eq(game.adventure.checkpoint_area, &"ruin")
-	assert_eq(game.adventure.checkpoint_entry, &"heart")
+	assert_eq(answers[0], 1 if heart_awake else 0, "the reply never repeats")
+	assert_eq(game.adventure.checkpoint_area, &"ruin" if heart_awake else &"forest")
 
 
 func test_the_earlier_route_still_connects_village_shrine_and_ruin() -> void:
-	await _continue_in_forest(true)
 	var whole_map := Rect2i(8, 8, 624, 432)
-	assert_true(_can_reach(Vector2i(328, 416), Vector2i(320, 128), whole_map))
-	assert_true(_can_reach(Vector2i(328, 416), Vector2i(448, 96), whole_map))
+	for heart_awake in [false, true]:
+		await _continue_in_forest(heart_awake)
+		for cut in [false, true]:
+			if cut:
+				_strike_thicket()
+				await wait_physics_frames(2)
+			assert_true(_can_reach(Vector2i(328, 416), Vector2i(320, 128), whole_map),
+					"shrine (heart %s, cut %s)" % [heart_awake, cut])
+			assert_true(_can_reach(Vector2i(328, 416), Vector2i(448, 96), whole_map),
+					"ruin (heart %s, cut %s)" % [heart_awake, cut])
+		await _restart()
