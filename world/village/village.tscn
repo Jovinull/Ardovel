@@ -36,6 +36,23 @@
 [ext_resource type="Script" path="res://world/area_exit.gd" id="37_ut0ve"]
 [ext_resource type="Script" path="res://world/props/village/wood_stack.gd" id="38_wood_script"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/forest/wood_stack.png" id="39_wood_texture"]
+[ext_resource type="Script" path="res://actors/npc/cida_worker.gd" id="40_cida_worker"]
+[ext_resource type="Script" path="res://actors/npc/lia_observer.gd" id="41_lia_observer"]
+
+[sub_resource type="Resource" id="Resource_anselmo_work"]
+script = ExtResource("17_aj1lm")
+requires = &"cida_stall_worked"
+text = "ANSELMO_WORK"
+
+[sub_resource type="Resource" id="Resource_lia_arch"]
+script = ExtResource("17_aj1lm")
+requires = &"cida_path_acknowledged"
+text = "LIA_AT_ARCH"
+
+[sub_resource type="Resource" id="Resource_cida_worked"]
+script = ExtResource("17_aj1lm")
+requires = &"cida_stall_worked"
+text = "CIDA_AT_WORK"
 
 [sub_resource type="Resource" id="Resource_anselmo_path"]
 script = ExtResource("17_aj1lm")
@@ -176,22 +193,24 @@ position = Vector2(150, 190)
 display_name = "NPC_ANSELMO"
 sheet = ExtResource("15_nhykk")
 faceset = ExtResource("16_mywwm")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_anselmo_path"), SubResource("Resource_cyctb"), SubResource("Resource_cwave"), SubResource("Resource_1bb0f"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_anselmo_work"), SubResource("Resource_anselmo_path"), SubResource("Resource_cyctb"), SubResource("Resource_cwave"), SubResource("Resource_1bb0f"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g")])
 
 [node name="Lia" parent="Entities" unique_id=1122240069 instance=ExtResource("13_ktrsl")]
 position = Vector2(276, 202)
+script = ExtResource("41_lia_observer")
 display_name = "NPC_LIA"
 sheet = ExtResource("18_mvvu5")
 faceset = ExtResource("19_edwi0")
 facing = Vector2(-1, 0)
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_lia_path"), SubResource("Resource_tnib4"), SubResource("Resource_1fkta"), SubResource("Resource_01s4r"), SubResource("Resource_7wukx")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_lia_arch"), SubResource("Resource_lia_path"), SubResource("Resource_tnib4"), SubResource("Resource_1fkta"), SubResource("Resource_01s4r"), SubResource("Resource_7wukx")])
 
 [node name="Cida" parent="Entities" unique_id=654584627 instance=ExtResource("13_ktrsl")]
 position = Vector2(382, 306)
+script = ExtResource("40_cida_worker")
 display_name = "NPC_CIDA"
 sheet = ExtResource("20_jram5")
 faceset = ExtResource("21_bnvwc")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cida_path_after"), SubResource("Resource_cida_path_open"), SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cida_worked"), SubResource("Resource_cida_path_after"), SubResource("Resource_cida_path_open"), SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
 
 [node name="PineGrove1" parent="Entities" unique_id=1507130039 instance=ExtResource("22_6sduw")]
 position = Vector2(24, 40)
