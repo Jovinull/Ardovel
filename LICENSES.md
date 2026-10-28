@@ -15,8 +15,8 @@ was written for this project.
 
 | File | Used for |
 | --- | --- |
-| `Backgrounds/Tilesets/TilesetFloor.png` | grass and dirt paths (terrain) |
-| `Backgrounds/Tilesets/TilesetNature.png` | the pack's trees, bushes, flowers, rocks and stumps |
+| `Backgrounds/Tilesets/TilesetFloor.png` | grass and dirt paths (terrain); the western slope uses its darker meadow set and its pale stony set |
+| `Backgrounds/Tilesets/TilesetNature.png` | the pack's trees, bushes, flowers, rocks and stumps, and the grey crags, stacked stones and pebbles of the western slope |
 | `Backgrounds/Tilesets/TilesetHouse.png` | village houses, shop, arch, stall, barrels, banner, fence, the guardian statue and the ruin's grey guardians |
 | `Backgrounds/Tilesets/Interior/TilesetWallSimple.png` | the ruin's mossy walls |
 | `Backgrounds/Tilesets/Interior/TilesetInteriorFloor.png` | the ruin's cobble, slabs and the medallion floor |
@@ -69,6 +69,7 @@ production tools are kept outside this repository.
 | `ruin/entrance.png` | the ruin's doorway among the great roots |
 | `ruin/beacon.png` | the column of light over the village statue, three frames |
 | `forest/thicket.png`, `forest/echo_stone.png`, `forest/light_traces.png`, `forest/distant_glint.png`, `forest/wood_stack.png` | hand drawn roots, signal stone, light traces, distant glint and firewood for the forest revisiting prototype |
+| `west/lookout_floor.png`, `west/lookout_disc.png`, `west/gleam.png`, `west/fire_ring.png`, `west/footprints.png`, `west/fallen_bridge.png`, `west/gorge.png`, `west/pass_steps.png`, `west/keeper_cache.png` | hand drawn western lookout: its stone floor with parapet and steps, the polished disc on its pedestal (two positions), the reflected patch of daylight, a cold fire ring, footprints, the fallen rope bridge, the gorge's drop and edge, the old steps of the pass and the cache in the pines |
 | `village/coop.png` | **modified copy** of the wooden hut of Ninja Adventure's `TilesetHouse.png` (CC0, region 3,120 to 45,159): two frames, one with two roof boards missing (a dark slot with its batten) and one with new, lighter boards in their place (the original file is unchanged) |
 | `village/coop_gate.png`, `village/egg_basket.png`, `village/grain.png` | hand drawn yard gate (nailed shut, open, new), basket of eggs and scattered grain, in the pack's idiom for wooden frames |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
