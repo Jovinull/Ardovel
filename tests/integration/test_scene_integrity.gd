@@ -15,6 +15,22 @@ func _scenes(dir: String) -> Array[String]:
 	return found
 
 
+## Tries every combination of the flags `npc`'s lines depend on: some line must always apply.
+func _assert_always_has_something_to_say(npc: Npc) -> void:
+	var flags: Array[StringName] = []
+	for line in npc.lines:
+		for flag: StringName in [line.requires, line.unless]:
+			if not flag.is_empty() and not flags.has(flag):
+				flags.append(flag)
+	for combination in 1 << flags.size():
+		var adventure := Adventure.new()
+		for bit in flags.size():
+			if combination & (1 << bit):
+				adventure.set_flag(flags[bit])
+		assert_not_null(DialogueLine.first_that_applies(npc.lines, adventure),
+				"%s has something to say with %s" % [npc.name, adventure.flags()])
+
+
 func test_all_scenes_instantiate() -> void:
 	var count := 0
 	for dir in SCENE_DIRS:
@@ -129,7 +145,7 @@ func test_village_has_its_cast() -> void:
 		assert_not_null(npc.sheet)
 		assert_not_null(npc.faceset)
 		assert_gt(npc.lines.size(), 0)
-		assert_true(npc.lines.back().requires.is_empty(), "%s always has something to say" % npc.name)
+		_assert_always_has_something_to_say(npc)
 	assert_eq(village.find_children("*", "", true, false).filter(func(n: Node) -> bool: return n is GuardianStatue).size(), 1)
 	assert_eq(village.find_children("*", "", true, false).filter(func(n: Node) -> bool: return n is Player).size(), 1)
 	village.free()

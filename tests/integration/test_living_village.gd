@@ -40,7 +40,7 @@ func test_old_progress_keeps_villagers_in_their_original_places() -> void:
 	assert_false((game.level.get_node(^"Entities/WoodStack") as WoodStack).visible)
 
 
-func test_the_ruin_and_stone_alone_do_not_start_the_village_work() -> void:
+func test_the_ruin_alone_does_not_start_the_village_work() -> void:
 	await _load_village([&"forest_shrine_awakened", &"ruin_guardian_defeated",
 			&"ruin_heart_awakened"])
 	assert_eq(_cida().current_line().text, "CIDA_RUIN")
@@ -50,15 +50,15 @@ func test_the_ruin_and_stone_alone_do_not_start_the_village_work() -> void:
 	assert_true(game.continue_saved())
 	await _settle()
 	assert_eq(_cida().position, HOME)
-	game.adventure.set_flag(&"forest_echo_found")
-	assert_eq(_cida().current_line().text, "CIDA_PATH_OPEN")
+	game.adventure.set_flag(&"forest_echo_thicket_cut")
+	assert_eq(_cida().current_line().text, "CIDA_PATH_OPEN", "the open path, not the glint")
 	assert_eq(_lia().position, Vector2(276, 202))
 	assert_false((game.level.get_node(^"Entities/WoodStack") as WoodStack).visible)
 
 
 func test_cida_works_only_after_hearing_about_the_path() -> void:
 	await _load_village([&"forest_shrine_awakened", &"ruin_guardian_defeated",
-			&"ruin_heart_awakened", &"forest_echo_found"])
+			&"ruin_heart_awakened", &"forest_echo_thicket_cut", &"forest_echo_found"])
 	assert_eq(await _talk("Cida"), "CIDA_PATH_OPEN")
 	assert_true((game.level.get_node(^"Entities/WoodStack") as WoodStack).visible)
 	assert_eq(_lia().position, ARCH)
@@ -77,7 +77,7 @@ func test_cida_works_only_after_hearing_about_the_path() -> void:
 
 func test_cida_waits_for_the_hero_instead_of_walking_through_them() -> void:
 	await _load_village([&"forest_shrine_awakened", &"ruin_guardian_defeated",
-			&"ruin_heart_awakened", &"forest_echo_found"])
+			&"ruin_heart_awakened", &"forest_echo_thicket_cut", &"forest_echo_found"])
 	_player().global_position = WORK
 	await wait_physics_frames(2)
 	game.adventure.set_flag(&"cida_path_acknowledged")
@@ -92,7 +92,8 @@ func test_cida_waits_for_the_hero_instead_of_walking_through_them() -> void:
 
 func test_the_work_and_new_positions_survive_continue_and_reentry() -> void:
 	await _load_village([&"forest_shrine_awakened", &"ruin_guardian_defeated",
-			&"ruin_heart_awakened", &"forest_echo_found", &"cida_path_acknowledged"])
+			&"ruin_heart_awakened", &"forest_echo_thicket_cut", &"forest_echo_found",
+			&"cida_path_acknowledged"])
 	await wait_physics_frames(85)
 	assert_false(game.adventure.has_flag(&"cida_stall_worked"),
 			"an older save keeps the work visible until the hero reaches the stall")
