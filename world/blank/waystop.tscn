@@ -118,98 +118,101 @@ animations = [{
 size = Vector2(6, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ai7fb"]
-size = Vector2(448, 16)
+size = Vector2(6, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0cn21"]
 size = Vector2(448, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ocneg"]
-size = Vector2(16, 224)
+size = Vector2(448, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gh52k"]
 size = Vector2(16, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jnvil"]
-size = Vector2(104, 124)
+size = Vector2(16, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x3k5j"]
+size = Vector2(104, 124)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ag8wt"]
 size = Vector2(280, 124)
 
-[node name="Waystop" type="Node2D" unique_id=1492445933 node_paths=PackedStringArray("player", "ground")]
+[node name="Waystop" type="Node2D" unique_id=634150702 node_paths=PackedStringArray("player", "ground")]
 script = ExtResource("1_lye6b")
 area_id = &"waystop"
 music = ExtResource("2_hhbl0")
 player = NodePath("Entities/Player")
 ground = NodePath("Ground")
 
-[node name="Ground" type="TileMapLayer" parent="." unique_id=1413258721]
+[node name="Ground" type="TileMapLayer" parent="." unique_id=160650961]
 tile_map_data = PackedByteArray("AAAAAAAAAAAMAAwAAAABAAAAAAALAAwAAAACAAAAAAALAAwAAAADAAAAAAALAAwAAAAEAAAAAAALAAwAAAAFAAAAAAALAAwAAAAGAAAAAAALAAwAAAAHAAAAAAALAAwAAAAIAAAAAAALAAwAAAAJAAAAAAANAAwAAAAKAAAAAAALAAwAAAALAAAAAAALAAwAAAAMAAAAAAALAAwAAAANAAAAAAALAAwAAAAOAAAAAAALAAwAAAAPAAAAAAALAAwAAAAQAAAAAAALAAwAAAARAAAAAAALAAwAAAASAAAAAAAOAAwAAAATAAAAAAALAAwAAAAUAAAAAAALAAwAAAAVAAAAAAALAAwAAAAWAAAAAAALAAwAAAAXAAAAAAALAAwAAAAYAAAAAAALAAwAAAAZAAAAAAALAAwAAAAAAAEAAAALAAwAAAABAAEAAAALAAwAAAACAAEAAAALAAwAAAADAAEAAAAMAAwAAAAEAAEAAAALAAwAAAAFAAEAAAALAAwAAAAGAAEAAAALAAwAAAAHAAEAAAALAAwAAAAIAAEAAAALAAwAAAAJAAEAAAALAAwAAAAKAAEAAAALAAwAAAALAAEAAAALAAwAAAAMAAEAAAALAAwAAAANAAEAAAALAAwAAAAOAAEAAAANAAwAAAAPAAEAAAALAAwAAAAQAAEAAAALAAwAAAARAAEAAAALAAwAAAASAAEAAAALAAwAAAATAAEAAAALAAwAAAAUAAEAAAALAAwAAAAVAAEAAAALAAwAAAAWAAEAAAALAAwAAAAXAAEAAAALAAwAAAAYAAEAAAALAAwAAAAZAAEAAAALAAwAAAAAAAIAAAALAAwAAAABAAIAAAALAAwAAAACAAIAAAALAAwAAAADAAIAAAANAAwAAAAEAAIAAAALAAwAAAAFAAIAAAALAAwAAAAGAAIAAAALAAcAAAAHAAIAAAAMAAcAAAAIAAIAAAANAAcAAAAJAAIAAAALAAwAAAAKAAIAAAALAAwAAAALAAIAAAALAAwAAAAMAAIAAAALAAwAAAANAAIAAAALAAwAAAAOAAIAAAALAAwAAAAPAAIAAAALAAwAAAAQAAIAAAALAAwAAAARAAIAAAALAAwAAAASAAIAAAALAAwAAAATAAIAAAALAAwAAAAUAAIAAAALAAwAAAAVAAIAAAALAAwAAAAWAAIAAAALAAwAAAAXAAIAAAALAAwAAAAYAAIAAAALAAwAAAAZAAIAAAALAAwAAAAAAAMAAAALAAwAAAABAAMAAAALAAwAAAACAAMAAAAPAAwAAAADAAMAAAAOAAwAAAAEAAMAAAANAAwAAAAFAAMAAAAMAAwAAAAGAAMAAAALAAgAAAAHAAMAAAAQAAgAAAAIAAMAAAANAAkAAAAJAAMAAAALAAwAAAAKAAMAAAALAAwAAAALAAMAAAALAAwAAAAMAAMAAAANAAwAAAANAAMAAAALAAwAAAAOAAMAAAALAAwAAAAPAAMAAAALAAwAAAAQAAMAAAANAAwAAAARAAMAAAALAAwAAAASAAMAAAALAAwAAAATAAMAAAALAAwAAAAUAAMAAAALAAwAAAAVAAMAAAALAAwAAAAWAAMAAAAPAAwAAAAXAAMAAAALAAwAAAAYAAMAAAALAAwAAAAZAAMAAAALAAwAAAAAAAQAAAALAAwAAAABAAQAAAALAAwAAAACAAQAAAALAAwAAAADAAQAAAALAAwAAAAEAAQAAAALAAwAAAAFAAQAAAALAAwAAAAGAAQAAAALAAgAAAAHAAQAAAANAAgAAAAIAAQAAAALAAwAAAAJAAQAAAALAAwAAAAKAAQAAAALAAwAAAALAAQAAAALAAwAAAAMAAQAAAAMAAwAAAANAAQAAAALAAwAAAAOAAQAAAAOAAwAAAAPAAQAAAALAAwAAAAQAAQAAAALAAwAAAARAAQAAAALAAwAAAASAAQAAAALAAwAAAATAAQAAAALAAwAAAAUAAQAAAALAAwAAAAVAAQAAAALAAwAAAAWAAQAAAALAAwAAAAXAAQAAAALAAwAAAAYAAQAAAALAAwAAAAZAAQAAAALAAwAAAAAAAUAAAALAAwAAAABAAUAAAALAAwAAAACAAUAAAALAAwAAAADAAUAAAALAAwAAAAEAAUAAAALAAwAAAAFAAUAAAALAAwAAAAGAAUAAAALAAgAAAAHAAUAAAAQAAkAAAAIAAUAAAANAAcAAAAJAAUAAAALAAwAAAAKAAUAAAALAAwAAAALAAUAAAALAAwAAAAMAAUAAAALAAwAAAANAAUAAAALAAwAAAAOAAUAAAALAAwAAAAPAAUAAAALAAwAAAAQAAUAAAALAAwAAAARAAUAAAALAAwAAAASAAUAAAALAAwAAAATAAUAAAALAAwAAAAUAAUAAAALAAwAAAAVAAUAAAALAAwAAAAWAAUAAAANAAwAAAAXAAUAAAALAAwAAAAYAAUAAAALAAwAAAAZAAUAAAAOAAwAAAAAAAYAAAALAAwAAAABAAYAAAALAAwAAAACAAYAAAALAAwAAAADAAYAAAALAAwAAAAEAAYAAAAOAAwAAAAFAAYAAAAPAAwAAAAGAAYAAAALAAgAAAAHAAYAAAAMAAgAAAAIAAYAAAANAAgAAAAJAAYAAAALAAwAAAAKAAYAAAAMAAwAAAALAAYAAAALAAwAAAAMAAYAAAALAAwAAAANAAYAAAALAAwAAAAOAAYAAAALAAwAAAAPAAYAAAALAAwAAAAQAAYAAAALAAwAAAARAAYAAAALAAwAAAASAAYAAAALAAwAAAATAAYAAAALAAwAAAAUAAYAAAALAAwAAAAVAAYAAAALAAwAAAAWAAYAAAALAAwAAAAXAAYAAAALAAwAAAAYAAYAAAAOAAwAAAAZAAYAAAALAAwAAAAAAAcAAAAMAAcAAAABAAcAAAAMAAcAAAACAAcAAAAMAAcAAAADAAcAAAAMAAcAAAAEAAcAAAAMAAcAAAAFAAcAAAAMAAcAAAAGAAcAAAARAAkAAAAHAAcAAAAMAAgAAAAIAAcAAAAQAAkAAAAJAAcAAAAMAAcAAAAKAAcAAAAMAAcAAAALAAcAAAAMAAcAAAAMAAcAAAAMAAcAAAANAAcAAAAMAAcAAAAOAAcAAAAMAAcAAAAPAAcAAAAMAAcAAAAQAAcAAAAMAAcAAAARAAcAAAAMAAcAAAASAAcAAAAMAAcAAAATAAcAAAAMAAcAAAAUAAcAAAAMAAcAAAAVAAcAAAAMAAcAAAAWAAcAAAAMAAcAAAAXAAcAAAAMAAcAAAAYAAcAAAAMAAcAAAAZAAcAAAAMAAcAAAAAAAgAAAAMAAgAAAABAAgAAAAMAAgAAAACAAgAAAAMAAgAAAADAAgAAAAMAAgAAAAEAAgAAAAMAAgAAAAFAAgAAAAMAAgAAAAGAAgAAAAMAAgAAAAHAAgAAAAMAAgAAAAIAAgAAAAMAAgAAAAJAAgAAAAMAAgAAAAKAAgAAAAMAAgAAAALAAgAAAAMAAgAAAAMAAgAAAAMAAgAAAANAAgAAAAMAAgAAAAOAAgAAAAMAAgAAAAPAAgAAAAMAAgAAAAQAAgAAAAMAAgAAAARAAgAAAAMAAgAAAASAAgAAAAMAAgAAAATAAgAAAAMAAgAAAAUAAgAAAAMAAgAAAAVAAgAAAAMAAgAAAAWAAgAAAAMAAgAAAAXAAgAAAAMAAgAAAAYAAgAAAAMAAgAAAAZAAgAAAAMAAgAAAAAAAkAAAAMAAgAAAABAAkAAAAMAAgAAAACAAkAAAAMAAgAAAADAAkAAAAMAAgAAAAEAAkAAAAMAAgAAAAFAAkAAAAMAAgAAAAGAAkAAAAMAAgAAAAHAAkAAAAMAAgAAAAIAAkAAAAMAAgAAAAJAAkAAAAMAAgAAAAKAAkAAAAMAAgAAAALAAkAAAAMAAgAAAAMAAkAAAAMAAgAAAANAAkAAAAMAAgAAAAOAAkAAAAMAAgAAAAPAAkAAAAMAAgAAAAQAAkAAAAMAAgAAAARAAkAAAAMAAgAAAASAAkAAAAMAAgAAAATAAkAAAAMAAgAAAAUAAkAAAAMAAgAAAAVAAkAAAAMAAgAAAAWAAkAAAAMAAgAAAAXAAkAAAAMAAgAAAAYAAkAAAAMAAgAAAAZAAkAAAAMAAgAAAAAAAoAAAAMAAkAAAABAAoAAAAMAAkAAAACAAoAAAAMAAkAAAADAAoAAAAMAAkAAAAEAAoAAAAMAAkAAAAFAAoAAAAMAAkAAAAGAAoAAAAMAAkAAAAHAAoAAAAMAAkAAAAIAAoAAAAMAAkAAAAJAAoAAAAMAAkAAAAKAAoAAAAMAAkAAAALAAoAAAAMAAkAAAAMAAoAAAAMAAkAAAANAAoAAAAMAAkAAAAOAAoAAAAMAAkAAAAPAAoAAAAMAAkAAAAQAAoAAAAMAAkAAAARAAoAAAAMAAkAAAASAAoAAAAMAAkAAAATAAoAAAAMAAkAAAAUAAoAAAAMAAkAAAAVAAoAAAAMAAkAAAAWAAoAAAAMAAkAAAAXAAoAAAAMAAkAAAAYAAoAAAAMAAkAAAAZAAoAAAAMAAkAAAAAAAsAAAALAAwAAAABAAsAAAALAAwAAAACAAsAAAALAAwAAAADAAsAAAALAAwAAAAEAAsAAAALAAwAAAAFAAsAAAALAAwAAAAGAAsAAAALAAwAAAAHAAsAAAALAAwAAAAIAAsAAAALAAwAAAAJAAsAAAALAAwAAAAKAAsAAAALAAwAAAALAAsAAAALAAwAAAAMAAsAAAANAAwAAAANAAsAAAALAAwAAAAOAAsAAAALAAwAAAAPAAsAAAALAAwAAAAQAAsAAAALAAwAAAARAAsAAAALAAwAAAASAAsAAAALAAwAAAATAAsAAAAOAAwAAAAUAAsAAAALAAwAAAAVAAsAAAALAAwAAAAWAAsAAAALAAwAAAAXAAsAAAALAAwAAAAYAAsAAAALAAwAAAAZAAsAAAALAAwAAAAAAAwAAAALAAwAAAABAAwAAAALAAwAAAACAAwAAAALAAwAAAADAAwAAAALAAwAAAAEAAwAAAALAAwAAAAFAAwAAAALAAwAAAAGAAwAAAALAAwAAAAHAAwAAAAPAAwAAAAIAAwAAAAMAAwAAAAJAAwAAAALAAwAAAAKAAwAAAAOAAwAAAALAAwAAAAPAAwAAAAMAAwAAAAMAAwAAAANAAwAAAALAAwAAAAOAAwAAAAOAAwAAAAPAAwAAAALAAwAAAAQAAwAAAAMAAwAAAARAAwAAAALAAwAAAASAAwAAAALAAwAAAATAAwAAAALAAwAAAAUAAwAAAAMAAwAAAAVAAwAAAALAAwAAAAWAAwAAAALAAwAAAAXAAwAAAALAAwAAAAYAAwAAAALAAwAAAAZAAwAAAALAAwAAAAAAA0AAAALAAwAAAABAA0AAAALAAwAAAACAA0AAAALAAwAAAADAA0AAAALAAwAAAAEAA0AAAALAAwAAAAFAA0AAAALAAwAAAAGAA0AAAANAAwAAAAHAA0AAAALAAwAAAAIAA0AAAALAAwAAAAJAA0AAAALAAwAAAAKAA0AAAALAAwAAAALAA0AAAALAAwAAAAMAA0AAAALAAwAAAANAA0AAAALAAwAAAAOAA0AAAALAAwAAAAPAA0AAAALAAwAAAAQAA0AAAALAAwAAAARAA0AAAALAAwAAAASAA0AAAALAAwAAAATAA0AAAALAAwAAAAUAA0AAAAPAAwAAAAVAA0AAAALAAwAAAAWAA0AAAALAAwAAAAXAA0AAAALAAwAAAAYAA0AAAAPAAwAAAAZAA0AAAALAAwAAAA=")
 tile_set = ExtResource("3_hphf8")
 
-[node name="Entities" type="Node2D" parent="." unique_id=389970241]
+[node name="Entities" type="Node2D" parent="." unique_id=1004372576]
 y_sort_enabled = true
 
-[node name="Player" type="CharacterBody2D" parent="Entities" unique_id=1784051373 instance=ExtResource("4_up0x3")]
+[node name="Player" type="CharacterBody2D" parent="Entities" unique_id=1059697511 instance=ExtResource("4_up0x3")]
 position = Vector2(398, 144)
 collision_layer = 2
 motion_mode = 1
 script = ExtResource("5_jfd6i")
 
-[node name="PineGrove1" type="StaticBody2D" parent="Entities" unique_id=2056790247 instance=ExtResource("6_uiy51")]
+[node name="PineGrove1" type="StaticBody2D" parent="Entities" unique_id=1263866948 instance=ExtResource("6_uiy51")]
 position = Vector2(56, 64)
 collision_mask = 0
 
-[node name="PineGrove2" type="StaticBody2D" parent="Entities" unique_id=1426889551 instance=ExtResource("6_uiy51")]
+[node name="PineGrove2" type="StaticBody2D" parent="Entities" unique_id=156881818 instance=ExtResource("6_uiy51")]
 position = Vector2(52, 118)
 collision_mask = 0
 
-[node name="PineGrove3" type="StaticBody2D" parent="Entities" unique_id=1576405864 instance=ExtResource("6_uiy51")]
+[node name="PineGrove3" type="StaticBody2D" parent="Entities" unique_id=1261048386 instance=ExtResource("6_uiy51")]
 position = Vector2(180, 62)
 collision_mask = 0
 
-[node name="PineGrove4" type="StaticBody2D" parent="Entities" unique_id=1512336897 instance=ExtResource("6_uiy51")]
+[node name="PineGrove4" type="StaticBody2D" parent="Entities" unique_id=1502848095 instance=ExtResource("6_uiy51")]
 position = Vector2(212, 114)
 collision_mask = 0
 
-[node name="PineGrove5" type="StaticBody2D" parent="Entities" unique_id=1369182908 instance=ExtResource("6_uiy51")]
+[node name="PineGrove5" type="StaticBody2D" parent="Entities" unique_id=946302433 instance=ExtResource("6_uiy51")]
 position = Vector2(272, 66)
 collision_mask = 0
 
-[node name="PineGrove6" type="StaticBody2D" parent="Entities" unique_id=960789693 instance=ExtResource("6_uiy51")]
+[node name="PineGrove6" type="StaticBody2D" parent="Entities" unique_id=679064652 instance=ExtResource("6_uiy51")]
 position = Vector2(352, 112)
 collision_mask = 0
 
-[node name="PineGrove7" type="StaticBody2D" parent="Entities" unique_id=1439042945 instance=ExtResource("6_uiy51")]
+[node name="PineGrove7" type="StaticBody2D" parent="Entities" unique_id=758739351 instance=ExtResource("6_uiy51")]
 position = Vector2(380, 60)
 collision_mask = 0
 
-[node name="Bush1" type="StaticBody2D" parent="Entities" unique_id=1073556917 instance=ExtResource("7_cn70q")]
+[node name="Bush1" type="StaticBody2D" parent="Entities" unique_id=1398643582 instance=ExtResource("7_cn70q")]
 position = Vector2(96, 100)
 collision_mask = 0
 
-[node name="Bush2" type="StaticBody2D" parent="Entities" unique_id=1063412387 instance=ExtResource("7_cn70q")]
+[node name="Bush2" type="StaticBody2D" parent="Entities" unique_id=1065959421 instance=ExtResource("7_cn70q")]
 position = Vector2(146, 76)
 collision_mask = 0
 
-[node name="Fern1" type="Node2D" parent="Entities" unique_id=294664130 instance=ExtResource("8_8nl32")]
+[node name="Fern1" type="Node2D" parent="Entities" unique_id=1502148148 instance=ExtResource("8_8nl32")]
 position = Vector2(98, 48)
 
-[node name="Fern2" type="Node2D" parent="Entities" unique_id=637136048 instance=ExtResource("8_8nl32")]
+[node name="Fern2" type="Node2D" parent="Entities" unique_id=1243623128 instance=ExtResource("8_8nl32")]
 position = Vector2(148, 104)
 
-[node name="PineGrove8" type="StaticBody2D" parent="Entities" unique_id=2077127681 instance=ExtResource("6_uiy51")]
+[node name="PineGrove8" type="StaticBody2D" parent="Entities" unique_id=1700810131 instance=ExtResource("6_uiy51")]
 position = Vector2(30, 222)
 collision_mask = 0
 
-[node name="PineGrove9" type="StaticBody2D" parent="Entities" unique_id=792468858 instance=ExtResource("6_uiy51")]
+[node name="PineGrove9" type="StaticBody2D" parent="Entities" unique_id=562139396 instance=ExtResource("6_uiy51")]
 position = Vector2(100, 226)
 collision_mask = 0
 
-[node name="PineGrove10" type="StaticBody2D" parent="Entities" unique_id=247776626 instance=ExtResource("6_uiy51")]
+[node name="PineGrove10" type="StaticBody2D" parent="Entities" unique_id=1412541869 instance=ExtResource("6_uiy51")]
 position = Vector2(330, 224)
 collision_mask = 0
 
-[node name="PineGrove11" type="StaticBody2D" parent="Entities" unique_id=1703173579 instance=ExtResource("6_uiy51")]
+[node name="PineGrove11" type="StaticBody2D" parent="Entities" unique_id=2111825682 instance=ExtResource("6_uiy51")]
 position = Vector2(392, 222)
 collision_mask = 0
 
@@ -229,84 +232,84 @@ collision_mask = 0
 position = Vector2(160, 196)
 collision_mask = 0
 
-[node name="Fern3" type="Node2D" parent="Entities" unique_id=1204215421 instance=ExtResource("8_8nl32")]
+[node name="Fern3" type="Node2D" parent="Entities" unique_id=1628884254 instance=ExtResource("8_8nl32")]
 position = Vector2(140, 176)
 
 [node name="HighStone" type="StaticBody2D" parent="Entities" unique_id=526292069 instance=ExtResource("13_mtwhi")]
 position = Vector2(120, 50)
 collision_mask = 0
 
-[node name="Tangle1" type="StaticBody2D" parent="Entities" unique_id=431955942 instance=ExtResource("14_w1ure")]
+[node name="Tangle1" type="StaticBody2D" parent="Entities" unique_id=2130198580 instance=ExtResource("14_w1ure")]
 position = Vector2(120, 118)
 collision_mask = 0
 script = ExtResource("15_huqom")
 order = 1
 
-[node name="Tangle2" type="StaticBody2D" parent="Entities" unique_id=1422224431 instance=ExtResource("14_w1ure")]
+[node name="Tangle2" type="StaticBody2D" parent="Entities" unique_id=1035139041 instance=ExtResource("14_w1ure")]
 position = Vector2(120, 96)
 collision_mask = 0
 script = ExtResource("15_huqom")
 order = 2
 
-[node name="Tangle3" type="StaticBody2D" parent="Entities" unique_id=1698057001 instance=ExtResource("14_w1ure")]
+[node name="Tangle3" type="StaticBody2D" parent="Entities" unique_id=981220109 instance=ExtResource("14_w1ure")]
 position = Vector2(120, 74)
 collision_mask = 0
 script = ExtResource("15_huqom")
 order = 3
 
-[node name="View" type="StaticBody2D" parent="Entities" unique_id=865153285]
+[node name="View" type="StaticBody2D" parent="Entities" unique_id=1037621357]
 position = Vector2(120, 58)
 collision_mask = 0
 script = ExtResource("16_kblwy")
 text = "BLANK_VIEW"
 sets = &"blank_view_seen"
 
-[node name="Prompt" type="Sprite2D" parent="Entities/View" unique_id=86075729]
+[node name="Prompt" type="Sprite2D" parent="Entities/View" unique_id=86953990]
 visible = false
 position = Vector2(0, -20)
 texture = ExtResource("17_7fpo0")
 
-[node name="Interactable" type="Area2D" parent="Entities/View" unique_id=333751668 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="Entities/View" unique_id=984319382 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("18_ha21t")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/View/Interactable" unique_id=1433807814]
+[node name="Shape" type="CollisionShape2D" parent="Entities/View/Interactable" unique_id=1309500520]
 position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_7bw8j")
 
-[node name="Milestone" type="StaticBody2D" parent="Entities" unique_id=1930302290]
+[node name="Milestone" type="StaticBody2D" parent="Entities" unique_id=1885126554]
 position = Vector2(36, 124)
 collision_mask = 0
 script = ExtResource("16_kblwy")
 text = "BLANK_MILESTONE"
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Milestone" unique_id=381663620]
+[node name="Sprite" type="Sprite2D" parent="Entities/Milestone" unique_id=706263606]
 texture = ExtResource("19_ipsqj")
 centered = false
 offset = Vector2(-6, -15)
 
-[node name="Collision" type="CollisionShape2D" parent="Entities/Milestone" unique_id=1835402113]
+[node name="Collision" type="CollisionShape2D" parent="Entities/Milestone" unique_id=2110911011]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_6ontg")
 
-[node name="Prompt" type="Sprite2D" parent="Entities/Milestone" unique_id=1420074834]
+[node name="Prompt" type="Sprite2D" parent="Entities/Milestone" unique_id=1025189485]
 visible = false
 position = Vector2(0, -28)
 texture = ExtResource("17_7fpo0")
 
-[node name="Interactable" type="Area2D" parent="Entities/Milestone" unique_id=165901809 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="Entities/Milestone" unique_id=2109870260 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("18_ha21t")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Milestone/Interactable" unique_id=929408906]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Milestone/Interactable" unique_id=881279872]
 position = Vector2(0, -11)
 shape = SubResource("RectangleShape2D_a5sjk")
 
-[node name="Board" type="StaticBody2D" parent="Entities" unique_id=1069342361]
+[node name="Board" type="StaticBody2D" parent="Entities" unique_id=770775310]
 position = Vector2(300, 126)
 collision_mask = 0
 script = ExtResource("16_kblwy")
@@ -314,79 +317,79 @@ text = "BLANK_BOARD"
 text_after = "BLANK_BOARD_AFTER"
 after_flag = &"blank_map_drawn"
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Board" unique_id=1601274883]
+[node name="Sprite" type="Sprite2D" parent="Entities/Board" unique_id=286615525]
 texture = ExtResource("20_1v5ik")
 centered = false
 offset = Vector2(-15, -23)
 
-[node name="Collision" type="CollisionShape2D" parent="Entities/Board" unique_id=520657640]
+[node name="Collision" type="CollisionShape2D" parent="Entities/Board" unique_id=1201759318]
 position = Vector2(0, -1.5)
 shape = SubResource("RectangleShape2D_t2og3")
 
-[node name="Prompt" type="Sprite2D" parent="Entities/Board" unique_id=1940821914]
+[node name="Prompt" type="Sprite2D" parent="Entities/Board" unique_id=813884272]
 visible = false
 position = Vector2(0, -32)
 texture = ExtResource("17_7fpo0")
 
-[node name="Interactable" type="Area2D" parent="Entities/Board" unique_id=1240497855 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="Entities/Board" unique_id=1113457248 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("18_ha21t")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Board/Interactable" unique_id=1669769759]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Board/Interactable" unique_id=2030871883]
 position = Vector2(0, -13)
 shape = SubResource("RectangleShape2D_rpmbd")
 
-[node name="WitchNote" type="Sprite2D" parent="Entities/Board" unique_id=1612582284]
+[node name="WitchNote" type="Sprite2D" parent="Entities/Board" unique_id=1441104570]
 visible = false
 position = Vector2(4, -17)
 texture = ExtResource("21_wsgf1")
 centered = false
 
-[node name="WitchMap" type="Node2D" parent="Entities" unique_id=1089232264]
+[node name="WitchMap" type="Node2D" parent="Entities" unique_id=2001097336]
 position = Vector2(204, 198)
 script = ExtResource("22_wulw7")
 blank = ExtResource("23_4gred")
 drawn = ExtResource("24_30rky")
 
-[node name="Sprite" type="Sprite2D" parent="Entities/WitchMap" unique_id=1982755545]
+[node name="Sprite" type="Sprite2D" parent="Entities/WitchMap" unique_id=2138095097]
 texture = ExtResource("25_vboct")
 offset = Vector2(0, -4)
 
-[node name="Prompt" type="Sprite2D" parent="Entities/WitchMap" unique_id=886969741]
+[node name="Prompt" type="Sprite2D" parent="Entities/WitchMap" unique_id=330411387]
 visible = false
 position = Vector2(0, -14)
 texture = ExtResource("17_7fpo0")
 
-[node name="Interactable" type="Area2D" parent="Entities/WitchMap" unique_id=506620117 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="Entities/WitchMap" unique_id=1435762505 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("18_ha21t")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/WitchMap/Interactable" unique_id=2044736225]
+[node name="Shape" type="CollisionShape2D" parent="Entities/WitchMap/Interactable" unique_id=655595719]
 position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_njyrt")
 
-[node name="View" type="CanvasLayer" parent="Entities/WitchMap" unique_id=1373251754]
+[node name="View" type="CanvasLayer" parent="Entities/WitchMap" unique_id=1231903068]
 layer = 20
 
-[node name="Dim" type="ColorRect" parent="Entities/WitchMap/View" unique_id=1350970752]
+[node name="Dim" type="ColorRect" parent="Entities/WitchMap/View" unique_id=937673722]
 offset_right = 320.0
 offset_bottom = 180.0
 color = Color(0.078, 0.106, 0.106, 0.7)
 
-[node name="Picture" type="TextureRect" parent="Entities/WitchMap/View" unique_id=1260143268]
+[node name="Picture" type="TextureRect" parent="Entities/WitchMap/View" unique_id=1837353554]
 offset_left = 96.0
 offset_top = 50.0
 offset_right = 224.0
 offset_bottom = 130.0
 
-[node name="BreuPerch" type="Marker2D" parent="Entities" unique_id=1922452924]
+[node name="BreuPerch" type="Marker2D" parent="Entities" unique_id=355797285]
 position = Vector2(126, 16)
 
-[node name="Witch" type="StaticBody2D" parent="Entities" unique_id=917639023 node_paths=PackedStringArray("board_note") instance=ExtResource("26_vsj12")]
+[node name="Witch" type="StaticBody2D" parent="Entities" unique_id=299262782 node_paths=PackedStringArray("board_note") instance=ExtResource("26_vsj12")]
 position = Vector2(220, 186)
 collision_mask = 0
 script = ExtResource("27_43uhy")
@@ -399,29 +402,47 @@ sheet = ExtResource("29_6tiak")
 faceset = ExtResource("30_8cacw")
 lines = Array[ExtResource("31_43wn1")]([SubResource("Resource_yh487"), SubResource("Resource_k28y5"), SubResource("Resource_3yd0a"), SubResource("Resource_q7f1u")])
 
-[node name="Breu" type="Node2D" parent="Entities/Witch" unique_id=2092341745 node_paths=PackedStringArray("perch")]
+[node name="Breu" type="Node2D" parent="Entities/Witch" unique_id=1201151184 node_paths=PackedStringArray("perch")]
 z_index = 5
 script = ExtResource("32_7hhaj")
 perch = NodePath("../../BreuPerch")
 
-[node name="Fly" type="AnimatedSprite2D" parent="Entities/Witch/Breu" unique_id=1609457433]
+[node name="Fly" type="AnimatedSprite2D" parent="Entities/Witch/Breu" unique_id=1492139677]
 sprite_frames = SubResource("SpriteFrames_hrwpp")
 autoplay = "default"
 
-[node name="Rest" type="Sprite2D" parent="Entities/Witch/Breu" unique_id=486268833]
+[node name="Rest" type="Sprite2D" parent="Entities/Witch/Breu" unique_id=1751143916]
 visible = false
 texture = ExtResource("34_u068o")
 hframes = 2
 
-[node name="Entries" type="Node2D" parent="." unique_id=1781846610]
+[node name="Entries" type="Node2D" parent="." unique_id=650755909]
 
-[node name="East" type="Marker2D" parent="Entries" unique_id=395233566]
+[node name="East" type="Marker2D" parent="Entries" unique_id=429797348]
 position = Vector2(398, 144)
 script = ExtResource("35_4hp76")
 id = &"east"
 facing = Vector2(-1, 0)
 
-[node name="ToRoadWest" type="Area2D" parent="." unique_id=910296447]
+[node name="West" type="Marker2D" parent="Entries" unique_id=414461411]
+position = Vector2(18, 144)
+script = ExtResource("35_4hp76")
+id = &"west"
+facing = Vector2(1, 0)
+
+[node name="ToPedrabranca" type="Area2D" parent="." unique_id=1959158319]
+position = Vector2(3, 144)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("36_4ukx0")
+target_area = &"pedrabranca"
+target_entry = &"east"
+interlude = "TOWN_ROAD_WEST"
+
+[node name="Shape" type="CollisionShape2D" parent="ToPedrabranca" unique_id=875284641]
+shape = SubResource("RectangleShape2D_noidk")
+
+[node name="ToRoadWest" type="Area2D" parent="." unique_id=1334225995]
 position = Vector2(413, 144)
 collision_layer = 0
 collision_mask = 2
@@ -430,32 +451,32 @@ target_area = &"road_west"
 target_entry = &"west"
 interlude = "BLANK_ROAD_EAST"
 
-[node name="Shape" type="CollisionShape2D" parent="ToRoadWest" unique_id=933718336]
-shape = SubResource("RectangleShape2D_noidk")
-
-[node name="Bounds" type="StaticBody2D" parent="." unique_id=41939672]
-collision_mask = 0
-
-[node name="@CollisionShape2D@2" type="CollisionShape2D" parent="Bounds" unique_id=1213587110]
-position = Vector2(208, -8)
+[node name="Shape" type="CollisionShape2D" parent="ToRoadWest" unique_id=1274369531]
 shape = SubResource("RectangleShape2D_ai7fb")
 
-[node name="@CollisionShape2D@3" type="CollisionShape2D" parent="Bounds" unique_id=1934540420]
-position = Vector2(208, 232)
+[node name="Bounds" type="StaticBody2D" parent="." unique_id=1872909268]
+collision_mask = 0
+
+[node name="@CollisionShape2D@2" type="CollisionShape2D" parent="Bounds" unique_id=833974674]
+position = Vector2(208, -8)
 shape = SubResource("RectangleShape2D_0cn21")
 
-[node name="@CollisionShape2D@4" type="CollisionShape2D" parent="Bounds" unique_id=1752476817]
-position = Vector2(-8, 112)
+[node name="@CollisionShape2D@3" type="CollisionShape2D" parent="Bounds" unique_id=529872992]
+position = Vector2(208, 232)
 shape = SubResource("RectangleShape2D_ocneg")
 
-[node name="@CollisionShape2D@5" type="CollisionShape2D" parent="Bounds" unique_id=2069832591]
-position = Vector2(424, 112)
+[node name="@CollisionShape2D@4" type="CollisionShape2D" parent="Bounds" unique_id=32070897]
+position = Vector2(-8, 112)
 shape = SubResource("RectangleShape2D_gh52k")
 
-[node name="@CollisionShape2D@6" type="CollisionShape2D" parent="Bounds" unique_id=1956417016]
-position = Vector2(52, 62)
+[node name="@CollisionShape2D@5" type="CollisionShape2D" parent="Bounds" unique_id=208204288]
+position = Vector2(424, 112)
 shape = SubResource("RectangleShape2D_jnvil")
 
-[node name="@CollisionShape2D@7" type="CollisionShape2D" parent="Bounds" unique_id=180219598]
-position = Vector2(276, 62)
+[node name="@CollisionShape2D@6" type="CollisionShape2D" parent="Bounds" unique_id=261495745]
+position = Vector2(52, 62)
 shape = SubResource("RectangleShape2D_x3k5j")
+
+[node name="@CollisionShape2D@7" type="CollisionShape2D" parent="Bounds" unique_id=1412640528]
+position = Vector2(276, 62)
+shape = SubResource("RectangleShape2D_ag8wt")
