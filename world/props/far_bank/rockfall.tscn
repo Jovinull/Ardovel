@@ -7,23 +7,23 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dibgw"]
 size = Vector2(36, 30)
 
-[node name="Rockfall" type="Node2D" unique_id=2147307522]
+[node name="Rockfall" type="Node2D" unique_id=28771565]
 script = ExtResource("1_go1fr")
 text = "FAR_ROCKFALL"
 text_after = "FAR_ROCKFALL_GLINT"
 after_flag = &"forest_echo_found"
 
-[node name="Prompt" type="Sprite2D" parent="." unique_id=1630433000]
+[node name="Prompt" type="Sprite2D" parent="." unique_id=205703874]
 visible = false
 position = Vector2(0, -30)
 texture = ExtResource("2_ir4ai")
 
-[node name="Interactable" type="Area2D" parent="." unique_id=1965978809 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="." unique_id=1561947538 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("3_qstn4")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=875653157]
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=387312996]
 position = Vector2(0, -15)
 shape = SubResource("RectangleShape2D_dibgw")

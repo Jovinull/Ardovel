@@ -2,10 +2,10 @@
 
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/tileset_camp.png" id="1_hd0a8"]
 
-[node name="RopeCoil" type="StaticBody2D" unique_id=1259015641]
+[node name="RopeCoil" type="StaticBody2D" unique_id=897786871]
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=1873406250]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1203901826]
 texture = ExtResource("1_hd0a8")
 centered = false
 offset = Vector2(-16, -16)

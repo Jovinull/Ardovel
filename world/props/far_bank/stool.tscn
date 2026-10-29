@@ -5,16 +5,16 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kk4hu"]
 size = Vector2(10, 4)
 
-[node name="Stool" type="StaticBody2D" unique_id=1644921148]
+[node name="Stool" type="StaticBody2D" unique_id=1245057821]
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=1414443374]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=557378275]
 texture = ExtResource("1_30w7e")
 centered = false
 offset = Vector2(-8, -16)
 region_enabled = true
 region_rect = Rect2(48, 80, 16, 16)
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=95247467]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1145188391]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_kk4hu")

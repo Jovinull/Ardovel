@@ -6,9 +6,10 @@ extends Npc
 ## does whenever the hero comes by.
 
 const MET_FLAG := &"far_bank_iara_met"
-## Her place at the press, the way there from the bridge, and how she works it.
+## Her place at the press, the way there from the bridge (between the lamp post and the fire),
+## and how she works it.
 const WORK_SPOT := Vector2(156, 132)
-const TO_WORK: Array[Vector2] = [Vector2(300, 124), Vector2(224, 136), WORK_SPOT]
+const TO_WORK: Array[Vector2] = [Vector2(300, 126), Vector2(214, 126), WORK_SPOT]
 const WALK_SPEED := 34.0
 const PRESS_EVERY := 0.9
 
