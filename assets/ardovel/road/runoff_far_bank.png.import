@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://de5g0w64ao6u0"
-path="res://.godot/imported/TopSheet16x16.png-8a0324feac9b2440ce39bdffbed9b4fb.ctex"
+uid="uid://cm8c37ow3wmid"
+path="res://.godot/imported/runoff_far_bank.png-6265a2f5eba19ec42c0292e993e8a99e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ninja_adventure/Backgrounds/Animated/Waterfall/TopSheet16x16.png"
-dest_files=["res://.godot/imported/TopSheet16x16.png-8a0324feac9b2440ce39bdffbed9b4fb.ctex"]
+source_file="res://assets/ardovel/road/runoff_far_bank.png"
+dest_files=["res://.godot/imported/runoff_far_bank.png-6265a2f5eba19ec42c0292e993e8a99e.ctex"]
 
 [params]
 
