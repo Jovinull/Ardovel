@@ -141,11 +141,23 @@ func _on_sword_landed(target: Hurtbox) -> void:
 	hit_landed.emit()
 
 
+## A shove that costs no health (people carrying a load across a crowded yard): knocked back from
+## `source_position` and briefly staggered, without the hurt sound, flash or blinking of a hit.
+func bump(source_position: Vector2, strength: float) -> void:
+	if state != State.DEAD:
+		_stagger(Hit.new(0, strength, source_position))
+
+
 func _on_hit_received(hit: Hit) -> void:
 	_hurt_sound.play()
 	_hit_flash.flash()
 	if state == State.DEAD:
 		return
+	_stagger(hit)
+	_hit_flash.blink(health.invulnerability_time)
+
+
+func _stagger(hit: Hit) -> void:
 	_attack.cancel()
 	_attack_buffered = false
 	state = State.HURT
@@ -156,7 +168,6 @@ func _on_hit_received(hit: Hit) -> void:
 	if toward_source != Vector2.ZERO:
 		facing = Facing.cardinal(toward_source)
 	_sprite.play(StringName("hurt_" + Facing.name_of(facing)))
-	_hit_flash.blink(health.invulnerability_time)
 
 
 func _on_died() -> void:

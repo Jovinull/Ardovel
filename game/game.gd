@@ -16,6 +16,7 @@ const AREAS: Dictionary[StringName, String] = {
 	&"road_slope": "res://world/road/road_slope.tscn",
 	&"road_west": "res://world/spring/road_west.tscn",
 	&"waystop": "res://world/blank/waystop.tscn",
+	&"pedrabranca": "res://world/town/pedrabranca.tscn",
 }
 const FADE_TIME := 0.35
 ## How long an interlude's text stays on the black between two areas.
