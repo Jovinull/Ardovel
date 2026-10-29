@@ -5,8 +5,8 @@ extends Npc
 ## that she walks back to her press and works it, turning the screw a little at a time. Once the
 ## hero has gone off after meeting her, she sets to the rockfall on the road instead, prying at
 ## it with her bar (lying beside her whenever she is not lending it), and keeps at it from then
-## on; while the hero is away after the ditch is cleared, she stacks the smaller stones aside.
-## Away once more, she gets ready to walk her oil to Pedrabranca: she crouches by the big stone
+## on; while the hero is away after the ditch is cleared, she stacks the smaller stones aside and
+## gets ready to walk her oil to Pedrabranca: she crouches by the big stone
 ## with a wedge and counts for whoever bears down on the crew's bar (BigStone); the morning after
 ## it is walked aside she waits by the gap with her load on her back, and once she has said so she
 ## goes on ahead down the road and is no longer on this bank.
@@ -100,17 +100,18 @@ func current_emote() -> StringName:
 	return EMOTES.find_key(emote.texture)
 
 
-## Time passes while the hero is away: after meeting her she turns to the road, once the ditch
-## runs again she gets the smaller stones out of the way, and after that she gets ready to go.
+## Time passes while the hero is away: after meeting her she turns to the road; once the ditch
+## runs again, a single absence is enough for her to get the smaller stones out of the way and get
+## ready to go (asking for one absence each made the hero come and go for nothing). A save from
+## between the two (stones stacked, not yet ready) catches up on the next absence.
 func _on_hero_leaves(area: StringName, _entry: StringName) -> void:
 	if not _adventure.has_flag(MET_FLAG) or area in NOT_AWAY:
 		return
 	if not _adventure.has_flag(RoadWork.STARTED):
 		_adventure.set_flag(RoadWork.STARTED)
-	elif _adventure.has_flag(RoadWork.PROGRESSED):
-		_adventure.set_flag(Spring.READY)
 	elif _adventure.has_flag(RoadWork.DITCH_CLEARED):
 		_adventure.set_flag(RoadWork.PROGRESSED)
+		_adventure.set_flag(Spring.READY)
 
 
 func _refresh() -> void:

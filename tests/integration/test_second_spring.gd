@@ -173,6 +173,25 @@ func test_nothing_of_the_spring_before_she_has_stacked_the_stones() -> void:
 	assert_false(game.adventure.has_flag(Spring.READY))
 
 
+func test_one_absence_after_the_ditch_is_enough_for_both_the_stones_and_her_plan() -> void:
+	var flags: Array[StringName] = AFTER_ROAD.duplicate()
+	flags.erase(&"road_clearing_progressed")
+	await _continue_in(&"far_bank", &"slope", flags)
+	assert_true(await _walk_until_travelling(Vector2.UP, 3.0), "a look at the slope is not being away")
+	await _settle()
+	assert_false(game.adventure.has_flag(RoadWork.PROGRESSED))
+	game.travel(&"far_bank", &"bridge")
+	await _settle()
+	assert_true(await _walk_until_travelling(Vector2.RIGHT, 4.0), "off over the bridge, once")
+	await _settle()
+	assert_true(game.adventure.has_flag(RoadWork.PROGRESSED), "the smaller stones stacked")
+	assert_true(game.adventure.has_flag(Spring.READY), "and Iara ready, in the same absence")
+	await _take_exit("ToFarBank")
+	assert_true((_iara() as IaraWorker).is_at_the_stone())
+	assert_eq(await _talk("Iara"), "IARA_SPRING_PLAN")
+
+
+## A save from between the two (stones stacked, not yet ready) catches up on the next absence.
 func test_after_an_absence_she_is_ready_at_the_stone_and_tells_her_plan() -> void:
 	await _continue_in(&"far_bank", &"bridge", _with([]))
 	assert_true(await _walk_until_travelling(Vector2.RIGHT, 4.0), "off over the bridge")
@@ -260,7 +279,7 @@ func test_she_goes_ahead_and_the_road_west_shows_where_the_crew_stops() -> void:
 	assert_eq(await _examine("DitchChoked", Vector2(264, 96)), "SPRING_DITCH_CHOKED")
 	assert_true(await _walk_through([Vector2(200, 96), Vector2(140, 92), Vector2(100, 92)]), "over the bridge on foot")
 	assert_eq(await _examine("DitchCleared", Vector2(80, 96)), "SPRING_DITCH_CLEARED")
-	assert_eq(await _examine("CrewMarks", Vector2(134, 128)), "SPRING_MARKS")
+	assert_eq(await _examine("CrewMarks", Vector2(134, 138)), "SPRING_MARKS")
 	assert_true(game.adventure.has_flag(Spring.MARKS_SEEN))
 	assert_eq(await _examine("Milestone", Vector2(36, 96)), "SPRING_MILESTONE")
 	_player().global_position = iara.global_position + Vector2(-14, 0)
@@ -273,7 +292,7 @@ func test_she_goes_ahead_and_the_road_west_shows_where_the_crew_stops() -> void:
 	await _settle()
 	_assert_at_entry(&"far_bank", &"road_west")
 	assert_null(_iara(), "Iara is not on the far bank")
-	assert_eq(await _examine("OilPress1", Vector2(146, 136)), "SPRING_NOTE")
+	assert_eq(await _examine("Note", Vector2(156, 154)), "SPRING_NOTE")
 	assert_eq(await _examine("Knots", Vector2(352, 120)), "SPRING_KNOTS")
 	assert_true(game.adventure.has_flag(Spring.KNOTS_CHECKED))
 	assert_eq(await _examine("Knots", Vector2(352, 120)), "SPRING_KNOTS_AFTER")
@@ -283,7 +302,7 @@ func test_the_road_west_holds_its_edges() -> void:
 	await _continue_in(&"road_west", &"far_bank", _with([Spring.READY, Spring.SHIFTED, Spring.AHEAD]))
 	var from := Vector2i(game.level.entry(&"far_bank").global_position)
 	var bounds := Rect2i(0, 0, 416, 192)
-	for place: Vector2i in [Vector2i(100, 96), Vector2i(36, 96), Vector2i(134, 126), Vector2i(300, 150)]:
+	for place: Vector2i in [Vector2i(100, 96), Vector2i(36, 96), Vector2i(134, 138), Vector2i(300, 150)]:
 		assert_true(_can_reach(from, place, bounds), "%s can be reached" % place)
 	assert_false(_can_reach(from, Vector2i(200, 72), bounds), "nobody walks in the ditch")
 	assert_false(_can_reach(from, Vector2i(152, 30), bounds), "nor in the brook")
