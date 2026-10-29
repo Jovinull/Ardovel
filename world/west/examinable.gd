@@ -7,6 +7,9 @@ extends Node2D
 @export var text: String
 @export var text_after: String
 @export var after_flag: StringName
+## What it reads once a still later event (`latest_flag`) has happened; empty keeps the others.
+@export var latest_text: String
+@export var latest_flag: StringName
 
 var _adventure: Adventure
 
@@ -23,6 +26,8 @@ func bind_adventure(adventure: Adventure) -> void:
 
 
 func _on_interact(_actor: Node2D) -> String:
+	if _adventure != null and not latest_flag.is_empty() and _adventure.has_flag(latest_flag):
+		return latest_text
 	if _adventure != null and not after_flag.is_empty() and _adventure.has_flag(after_flag):
 		return text_after
 	return text

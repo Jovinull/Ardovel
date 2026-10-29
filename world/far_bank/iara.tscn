@@ -1,11 +1,12 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://actors/npc/iara_worker.gd" id="1_7qadf"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/SpriteSheet.png" id="2_cy4iv"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/Faceset.png" id="3_k5cgt"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Shadow.png" id="4_fvrgg"]
-[ext_resource type="Script" path="res://interaction/interactable.gd" id="5_7f0su"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="6_tf0fd"]
+[ext_resource type="Script" path="res://actors/npc/iara_worker.gd" id="1_cy4iv"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/SpriteSheet.png" id="2_k5cgt"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/Faceset.png" id="3_fvrgg"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Shadow.png" id="4_7f0su"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="5_tf0fd"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="6_broyj"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/road/pry_bar.png" id="7_imuyw"]
 
 [sub_resource type="RectangleShape2D" id="body"]
 size = Vector2(10, 6)
@@ -13,38 +14,43 @@ size = Vector2(10, 6)
 [sub_resource type="RectangleShape2D" id="reach"]
 size = Vector2(28, 26)
 
-[node name="Iara" type="StaticBody2D" unique_id=802837563]
+[node name="Iara" type="StaticBody2D" unique_id=710281448]
 collision_mask = 0
-script = ExtResource("1_7qadf")
+script = ExtResource("1_cy4iv")
 display_name = "NPC_IARA"
-sheet = ExtResource("2_cy4iv")
-faceset = ExtResource("3_k5cgt")
+sheet = ExtResource("2_k5cgt")
+faceset = ExtResource("3_fvrgg")
 facing = Vector2(1, 0)
 
-[node name="Shadow" type="Sprite2D" parent="." unique_id=499705389]
+[node name="Shadow" type="Sprite2D" parent="." unique_id=212564341]
 position = Vector2(0, -1)
-texture = ExtResource("4_fvrgg")
+texture = ExtResource("4_7f0su")
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=1358748726]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=884877651]
 position = Vector2(0, -8)
 hframes = 4
 vframes = 7
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=955333472]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1807622986]
 position = Vector2(0, -3)
 shape = SubResource("body")
 
-[node name="Interactable" type="Area2D" parent="." unique_id=1592073108 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="." unique_id=1392448439 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
-script = ExtResource("5_7f0su")
+script = ExtResource("5_tf0fd")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=1773794191]
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=421920207]
 position = Vector2(0, -6)
 shape = SubResource("reach")
 
-[node name="Prompt" type="Sprite2D" parent="." unique_id=307636029]
+[node name="Prompt" type="Sprite2D" parent="." unique_id=89343901]
 visible = false
 position = Vector2(0, -26)
-texture = ExtResource("6_tf0fd")
+texture = ExtResource("6_broyj")
+
+[node name="PryBar" type="Sprite2D" parent="." unique_id=1447120657]
+visible = false
+position = Vector2(-14, -1)
+texture = ExtResource("7_imuyw")
