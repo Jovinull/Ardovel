@@ -1,12 +1,15 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://actors/npc/iara_worker.gd" id="1_cy4iv"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/SpriteSheet.png" id="2_k5cgt"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/Faceset.png" id="3_fvrgg"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Shadow.png" id="4_7f0su"]
-[ext_resource type="Script" path="res://interaction/interactable.gd" id="5_tf0fd"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="6_broyj"]
-[ext_resource type="Texture2D" path="res://assets/ardovel/road/pry_bar.png" id="7_imuyw"]
+[ext_resource type="Script" path="res://actors/npc/iara_worker.gd" id="1_7f0su"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/SpriteSheet.png" id="2_tf0fd"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/Faceset.png" id="3_broyj"]
+[ext_resource type="Script" path="res://world/spring/carried_load.gd" id="4_imuyw"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/spring/load.png" id="5_5b5h4"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/spring/load_side.png" id="6_rlh5j"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Shadow.png" id="7_w1br5"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="8_kfbty"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="9_c0amq"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/road/pry_bar.png" id="10_veq41"]
 
 [sub_resource type="RectangleShape2D" id="body"]
 size = Vector2(10, 6)
@@ -14,43 +17,59 @@ size = Vector2(10, 6)
 [sub_resource type="RectangleShape2D" id="reach"]
 size = Vector2(28, 26)
 
-[node name="Iara" type="StaticBody2D" unique_id=710281448]
+[node name="Iara" type="StaticBody2D" unique_id=302953157]
 collision_mask = 0
-script = ExtResource("1_cy4iv")
+script = ExtResource("1_7f0su")
 display_name = "NPC_IARA"
-sheet = ExtResource("2_k5cgt")
-faceset = ExtResource("3_fvrgg")
+sheet = ExtResource("2_tf0fd")
+faceset = ExtResource("3_broyj")
 facing = Vector2(1, 0)
 
-[node name="Shadow" type="Sprite2D" parent="." unique_id=212564341]
-position = Vector2(0, -1)
-texture = ExtResource("4_7f0su")
+[node name="Load" type="Node2D" parent="." unique_id=1543949535]
+visible = false
+script = ExtResource("4_imuyw")
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=884877651]
+[node name="Frame" type="Sprite2D" parent="Load" unique_id=757283854]
+position = Vector2(0, -14)
+texture = ExtResource("5_5b5h4")
+
+[node name="Side" type="Sprite2D" parent="Load" unique_id=1526721612]
+position = Vector2(8, -9)
+texture = ExtResource("6_rlh5j")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=834653792]
+position = Vector2(0, -1)
+texture = ExtResource("7_w1br5")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=175183152]
 position = Vector2(0, -8)
 hframes = 4
 vframes = 7
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=1807622986]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1875360975]
 position = Vector2(0, -3)
 shape = SubResource("body")
 
-[node name="Interactable" type="Area2D" parent="." unique_id=1392448439 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="." unique_id=1270825984 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
-script = ExtResource("5_tf0fd")
+script = ExtResource("8_kfbty")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=421920207]
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=1453565683]
 position = Vector2(0, -6)
 shape = SubResource("reach")
 
-[node name="Prompt" type="Sprite2D" parent="." unique_id=89343901]
+[node name="Prompt" type="Sprite2D" parent="." unique_id=1123674935]
 visible = false
 position = Vector2(0, -26)
-texture = ExtResource("6_broyj")
+texture = ExtResource("9_c0amq")
 
-[node name="PryBar" type="Sprite2D" parent="." unique_id=1447120657]
+[node name="PryBar" type="Sprite2D" parent="." unique_id=752024431]
 visible = false
 position = Vector2(-14, -1)
-texture = ExtResource("7_imuyw")
+texture = ExtResource("10_veq41")
+
+[node name="Emote" type="Sprite2D" parent="." unique_id=1313886324]
+visible = false
+position = Vector2(0, -26)

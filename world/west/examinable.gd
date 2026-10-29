@@ -10,6 +10,11 @@ extends Node2D
 ## What it reads once a still later event (`latest_flag`) has happened; empty keeps the others.
 @export var latest_text: String
 @export var latest_flag: StringName
+## And once a fourth event (`final_flag`) has happened; empty keeps the others.
+@export var final_text: String
+@export var final_flag: StringName
+## A flag to set once it has been looked at (empty: none).
+@export var sets: StringName
 
 var _adventure: Adventure
 
@@ -26,6 +31,15 @@ func bind_adventure(adventure: Adventure) -> void:
 
 
 func _on_interact(_actor: Node2D) -> String:
+	var said := _text()
+	if _adventure != null and not sets.is_empty():
+		_adventure.set_flag(sets)
+	return said
+
+
+func _text() -> String:
+	if _adventure != null and not final_flag.is_empty() and _adventure.has_flag(final_flag):
+		return final_text
 	if _adventure != null and not latest_flag.is_empty() and _adventure.has_flag(latest_flag):
 		return latest_text
 	if _adventure != null and not after_flag.is_empty() and _adventure.has_flag(after_flag):

@@ -1,0 +1,113 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/spring/big_stone.gd" id="1_0etdr"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/spring/bar_ready.png" id="2_ogrr8"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/spring/bar_heave.png" id="3_04xd6"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/spring/drag.png" id="4_8sjxa"]
+[ext_resource type="PackedScene" path="res://world/props/west/crag.tscn" id="5_uxrvs"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/spring/wedge.png" id="6_mnxcc"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="7_nmqea"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="8_m8xx7"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact3.wav" id="9_yp1vx"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Hit1.wav" id="10_q11qc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ijnf6"]
+size = Vector2(34, 44)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_og1m8"]
+size = Vector2(18, 18)
+
+[node name="BigStone" type="Node2D" unique_id=553977658]
+y_sort_enabled = true
+script = ExtResource("1_0etdr")
+bar_ready = ExtResource("2_ogrr8")
+bar_heave = ExtResource("3_04xd6")
+
+[node name="Drag" type="Sprite2D" parent="." unique_id=3639558]
+visible = false
+position = Vector2(-20, -400)
+texture = ExtResource("4_8sjxa")
+centered = false
+offset = Vector2(0, 358)
+
+[node name="Stone" type="Node2D" parent="." unique_id=2059562576]
+y_sort_enabled = true
+
+[node name="Crag" type="StaticBody2D" parent="Stone" unique_id=526292069 instance=ExtResource("5_uxrvs")]
+collision_mask = 0
+
+[node name="Wall" type="StaticBody2D" parent="Stone" unique_id=334262640]
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape2D" parent="Stone/Wall" unique_id=1773999429]
+position = Vector2(-5, -14)
+shape = SubResource("RectangleShape2D_ijnf6")
+
+[node name="Wedges" type="Node2D" parent="." unique_id=194353573]
+y_sort_enabled = true
+
+[node name="Wedge1" type="Sprite2D" parent="Wedges" unique_id=946422552]
+visible = false
+position = Vector2(26, 1)
+texture = ExtResource("6_mnxcc")
+centered = false
+offset = Vector2(-4, -5)
+
+[node name="Wedge2" type="Sprite2D" parent="Wedges" unique_id=636992576]
+visible = false
+position = Vector2(29, 5)
+texture = ExtResource("6_mnxcc")
+centered = false
+offset = Vector2(-4, -5)
+
+[node name="Wedge3" type="Sprite2D" parent="Wedges" unique_id=9372538]
+visible = false
+position = Vector2(26, 9)
+texture = ExtResource("6_mnxcc")
+centered = false
+offset = Vector2(-4, -5)
+
+[node name="Wedge4" type="Sprite2D" parent="Wedges" unique_id=962333399]
+visible = false
+position = Vector2(29, 13)
+texture = ExtResource("6_mnxcc")
+centered = false
+offset = Vector2(-4, -5)
+
+[node name="Wedge5" type="Sprite2D" parent="Wedges" unique_id=416547157]
+visible = false
+position = Vector2(26, 17)
+texture = ExtResource("6_mnxcc")
+centered = false
+offset = Vector2(-4, -5)
+
+[node name="Bar" type="Sprite2D" parent="." unique_id=1292707039]
+visible = false
+position = Vector2(28, 2)
+texture = ExtResource("2_ogrr8")
+centered = false
+offset = Vector2(0, -15)
+
+[node name="Grip" type="Marker2D" parent="Bar" unique_id=815604421]
+position = Vector2(22, -14)
+
+[node name="Prompt" type="Sprite2D" parent="Bar" unique_id=1060053733]
+visible = false
+position = Vector2(22, -34)
+texture = ExtResource("7_nmqea")
+
+[node name="Interactable" type="Area2D" parent="Bar" unique_id=973453292 node_paths=PackedStringArray("prompt")]
+position = Vector2(22, -14)
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("8_m8xx7")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Bar/Interactable" unique_id=662080203]
+shape = SubResource("RectangleShape2D_og1m8")
+
+[node name="HeaveSound" type="AudioStreamPlayer2D" parent="." unique_id=1429470933]
+stream = ExtResource("9_yp1vx")
+
+[node name="SlipSound" type="AudioStreamPlayer2D" parent="." unique_id=1871251016]
+stream = ExtResource("10_q11qc")
