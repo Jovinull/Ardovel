@@ -17,6 +17,7 @@ was written for this project.
 | --- | --- |
 | `Backgrounds/Tilesets/TilesetFloor.png` | grass and dirt paths (terrain); the western slope uses its darker meadow set and its pale stony set |
 | `Backgrounds/Tilesets/tileset_camp.png` | Iara's tent, fire pit, pot, lamp post, coil of rope, oil jars, stools and log bench; the road crew's torn shelter |
+| `Backgrounds/Tilesets/TilesetWater.png` | the brook under the slab bridge on the road to Pedrabranca |
 | `Items/Tool/Shovel.png`, `Pickaxe.png` | the road crew's tools left at their shelter |
 | `Backgrounds/Tilesets/TilesetNature.png` | the pack's trees, bushes, flowers, rocks and stumps, and the grey crags, stacked stones and pebbles of the western slope |
 | `Backgrounds/Tilesets/TilesetHouse.png` | village houses, shop, arch, stall, barrels, banner, fence, the guardian statue and the ruin's grey guardians |
@@ -32,6 +33,7 @@ was written for this project.
 | `Ui/Input/Keyboard/KeyE.png`, `KeyEnter.png` | key prompts |
 | `Ui/Dialog/DialogueBoxSimple.png`, `FacesetBox.png` | dialogue box and portrait frame |
 | `Ui/Arrow.png` | next-page marker |
+| `Ui/Emote/emote14.png`, `emote20.png`, `emote21.png` | Iara's count at the big stone: a flat look, "...", "!" |
 | `Ui/Font/font8x8.png` | basis of the UI font (see below) |
 | `FX/Smoke/Smoke/SpriteSheet.png` | enemy death puff |
 | `FX/Magic/Circle/SpriteSheetSpark.png` | shrine awakening spark |
@@ -74,6 +76,7 @@ production tools are kept outside this repository.
 | `west/lookout_floor.png`, `west/lookout_disc.png`, `west/gleam.png`, `west/fire_ring.png`, `west/footprints.png`, `west/fallen_bridge.png`, `west/gorge.png`, `west/pass_steps.png`, `west/keeper_cache.png` | hand drawn western lookout: its stone floor with parapet and steps, the polished disc on its pedestal (two positions), the reflected patch of daylight, a cold fire ring, footprints, the fallen rope bridge with its posts, boards and hanging ropes, the gorge's far bank, drop and near edge, the old steps of the pass and the cache in the pines |
 | `west/bridge_deck.png`, `west/bridge_post.png`, `west/line_weight.png`, `west/footprints_dark.png`, `far_bank/oil_press.png`, `far_bank/seed_basket.png`, `far_bank/signpost.png` | hand drawn rope bridge deck and post, the stone of the messenger line, footprints pressed into trodden earth, and Iara's oil press, basket of Cardosa seeds and the road's signpost |
 | `road/ditch.png`, `road/dam_log.png`, `road/dam_debris.png`, `road/log_aside.png`, `road/runoff.png`, `road/runoff_far_bank.png`, `road/ditch_fall.png`, `road/rolling_stone.png`, `road/tally_board.png`, `road/pry_bar.png` | hand drawn drainage ditch (dry and running), the fallen trunk and debris that choke it, the trunk levered aside, the runoff down the slope and onto the road, the ditch pouring into the gorge, a rolling stone, the road crew's tally board and Iara's pry bar |
+| `spring/road_ditch.png`, `spring/bridge.png`, `spring/stake.png`, `spring/milestone.png`, `spring/bar_ready.png`, `spring/bar_heave.png`, `spring/wedge.png`, `spring/drag.png`, `spring/load.png`, `spring/load_side.png`, `spring/note.png` | hand drawn roadside ditch (cleared, from the slope's ditch, and choked), the slab bridge, the crew's section-end stake, a milestone, the crew's long bar (ready and borne down), a wedge, the furrows of the walked stone, Iara's carrying frame with her oil (standing and side on) and her note |
 | `village/coop.png` | **modified copy** of the wooden hut of Ninja Adventure's `TilesetHouse.png` (CC0, region 3,120 to 45,159): two frames, one with two roof boards missing (a dark slot with its batten) and one with new, lighter boards in their place (the original file is unchanged) |
 | `village/coop_gate.png`, `village/egg_basket.png`, `village/grain.png` | hand drawn yard gate (nailed shut, open, new), basket of eggs and scattered grain, in the pack's idiom for wooden frames |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
