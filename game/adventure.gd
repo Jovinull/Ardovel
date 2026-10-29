@@ -1,9 +1,10 @@
 class_name Adventure
 extends RefCounted
 ## Everything one adventure remembers, as plain data: where the hero stands, the shrine they
-## return to after a fall, their health and the flags the world has earned. Flags are the
-## whole progress model: the shrine, the objectives and small permanent changes are each one
-## named flag, so new ones need no new fields.
+## return to after a fall, their health, the flags the world has earned, the items they have and
+## what they have equipped. Flags are the story's progress: the shrine, the objectives and small
+## permanent changes are each one named flag. Items are kept by their stable ids (ItemCatalog);
+## nothing derived from them (the hero's statistics) is saved.
 ##
 ## Two places are kept apart. The resume point (`area`, `entry`) follows the hero: it is the
 ## entry they last arrived through, or the shrine they last touched, and it is where Continue
@@ -14,7 +15,7 @@ extends RefCounted
 ## Emitted whenever something worth saving changes.
 signal changed
 
-const FORMAT_VERSION := 2
+const FORMAT_VERSION := 3
 ## Health value meaning "full", whatever the hero's maximum is.
 const FULL_HEALTH := -1
 ## Version 1 saves had a single return point; their only shrine was the forest's.
@@ -28,6 +29,10 @@ var checkpoint_area: StringName = &""
 var checkpoint_entry: StringName = &""
 var health: int = FULL_HEALTH
 var _flags: Dictionary[StringName, bool] = {}
+## Ids of the items the hero has, in the order found, each once.
+var _items: Array[StringName] = []
+## Slot -> id of the item equipped there (always one the hero has).
+var _equipment: Dictionary[StringName, StringName] = {}
 
 
 func _init(start_area: StringName = &"village", start_entry: StringName = &"start") -> void:
@@ -48,6 +53,46 @@ func set_flag(flag: StringName) -> void:
 
 func flags() -> Array[StringName]:
 	return _flags.keys()
+
+
+func has_item(id: StringName) -> bool:
+	return _items.has(id)
+
+
+func items() -> Array[StringName]:
+	return _items.duplicate()
+
+
+## Adds `id` to what the hero has. False if it was already there (items are never doubled).
+func add_item(id: StringName) -> bool:
+	if id.is_empty() or _items.has(id):
+		return false
+	_items.append(id)
+	changed.emit()
+	return true
+
+
+## The id equipped in `slot`, or empty.
+func equipped(slot: StringName) -> StringName:
+	return _equipment.get(slot, &"")
+
+
+## Equips `id` (an item the hero has) in `slot`, replacing what was there. Which slot an item
+## goes in is the catalog's to say; the caller asks it.
+func equip(slot: StringName, id: StringName) -> bool:
+	if slot.is_empty() or not _items.has(id) or equipped(slot) == id:
+		return false
+	_equipment[slot] = id
+	changed.emit()
+	return true
+
+
+func unequip(slot: StringName) -> bool:
+	if not _equipment.has(slot):
+		return false
+	_equipment.erase(slot)
+	changed.emit()
+	return true
 
 
 func has_checkpoint() -> bool:
@@ -82,6 +127,12 @@ func to_dict() -> Dictionary:
 	for flag in _flags:
 		flag_names.append(String(flag))
 	flag_names.sort()
+	var item_ids: Array[String] = []
+	for id in _items:
+		item_ids.append(String(id))
+	var equipment := {}
+	for slot in _equipment:
+		equipment[String(slot)] = String(_equipment[slot])
 	return {
 		"version": FORMAT_VERSION,
 		"area": String(area),
@@ -90,6 +141,8 @@ func to_dict() -> Dictionary:
 				if has_checkpoint() else null,
 		"health": health,
 		"flags": flag_names,
+		"items": item_ids,
+		"equipment": equipment,
 	}
 
 
@@ -101,6 +154,8 @@ static func from_dict(data: Variant) -> Adventure:
 	var d: Dictionary = data
 	if _is_whole(d.get("version")) and int(d["version"]) == 1:
 		d = _upgraded_from_v1(d)
+	if _is_whole(d.get("version")) and int(d["version"]) == 2:
+		d = _upgraded_from_v2(d)
 	if not _is_whole(d.get("version")) or int(d["version"]) != FORMAT_VERSION:
 		return null
 	if not _is_name(d.get("area")) or not _is_name(d.get("entry")):
@@ -111,7 +166,7 @@ static func from_dict(data: Variant) -> Adventure:
 		return null
 	if not _is_whole(d.get("health")) or int(d["health"]) < FULL_HEALTH:
 		return null
-	if not d.get("flags") is Array:
+	if not d.get("flags") is Array or not d.get("items") is Array or not d.get("equipment") is Dictionary:
 		return null
 	var adventure := Adventure.new(StringName(d["area"]), StringName(d["entry"]))
 	if checkpoint != null:
@@ -122,6 +177,20 @@ static func from_dict(data: Variant) -> Adventure:
 		if not _is_name(flag):
 			return null
 		adventure._flags[StringName(flag)] = true
+	for id: Variant in d["items"]:
+		if not _is_name(id):
+			return null
+		if not adventure._items.has(StringName(id)):
+			adventure._items.append(StringName(id))
+	var equipment: Dictionary = d["equipment"]
+	for slot: Variant in equipment:
+		var id: Variant = equipment[slot]
+		if not _is_name(slot) or not _is_name(id):
+			return null
+		if not adventure._items.has(StringName(id)):
+			push_warning("Save equips %s in %s without having it; left unequipped." % [id, slot])
+			continue
+		adventure._equipment[StringName(slot)] = StringName(id)
 	return adventure
 
 
@@ -134,6 +203,15 @@ static func _upgraded_from_v1(v1: Dictionary) -> Dictionary:
 	v2["checkpoint"] = V1_SHRINE_CHECKPOINT.duplicate() \
 			if flags is Array and (flags as Array).has(V1_SHRINE_FLAG) else null
 	return v2
+
+
+## Version 2 had no items: an adventure from then has none and wears nothing.
+static func _upgraded_from_v2(v2: Dictionary) -> Dictionary:
+	var v3 := v2.duplicate()
+	v3["version"] = 3
+	v3["items"] = []
+	v3["equipment"] = {}
+	return v3
 
 
 ## JSON numbers arrive as floats; accept only whole values.

@@ -26,6 +26,8 @@ var state: State = State.MOVE
 var facing: Vector2 = Vector2.DOWN
 var _hurt_left: float = 0.0
 var _attack_buffered: bool = false
+## The sword as the scene defines it; what is equipped changes a copy of it (set_sword_power).
+var _base_sword: AttackData
 
 @onready var health: Health = $Health
 @onready var camera: Camera2D = $Camera
@@ -45,6 +47,7 @@ func _ready() -> void:
 	_attack.phase_changed.connect(_on_attack_phase_changed)
 	_attack.finished.connect(_on_attack_finished)
 	_sword.landed.connect(_on_sword_landed)
+	_base_sword = _attack.data
 	_sprite.play(&"idle_down")
 
 
@@ -139,6 +142,23 @@ func _on_sword_landed(target: Hurtbox) -> void:
 	spark.global_position = target.global_position.lerp(_sword.global_position, 0.5)
 	get_parent().add_child(spark)
 	hit_landed.emit()
+
+
+func base_sword() -> AttackData:
+	return _base_sword
+
+
+## The sword's damage and knockback (derived from what is equipped); its timing and reach stay
+## the scene's. A swing under way keeps the values it started with.
+func set_sword_power(damage: int, knockback: float) -> void:
+	var sword := _base_sword.duplicate() as AttackData
+	sword.damage = damage
+	sword.knockback = knockback
+	_attack.data = sword
+
+
+func sword_power() -> AttackData:
+	return _attack.data
 
 
 ## A shove that costs no health (people carrying a load across a crowded yard): knocked back from
