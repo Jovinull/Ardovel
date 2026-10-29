@@ -7,6 +7,8 @@ signal taken(target_area: StringName, target_entry: StringName)
 
 @export var target_area: StringName
 @export var target_entry: StringName
+## Text shown on the black on the way (a long walk), or empty for none.
+@export var interlude: String = ""
 
 
 func _ready() -> void:
@@ -17,5 +19,8 @@ func _ready() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	var player := body as Player
 	if player != null and not player.health.is_dead():
+		var level := owner as Level
+		if level != null and not interlude.is_empty():
+			level.interlude = interlude
 		# Deferred: the trip disables the area, which is not allowed inside a physics callback.
 		taken.emit.call_deferred(target_area, target_entry)
