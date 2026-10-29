@@ -25,6 +25,8 @@ var _arrow_tween: Tween
 var _pages: PackedStringArray = []
 var _page: int = 0
 var _guidance_key: String = ""
+## The actions whose keys or buttons fill the hint's placeholders, in order.
+var _guidance_actions: Array[StringName] = [&"pause", &"interact"]
 var _guidance_tween: Tween
 var _gamepad_active: bool = false
 var _joypad_name: String = ""
@@ -152,8 +154,10 @@ func is_message_visible() -> bool:
 	return _message_box.visible
 
 
-## Shows or hides a short translated first-step hint without interrupting movement.
-func set_guidance(message_key: String) -> void:
+## Shows or hides a short translated hint without interrupting movement; its placeholders name
+## the keys or buttons of `actions`.
+func set_guidance(message_key: String, actions: Array[StringName] = [&"pause", &"interact"]) -> void:
+	_guidance_actions = actions
 	if message_key == _guidance_key:
 		_update_guidance()
 		return
@@ -184,9 +188,10 @@ func _update_guidance() -> void:
 	if _guidance_key.is_empty():
 		_guidance.text = ""
 		return
-	var pause := InputPrompts.pause_label(_gamepad_active, _joypad_name)
-	var dismiss := InputPrompts.dismiss_label(_gamepad_active, _joypad_name)
-	_guidance.text = InputPrompts.format_template(tr(_guidance_key), [pause, dismiss])
+	var labels: Array[String] = []
+	for action in _guidance_actions:
+		labels.append(InputPrompts.action_label(action, _gamepad_active, _joypad_name))
+	_guidance.text = InputPrompts.format_template(tr(_guidance_key), labels)
 
 
 func _unhandled_input(event: InputEvent) -> void:

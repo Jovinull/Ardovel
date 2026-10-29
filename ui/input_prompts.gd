@@ -56,6 +56,8 @@ static func controls_text(gamepad: bool, joypad_name: String) -> String:
 			[action_label(&"attack", gamepad, joypad_name)]),
 		format_template(_tr("CONTROL_INTERACT_GAMEPAD" if gamepad else "CONTROL_INTERACT_KEYBOARD"),
 			[action_label(&"interact", gamepad, joypad_name)]),
+		format_template(_tr("CONTROL_EQUIPMENT_GAMEPAD" if gamepad else "CONTROL_EQUIPMENT_KEYBOARD"),
+			[action_label(&"equipment", gamepad, joypad_name)]),
 		format_template(_tr(menu_key), [
 			navigation,
 			pause_label(gamepad, joypad_name),

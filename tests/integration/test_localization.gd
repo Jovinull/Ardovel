@@ -111,7 +111,8 @@ func test_pause_controls_fit_on_the_pause_screen_in_every_language() -> void:
 	for locale in Settings.LOCALES:
 		TranslationServer.set_locale(locale)
 		await wait_process_frames(1)
-		assert_eq(controls.get_line_count(), 4, locale)
+		assert_eq(controls.get_line_count(), 5, locale)
+		assert_lte(controls.get_line_count() * (controls.get_line_height() + 1), int(controls.size.y) + 1, locale)
 
 
 func test_pause_title_stays_centered_when_scaled() -> void:
