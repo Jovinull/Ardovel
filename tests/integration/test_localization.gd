@@ -9,7 +9,8 @@ const PauseScene := preload("res://ui/pause/pause_screen.tscn")
 const DIR := "user://test_saves/localization"
 ## Folders holding the game's scripts and scenes.
 const GAME_DIRS: Array[String] = [
-	"res://actors", "res://combat", "res://fx", "res://game", "res://interaction", "res://ui", "res://world",
+	"res://actors", "res://combat", "res://fx", "res://game", "res://interaction", "res://items", "res://ui",
+	"res://world",
 ]
 ## Lines the message box shows at once.
 const BOX_LINES := 3
