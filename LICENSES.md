@@ -16,6 +16,7 @@ was written for this project.
 | File | Used for |
 | --- | --- |
 | `Backgrounds/Tilesets/TilesetFloor.png` | grass and dirt paths (terrain); the western slope uses its darker meadow set and its pale stony set |
+| `Backgrounds/Tilesets/tileset_camp.png` | Iara's tent, fire pit, pot, lamp post, coil of rope, oil jars, stools and log bench |
 | `Backgrounds/Tilesets/TilesetNature.png` | the pack's trees, bushes, flowers, rocks and stumps, and the grey crags, stacked stones and pebbles of the western slope |
 | `Backgrounds/Tilesets/TilesetHouse.png` | village houses, shop, arch, stall, barrels, banner, fence, the guardian statue and the ruin's grey guardians |
 | `Backgrounds/Tilesets/Interior/TilesetWallSimple.png` | the ruin's mossy walls |
@@ -23,7 +24,7 @@ was written for this project.
 | `Backgrounds/Tilesets/TilesetDungeon.png` | the ruin's orbs on stands, pressure plate and push block |
 | `Backgrounds/Tilesets/TilesetTowers.png` | the crystal of the ruin's heart, awake |
 | `Backgrounds/Tilesets/TilesetVillageAbandoned.png` | the ruin's pillars, broken walls and fallen guardian |
-| `Actor/Character/OldMan2/`, `Woman/`, `OldWoman/` (`SpriteSheet.png`, `Faceset.png`) | the villagers and their portraits |
+| `Actor/Character/OldMan2/`, `Woman/`, `OldWoman/`, `Villager3/` (`SpriteSheet.png`, `Faceset.png`) | the villagers, Iara of the far bank, and their portraits |
 | `Actor/Character/Shadow.png` | character shadows |
 | `Actor/Animal/Chicken/SpriteSheetWhite.png`, `SpriteSheetBrown.png`, `SpriteSheetBlack.png` | Cida's three hens |
 | `Ui/Receptacle/Heart.png` | health hearts |
@@ -35,8 +36,8 @@ was written for this project.
 | `FX/Magic/Circle/SpriteSheetSpark.png` | shrine awakening spark |
 | `FX/Smoke/SmokeCircular/SpriteSheet.png` | dust of the warden's slam |
 | `FX/Magic/Spirit/SpriteSheetBlue.png` | the warden's light flying to the ruin's heart |
-| `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact2`, `Impact3`, `Impact4`, `Spirit`, `Launch`, `Magic1`, `Bonus`, `PowerUp1`, `Grass`, `Grass2`, `Explosion`, `Explosion2`) | sound effects |
-| `Audio/Musics/33 - Calm Village.ogg`, `11 - Clearing.ogg`, `30 - Ruins.ogg`, `17 - Fight.ogg` | village, forest, ruin and warden fight music |
+| `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact2`, `Impact3`, `Impact4`, `Spirit`, `Launch`, `Magic1`, `Bonus`, `PowerUp1`, `Grass`, `Grass2`, `Explosion`, `Explosion2`, `Whoosh`, `Bounce`) | sound effects |
+| `Audio/Musics/33 - Calm Village.ogg`, `11 - Clearing.ogg`, `30 - Ruins.ogg`, `17 - Fight.ogg`, `23 - Road.ogg` | village, forest, ruin, warden fight and far bank music |
 
 ## Ardovel original art — `assets/ardovel/`
 
@@ -70,6 +71,7 @@ production tools are kept outside this repository.
 | `ruin/beacon.png` | the column of light over the village statue, three frames |
 | `forest/thicket.png`, `forest/echo_stone.png`, `forest/light_traces.png`, `forest/distant_glint.png`, `forest/wood_stack.png`, `forest/wood_carried.png` | hand drawn roots, signal stone, light traces, distant glint and firewood for the forest revisiting prototype, and the two logs Anselmo carries from the pile |
 | `west/lookout_floor.png`, `west/lookout_disc.png`, `west/gleam.png`, `west/fire_ring.png`, `west/footprints.png`, `west/fallen_bridge.png`, `west/gorge.png`, `west/pass_steps.png`, `west/keeper_cache.png` | hand drawn western lookout: its stone floor with parapet and steps, the polished disc on its pedestal (two positions), the reflected patch of daylight, a cold fire ring, footprints, the fallen rope bridge with its posts, boards and hanging ropes, the gorge's far bank, drop and near edge, the old steps of the pass and the cache in the pines |
+| `west/bridge_deck.png`, `west/bridge_post.png`, `west/line_weight.png`, `west/footprints_dark.png`, `far_bank/oil_press.png`, `far_bank/seed_basket.png`, `far_bank/signpost.png` | hand drawn rope bridge deck and post, the stone of the messenger line, footprints pressed into trodden earth, and Iara's oil press, basket of Cardosa seeds and the road's signpost |
 | `village/coop.png` | **modified copy** of the wooden hut of Ninja Adventure's `TilesetHouse.png` (CC0, region 3,120 to 45,159): two frames, one with two roof boards missing (a dark slot with its batten) and one with new, lighter boards in their place (the original file is unchanged) |
 | `village/coop_gate.png`, `village/egg_basket.png`, `village/grain.png` | hand drawn yard gate (nailed shut, open, new), basket of eggs and scattered grain, in the pack's idiom for wooden frames |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |

@@ -1,0 +1,114 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/west/rope_bridge.gd" id="1_qrsxe"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/west/fallen_bridge.png" id="2_cljou"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/west/bridge_post.png" id="3_3grv6"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/west/line_weight.png" id="4_ah7j5"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Whoosh & Slash/Whoosh.wav" id="5_qnak8"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Jump & Bounce/Bounce.wav" id="6_ey8yj"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact.wav" id="7_7du5c"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact2.wav" id="8_reaad"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Hit1.wav" id="9_em1c5"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="10_gyccy"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="11_uh828"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c2j37"]
+size = Vector2(6, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e847e"]
+size = Vector2(6, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_joxi4"]
+size = Vector2(46, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_iqxwb"]
+radius = 7.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2j1rf"]
+size = Vector2(40, 36)
+
+[node name="RopeBridge" type="Node2D" unique_id=1519100092]
+y_sort_enabled = true
+script = ExtResource("1_qrsxe")
+
+[node name="Fallen" type="Sprite2D" parent="." unique_id=186511067]
+position = Vector2(-12, 23)
+texture = ExtResource("2_cljou")
+centered = false
+offset = Vector2(-20, -40)
+
+[node name="NorthPost" type="Sprite2D" parent="." unique_id=243723138]
+position = Vector2(-1, -4)
+texture = ExtResource("3_3grv6")
+centered = false
+offset = Vector2(-3, -11)
+
+[node name="SouthPost" type="Sprite2D" parent="." unique_id=1015841680]
+position = Vector2(-1, 16)
+texture = ExtResource("3_3grv6")
+centered = false
+offset = Vector2(-3, -11)
+
+[node name="Posts" type="StaticBody2D" parent="." unique_id=151690207]
+collision_mask = 0
+
+[node name="@CollisionShape2D@2" type="CollisionShape2D" parent="Posts" unique_id=805066744]
+position = Vector2(-1, -6)
+shape = SubResource("RectangleShape2D_c2j37")
+
+[node name="@CollisionShape2D@3" type="CollisionShape2D" parent="Posts" unique_id=248770887]
+position = Vector2(-1, 14)
+shape = SubResource("RectangleShape2D_e847e")
+
+[node name="Gap" type="StaticBody2D" parent="." unique_id=306851447]
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape2D" parent="Gap" unique_id=1485437641]
+position = Vector2(-23, 4)
+shape = SubResource("RectangleShape2D_joxi4")
+
+[node name="Weight" type="Sprite2D" parent="." unique_id=1320300986]
+texture = ExtResource("4_ah7j5")
+
+[node name="Catch" type="Area2D" parent="Weight" unique_id=1650693187]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="@CollisionShape2D@4" type="CollisionShape2D" parent="Weight/Catch" unique_id=825063859]
+shape = SubResource("CircleShape2D_iqxwb")
+
+[node name="ThrowSound" type="AudioStreamPlayer2D" parent="." unique_id=658657119]
+stream = ExtResource("5_qnak8")
+volume_db = -10.0
+
+[node name="LandSound" type="AudioStreamPlayer2D" parent="." unique_id=1640544350]
+stream = ExtResource("6_ey8yj")
+volume_db = -10.0
+
+[node name="DeckSound" type="AudioStreamPlayer2D" parent="." unique_id=1968322260]
+stream = ExtResource("7_7du5c")
+volume_db = -10.0
+
+[node name="CreakSound" type="AudioStreamPlayer2D" parent="." unique_id=1373049559]
+stream = ExtResource("8_reaad")
+volume_db = -10.0
+
+[node name="SnagSound" type="AudioStreamPlayer2D" parent="." unique_id=106832592]
+stream = ExtResource("9_em1c5")
+volume_db = -10.0
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=886226560]
+visible = false
+position = Vector2(10, -22)
+texture = ExtResource("10_gyccy")
+
+[node name="Interactable" type="Area2D" parent="." unique_id=464890427 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("11_uh828")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=461933175]
+position = Vector2(14, 4)
+shape = SubResource("RectangleShape2D_2j1rf")

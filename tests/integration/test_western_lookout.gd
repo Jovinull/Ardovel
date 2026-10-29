@@ -237,7 +237,7 @@ func test_after_the_glint_the_disc_already_faces_the_forest() -> void:
 	assert_eq(await _press_interact(), "WEST_MIRROR_FOREST_GLINT", "now it names the glint seen there")
 	_player().global_position = Vector2(58, 50)
 	await wait_physics_frames(3)
-	assert_eq(await _press_interact(), "WEST_BRIDGE_GLINT")
+	assert_eq(await _press_interact(), "WEST_BRIDGE_GLINT_HAIL", "and someone shouts from across")
 	_player().global_position = Vector2(150, 84)
 	await wait_physics_frames(3)
 	assert_eq(await _press_interact(), "WEST_FIRE_RING_GLINT")

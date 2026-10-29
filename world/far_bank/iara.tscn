@@ -1,0 +1,50 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/npc/iara_worker.gd" id="1_7qadf"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/SpriteSheet.png" id="2_cy4iv"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/Faceset.png" id="3_k5cgt"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Shadow.png" id="4_fvrgg"]
+[ext_resource type="Script" path="res://interaction/interactable.gd" id="5_7f0su"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Ui/Input/Keyboard/KeyE.png" id="6_tf0fd"]
+
+[sub_resource type="RectangleShape2D" id="body"]
+size = Vector2(10, 6)
+
+[sub_resource type="RectangleShape2D" id="reach"]
+size = Vector2(28, 26)
+
+[node name="Iara" type="StaticBody2D" unique_id=802837563]
+collision_mask = 0
+script = ExtResource("1_7qadf")
+display_name = "NPC_IARA"
+sheet = ExtResource("2_cy4iv")
+faceset = ExtResource("3_k5cgt")
+facing = Vector2(1, 0)
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=499705389]
+position = Vector2(0, -1)
+texture = ExtResource("4_fvrgg")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1358748726]
+position = Vector2(0, -8)
+hframes = 4
+vframes = 7
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=955333472]
+position = Vector2(0, -3)
+shape = SubResource("body")
+
+[node name="Interactable" type="Area2D" parent="." unique_id=1592073108 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("5_7f0su")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=1773794191]
+position = Vector2(0, -6)
+shape = SubResource("reach")
+
+[node name="Prompt" type="Sprite2D" parent="." unique_id=307636029]
+visible = false
+position = Vector2(0, -26)
+texture = ExtResource("6_tf0fd")

@@ -2,12 +2,19 @@
 
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetNature.png" id="1_e8kgh"]
 
-[node name="Pebbles" type="StaticBody2D" unique_id=2052480822]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yhfuw"]
+size = Vector2(12, 5)
+
+[node name="Pebbles" type="StaticBody2D" unique_id=487202905]
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=816117701]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=226735328]
 texture = ExtResource("1_e8kgh")
 centered = false
 offset = Vector2(-8, -16)
 region_enabled = true
 region_rect = Rect2(272, 272, 16, 16)
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=265936470]
+position = Vector2(0, -2.5)
+shape = SubResource("RectangleShape2D_yhfuw")
