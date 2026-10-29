@@ -23,6 +23,7 @@ func _ready() -> void:
 	_view.visible = false
 	_view.process_mode = Node.PROCESS_MODE_ALWAYS
 	set_process(false)
+	set_process_input(false)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 
@@ -43,6 +44,7 @@ func _on_interact(_actor: Node2D) -> String:
 	_view.visible = true
 	_opened_for = 0.0
 	set_process(true)
+	set_process_input(true)
 	var level := owner as Level
 	if level != null:
 		level.set_deferred(&"process_mode", Node.PROCESS_MODE_DISABLED)
@@ -52,15 +54,29 @@ func _on_interact(_actor: Node2D) -> String:
 func close() -> void:
 	_view.visible = false
 	set_process(false)
+	set_process_input(false)
 	var level := owner as Level
 	if level != null:
-		level.process_mode = Node.PROCESS_MODE_INHERIT
+		# At the end of the frame, so the key that closed it does not reach the hero and reopen it.
+		level.set_deferred(&"process_mode", Node.PROCESS_MODE_INHERIT)
 
 
 func _process(delta: float) -> void:
 	_opened_for += delta
 	if _opened_for < OPEN_DELAY:
 		return
-	if Input.is_action_just_pressed(&"interact") or Input.is_action_just_pressed(&"attack") \
-			or Input.is_action_just_pressed(&"ui_cancel"):
+	var pressed := Input.is_action_just_pressed(&"interact") or Input.is_action_just_pressed(&"attack")
+	if pressed or Input.is_action_just_pressed(&"ui_cancel"):
 		close()
+
+
+## While open, the map takes the keys that would close it, before anything else sees them: the
+## pause key closes the map instead of also opening the pause menu over it.
+func _input(event: InputEvent) -> void:
+	if not is_open() or _opened_for < OPEN_DELAY:
+		return
+	for action: StringName in [&"interact", &"attack", &"ui_cancel", &"pause"]:
+		if event.is_action_pressed(action):
+			get_viewport().set_input_as_handled()
+			close()
+			return

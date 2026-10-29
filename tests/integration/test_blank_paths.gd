@@ -96,6 +96,18 @@ func _tap(action: StringName) -> void:
 	await wait_physics_frames(2)
 
 
+## A key press as the keyboard sends it (an input event, which the pause menu listens for).
+func _press_key_event(action: StringName) -> void:
+	var event := InputEventAction.new()
+	event.action = action
+	event.pressed = true
+	Input.parse_input_event(event)
+	await wait_physics_frames(2)
+	event.pressed = false
+	Input.parse_input_event(event)
+	await wait_physics_frames(3)
+
+
 func _press_interact() -> String:
 	var said := [""]
 	var listen := func(_target: Interactable, message: String) -> void: said[0] = message
@@ -252,6 +264,24 @@ func test_her_map_is_blank_past_the_bridge_until_she_draws_it() -> void:
 	assert_eq((map.get_node(^"View/Picture") as TextureRect).texture, map.drawn, "drawn on to the gorge")
 	await wait_physics_frames(20)
 	await _tap(&"interact")
+
+
+func test_the_pause_key_closes_the_map_without_opening_the_pause_menu_over_it() -> void:
+	await _continue_in(&"waystop", &"east", _with([Blank.MET]))
+	var map := game.level.get_node(^"Entities/WitchMap") as MapSheet
+	_player().global_position = Vector2(198, 198)
+	await wait_physics_frames(3)
+	await _tap(&"interact")
+	assert_true(map.is_open())
+	await wait_physics_frames(20)
+	await _press_key_event(&"pause")
+	assert_false(map.is_open(), "the map closes")
+	assert_false(get_tree().paused, "and the pause menu does not open over it")
+	assert_eq(game.level.process_mode, Node.PROCESS_MODE_INHERIT, "the area runs again")
+	await _press_key_event(&"pause")
+	assert_true(get_tree().paused, "the pause key works as usual once the map is shut")
+	await _press_key_event(&"pause")
+	assert_false(get_tree().paused, "and closes the pause again")
 
 
 func test_she_goes_east_once_the_hero_has_walked_off() -> void:
