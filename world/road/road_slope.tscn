@@ -99,15 +99,15 @@ animations = [{
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_phq1q"]
 atlas = ExtResource("9_71vmr")
-region = Rect2(0, 0, 24, 58)
+region = Rect2(0, 0, 30, 60)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ghmck"]
 atlas = ExtResource("9_71vmr")
-region = Rect2(24, 0, 24, 58)
+region = Rect2(30, 0, 30, 60)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_l3ot2"]
 atlas = ExtResource("9_71vmr")
-region = Rect2(48, 0, 24, 58)
+region = Rect2(60, 0, 30, 60)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1vfpv"]
 animations = [{
@@ -142,110 +142,116 @@ size = Vector2(16, 3)
 size = Vector2(22, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hr5xu"]
-size = Vector2(30, 6)
+size = Vector2(12, 5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vxmvt"]
-size = Vector2(448, 16)
+size = Vector2(12, 5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qnuxu"]
-size = Vector2(448, 16)
+size = Vector2(30, 6)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_44ghv"]
-size = Vector2(16, 224)
+size = Vector2(448, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iiv4k"]
-size = Vector2(16, 224)
+size = Vector2(448, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rpih2"]
-size = Vector2(336, 16)
+size = Vector2(16, 224)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_es84k"]
+size = Vector2(16, 224)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4wwo"]
+size = Vector2(336, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dh7g8"]
 size = Vector2(44, 224)
 
-[node name="RoadSlope" type="Node2D" unique_id=1885205288 node_paths=PackedStringArray("player", "ground")]
+[node name="RoadSlope" type="Node2D" unique_id=235213171 node_paths=PackedStringArray("player", "ground")]
 script = ExtResource("1_gdwdr")
 area_id = &"road_slope"
 music = ExtResource("2_dl53c")
 player = NodePath("Entities/Player")
 ground = NodePath("Ground")
 
-[node name="Ground" type="TileMapLayer" parent="." unique_id=72194901]
+[node name="Ground" type="TileMapLayer" parent="." unique_id=1602161289]
 tile_map_data = PackedByteArray("AAAAAAAAAAAMABMAAAABAAAAAAALABMAAAACAAAAAAALABMAAAADAAAAAAALABMAAAAEAAAAAAALABMAAAAFAAAAAAALABMAAAAGAAAAAAALABMAAAAHAAAAAAALABMAAAAIAAAAAAALABMAAAAJAAAAAAANABMAAAAKAAAAAAALABMAAAALAAAAAAALABMAAAAMAAAAAAALABMAAAANAAAAAAALABMAAAAOAAAAAAALABMAAAAPAAAAAAALABMAAAAQAAAAAAALABMAAAARAAAAAAALABMAAAASAAAAAAAOABMAAAATAAAAAAALABMAAAAUAAAAAAALABMAAAAVAAAAAAALABMAAAAWAAAAAAALABMAAAAXAAAAAAALABMAAAAYAAAAAAALABMAAAAZAAAAAAALABMAAAAAAAEAAAALABMAAAABAAEAAAALABMAAAACAAEAAAALABMAAAADAAEAAAAMABMAAAAEAAEAAAALABMAAAAFAAEAAAALABMAAAAGAAEAAAALABMAAAAHAAEAAAALABMAAAAIAAEAAAALABMAAAAJAAEAAAALABMAAAAKAAEAAAALABMAAAALAAEAAAALABMAAAAMAAEAAAALABMAAAANAAEAAAALABMAAAAOAAEAAAANABMAAAAPAAEAAAALABMAAAAQAAEAAAALABMAAAARAAEAAAALABMAAAASAAEAAAALABMAAAATAAEAAAALABMAAAAUAAEAAAALABMAAAAVAAEAAAALABMAAAAWAAEAAAALABMAAAAXAAEAAAALABMAAAAYAAEAAAALABMAAAAZAAEAAAALABMAAAAAAAIAAAALABMAAAABAAIAAAALABMAAAACAAIAAAALABMAAAADAAIAAAANABMAAAAEAAIAAAALABMAAAAFAAIAAAALABMAAAAGAAIAAAAMABMAAAAHAAIAAAANABMAAAAIAAIAAAALABMAAAAJAAIAAAALABMAAAAKAAIAAAALABMAAAALAAIAAAALABMAAAAMAAIAAAALABMAAAANAAIAAAALABMAAAAOAAIAAAALABMAAAAPAAIAAAALABMAAAAQAAIAAAALABMAAAARAAIAAAALABMAAAASAAIAAAALABMAAAATAAIAAAALABMAAAAUAAIAAAALABMAAAAVAAIAAAALABMAAAAWAAIAAAALABMAAAAXAAIAAAALABMAAAAYAAIAAAALABMAAAAZAAIAAAALABMAAAAAAAMAAAALABMAAAABAAMAAAALABMAAAACAAMAAAAPABMAAAADAAMAAAAOABMAAAAEAAMAAAANABMAAAAFAAMAAAAMABMAAAAGAAMAAAALABMAAAAHAAMAAAALABMAAAAIAAMAAAALABMAAAAJAAMAAAALABMAAAAKAAMAAAALABMAAAALAAMAAAALABMAAAAMAAMAAAANABMAAAANAAMAAAALABMAAAAOAAMAAAALABMAAAAPAAMAAAALABMAAAAQAAMAAAANABMAAAARAAMAAAALABMAAAASAAMAAAALABMAAAATAAMAAAALABMAAAAUAAMAAAALABMAAAAVAAMAAAALABMAAAAWAAMAAAAPABMAAAAXAAMAAAALABMAAAAYAAMAAAALABMAAAAZAAMAAAALABMAAAAAAAQAAAALABMAAAABAAQAAAALABMAAAACAAQAAAALABMAAAADAAQAAAALABMAAAAEAAQAAAALABMAAAAFAAQAAAALABMAAAAGAAQAAAAOABMAAAAHAAQAAAALABMAAAAIAAQAAAALABMAAAAJAAQAAAALABMAAAAKAAQAAAALABMAAAALAAQAAAALABMAAAAMAAQAAAAMABMAAAANAAQAAAALABMAAAAOAAQAAAAOABMAAAAPAAQAAAALABMAAAAQAAQAAAALABMAAAARAAQAAAALABMAAAASAAQAAAALABMAAAATAAQAAAALABMAAAAUAAQAAAALABMAAAAVAAQAAAALABMAAAAWAAQAAAALABMAAAAXAAQAAAALABMAAAAYAAQAAAALABMAAAAZAAQAAAALABMAAAAAAAUAAAALABMAAAABAAUAAAALABMAAAACAAUAAAALABMAAAADAAUAAAALABMAAAAEAAUAAAALABMAAAAFAAUAAAALABMAAAAGAAUAAAALABMAAAAHAAUAAAALABMAAAAIAAUAAAALABMAAAAJAAUAAAALABMAAAAKAAUAAAALABMAAAALAAUAAAALABMAAAAMAAUAAAALABMAAAANAAUAAAALAA4AAAAOAAUAAAAMAA4AAAAPAAUAAAAMAA4AAAAQAAUAAAANAA4AAAARAAUAAAALABMAAAASAAUAAAALABMAAAATAAUAAAALABMAAAAUAAUAAAALABMAAAAVAAUAAAALABMAAAAWAAUAAAANABMAAAAXAAUAAAALABMAAAAYAAUAAAALABMAAAAZAAUAAAAOABMAAAAAAAYAAAALABMAAAABAAYAAAALABMAAAACAAYAAAALABMAAAADAAYAAAALABMAAAAEAAYAAAAOABMAAAAFAAYAAAAPABMAAAAGAAYAAAAMABMAAAAHAAYAAAANABMAAAAIAAYAAAALAA4AAAAJAAYAAAAMAA4AAAAKAAYAAAAMAA4AAAALAAYAAAAMAA4AAAAMAAYAAAAMAA4AAAANAAYAAAAUAA8AAAAOAAYAAAAMABAAAAAPAAYAAAAMABAAAAAQAAYAAAANABAAAAARAAYAAAALAA4AAAASAAYAAAAMAA4AAAATAAYAAAANAA4AAAAUAAYAAAALABMAAAAVAAYAAAALABMAAAAWAAYAAAALABMAAAAXAAYAAAALABMAAAAYAAYAAAAOABMAAAAZAAYAAAALABMAAAAAAAcAAAALABMAAAABAAcAAAALABMAAAACAAcAAAALABMAAAADAAcAAAALABMAAAAEAAcAAAALABMAAAAFAAcAAAALABMAAAAGAAcAAAALAA4AAAAHAAcAAAAMAA4AAAAIAAcAAAAUAA8AAAAJAAcAAAAMABAAAAAKAAcAAAAMABAAAAALAAcAAAAMABAAAAAMAAcAAAAMABAAAAANAAcAAAANABAAAAAOAAcAAAALABMAAAAPAAcAAAALABMAAAAQAAcAAAALABMAAAARAAcAAAALABAAAAASAAcAAAAMABAAAAATAAcAAAAUAA4AAAAUAAcAAAANAA4AAAAVAAcAAAALABMAAAAWAAcAAAALABMAAAAXAAcAAAALABMAAAAYAAcAAAALABMAAAAZAAcAAAAMABMAAAAAAAgAAAALABMAAAABAAgAAAANABMAAAACAAgAAAALABMAAAADAAgAAAALABMAAAAEAAgAAAALABMAAAAFAAgAAAALABMAAAAGAAgAAAALAA8AAAAHAAgAAAAQAA8AAAAIAAgAAAANABAAAAAJAAgAAAANABMAAAAKAAgAAAALABMAAAALAAgAAAALABMAAAAMAAgAAAAMABMAAAANAAgAAAALABMAAAAOAAgAAAALABMAAAAPAAgAAAALABMAAAAQAAgAAAALABMAAAARAAgAAAALABMAAAASAAgAAAALABMAAAATAAgAAAALAA8AAAAUAAgAAAANAA8AAAAVAAgAAAANABMAAAAWAAgAAAALABMAAAAXAAgAAAALABMAAAAYAAgAAAAMABMAAAAZAAgAAAANABMAAAAAAAkAAAAPABMAAAABAAkAAAALABMAAAACAAkAAAALABMAAAADAAkAAAALABMAAAAEAAkAAAALABMAAAAFAAkAAAALAA4AAAAGAAkAAAAUAA8AAAAHAAkAAAANABAAAAAIAAkAAAALABMAAAAJAAkAAAAOABMAAAAKAAkAAAALABMAAAALAAkAAAALABMAAAAMAAkAAAALABMAAAANAAkAAAALABMAAAAOAAkAAAALABMAAAAPAAkAAAALABMAAAAQAAkAAAALABMAAAARAAkAAAALABMAAAASAAkAAAANABMAAAATAAkAAAALABAAAAAUAAkAAAANABAAAAAVAAkAAAAOABMAAAAWAAkAAAANABMAAAAXAAkAAAALABMAAAAYAAkAAAALABMAAAAZAAkAAAALABMAAAAAAAoAAAALABMAAAABAAoAAAALABMAAAACAAoAAAALABMAAAADAAoAAAANABMAAAAEAAoAAAALABMAAAAFAAoAAAALAA8AAAAGAAoAAAANAA8AAAAHAAoAAAALABMAAAAIAAoAAAALABMAAAAJAAoAAAALABMAAAAKAAoAAAALABMAAAALAAoAAAALABMAAAAMAAoAAAALABMAAAANAAoAAAALABMAAAAOAAoAAAALABMAAAAPAAoAAAALABMAAAAQAAoAAAALABMAAAARAAoAAAALABMAAAASAAoAAAALABMAAAATAAoAAAALABMAAAAUAAoAAAALABMAAAAVAAoAAAALABMAAAAWAAoAAAALABMAAAAXAAoAAAALABMAAAAYAAoAAAALABMAAAAZAAoAAAAPABMAAAAAAAsAAAALABMAAAABAAsAAAALABMAAAACAAsAAAALABMAAAADAAsAAAALABMAAAAEAAsAAAALABMAAAAFAAsAAAALAA8AAAAGAAsAAAANAA8AAAAHAAsAAAALABMAAAAIAAsAAAALABMAAAAJAAsAAAALABMAAAAKAAsAAAALABMAAAALAAsAAAALABMAAAAMAAsAAAANABMAAAANAAsAAAALABMAAAAOAAsAAAALABMAAAAPAAsAAAALABMAAAAQAAsAAAALABMAAAARAAsAAAALABMAAAASAAsAAAALABMAAAATAAsAAAAOABMAAAAUAAsAAAALABMAAAAVAAsAAAALABMAAAAWAAsAAAALABMAAAAXAAsAAAALABMAAAAYAAsAAAALABMAAAAZAAsAAAALABMAAAAAAAwAAAALABMAAAABAAwAAAALABMAAAACAAwAAAALABMAAAADAAwAAAALABMAAAAEAAwAAAALABMAAAAFAAwAAAALAA8AAAAGAAwAAAANAA8AAAAHAAwAAAAPABMAAAAIAAwAAAAMABMAAAAJAAwAAAALABMAAAAKAAwAAAAOABMAAAALAAwAAAAPABMAAAAMAAwAAAAMABMAAAANAAwAAAALABMAAAAOAAwAAAAOABMAAAAPAAwAAAALABMAAAAQAAwAAAAMABMAAAARAAwAAAALABMAAAASAAwAAAALABMAAAATAAwAAAALABMAAAAUAAwAAAAMABMAAAAVAAwAAAALABMAAAAWAAwAAAALABMAAAAXAAwAAAALABMAAAAYAAwAAAALABMAAAAZAAwAAAALABMAAAAAAA0AAAALABMAAAABAA0AAAALABMAAAACAA0AAAALABMAAAADAA0AAAALABMAAAAEAA0AAAALABMAAAAFAA0AAAALAA8AAAAGAA0AAAANAA8AAAAHAA0AAAALABMAAAAIAA0AAAALABMAAAAJAA0AAAALABMAAAAKAA0AAAALABMAAAALAA0AAAALABMAAAAMAA0AAAALABMAAAANAA0AAAALABMAAAAOAA0AAAALABMAAAAPAA0AAAALABMAAAAQAA0AAAALABMAAAARAA0AAAALABMAAAASAA0AAAALABMAAAATAA0AAAALABMAAAAUAA0AAAAPABMAAAAVAA0AAAALABMAAAAWAA0AAAALABMAAAAXAA0AAAALABMAAAAYAA0AAAAPABMAAAAZAA0AAAALABMAAAA=")
 tile_set = ExtResource("3_k5x0h")
 
-[node name="Gorge" type="TileMapLayer" parent="." unique_id=561843579]
+[node name="Gorge" type="TileMapLayer" parent="." unique_id=457561927]
 tile_map_data = PackedByteArray("AAAXAAAAAAACAAAAAAAYAAAAAAAAAAAAAAAZAAAAAAABAAAAAAAXAAEAAAACAAAAAAAYAAEAAAAAAAAAAAAZAAEAAAABAAAAAAAXAAIAAAACAAAAAAAYAAIAAAAAAAAAAAAZAAIAAAABAAAAAAAXAAMAAAACAAAAAAAYAAMAAAAAAAAAAAAZAAMAAAABAAAAAAAXAAQAAAACAAAAAAAYAAQAAAAAAAAAAAAZAAQAAAABAAAAAAAXAAUAAAACAAAAAAAYAAUAAAAAAAAAAAAZAAUAAAABAAAAAAAXAAYAAAACAAAAAAAYAAYAAAAAAAAAAAAZAAYAAAABAAAAAAAXAAcAAAACAAAAAAAYAAcAAAAAAAAAAAAZAAcAAAABAAAAAAAXAAgAAAACAAAAAAAYAAgAAAAAAAAAAAAZAAgAAAABAAAAAAAXAAkAAAACAAAAAAAYAAkAAAAAAAAAAAAZAAkAAAABAAAAAAAXAAoAAAACAAAAAAAYAAoAAAAAAAAAAAAZAAoAAAABAAAAAAAXAAsAAAACAAAAAAAYAAsAAAAAAAAAAAAZAAsAAAABAAAAAAAXAAwAAAACAAAAAAAYAAwAAAAAAAAAAAAZAAwAAAABAAAAAAAXAA0AAAACAAAAAAAYAA0AAAAAAAAAAAAZAA0AAAABAAAAAAA=")
 tile_set = SubResource("TileSet_8g7vd")
 
-[node name="Ditch" type="TileMapLayer" parent="." unique_id=1530460283]
+[node name="Ditch" type="TileMapLayer" parent="." unique_id=798563892]
 tile_set = SubResource("TileSet_ky8mh")
 script = ExtResource("6_aupxl")
 breaches = Array[int]([7, 10, 13])
 
-[node name="Decals" type="Node2D" parent="." unique_id=1552408478]
+[node name="Decals" type="Node2D" parent="." unique_id=82502941]
 
-[node name="Runoff" type="Node2D" parent="Decals" unique_id=1802375465]
+[node name="Runoff" type="Node2D" parent="Decals" unique_id=1372498662]
 script = ExtResource("7_cy6q8")
 flag = &"road_ditch_cleared"
 when_set = false
 
-[node name="Runoff1" type="AnimatedSprite2D" parent="Decals/Runoff" unique_id=760807183]
+[node name="Runoff1" type="AnimatedSprite2D" parent="Decals/Runoff" unique_id=1180689883]
 position = Vector2(64, 80)
 sprite_frames = SubResource("SpriteFrames_ct5ks")
 animation = &"run"
 autoplay = "run"
 centered = false
 
-[node name="Runoff2" type="AnimatedSprite2D" parent="Decals/Runoff" unique_id=427387617]
+[node name="Runoff2" type="AnimatedSprite2D" parent="Decals/Runoff" unique_id=737557658]
 position = Vector2(112, 80)
 sprite_frames = SubResource("SpriteFrames_ct5ks")
 animation = &"run"
 autoplay = "run"
 centered = false
 
-[node name="Runoff3" type="AnimatedSprite2D" parent="Decals/Runoff" unique_id=2089774999]
+[node name="Runoff3" type="AnimatedSprite2D" parent="Decals/Runoff" unique_id=1019959292]
 position = Vector2(160, 80)
 sprite_frames = SubResource("SpriteFrames_ct5ks")
 animation = &"run"
 autoplay = "run"
 centered = false
 
-[node name="Waterfall" type="Node2D" parent="Decals" unique_id=1492304778]
+[node name="Waterfall" type="Node2D" parent="Decals" unique_id=1706242348]
 script = ExtResource("7_cy6q8")
 flag = &"road_ditch_cleared"
 
-[node name="Pour" type="AnimatedSprite2D" parent="Decals/Waterfall" unique_id=1674755237]
+[node name="Pour" type="AnimatedSprite2D" parent="Decals/Waterfall" unique_id=637873792]
 position = Vector2(364, 66)
 sprite_frames = SubResource("SpriteFrames_1vfpv")
 autoplay = "default"
 centered = false
 
-[node name="Entities" type="Node2D" parent="." unique_id=1902741585]
+[node name="Entities" type="Node2D" parent="." unique_id=1328143045]
 y_sort_enabled = true
 
-[node name="Player" type="CharacterBody2D" parent="Entities" unique_id=1734964628 instance=ExtResource("10_v1q04")]
+[node name="Player" type="CharacterBody2D" parent="Entities" unique_id=398988657 instance=ExtResource("10_v1q04")]
 position = Vector2(90, 206)
 collision_layer = 2
 motion_mode = 1
 script = ExtResource("11_olkmd")
 
-[node name="DitchDam" type="Node2D" parent="Entities" unique_id=606976490 instance=ExtResource("12_0mter")]
+[node name="DitchDam" type="Node2D" parent="Entities" unique_id=182107568 instance=ExtResource("12_0mter")]
 position = Vector2(264, 80)
 script = ExtResource("13_ilkcq")
 
-[node name="Chute1" type="Node2D" parent="Entities" unique_id=1915927658]
+[node name="Chute1" type="Node2D" parent="Entities" unique_id=1347073781]
 position = Vector2(120, 84)
 script = ExtResource("14_aj5v2")
 fall = Vector2(-48, 139)
 first_delay = 0.6
 
-[node name="Chute2" type="Node2D" parent="Entities" unique_id=1937311729]
+[node name="Chute2" type="Node2D" parent="Entities" unique_id=1362540940]
 position = Vector2(168, 84)
 script = ExtResource("14_aj5v2")
 fall = Vector2(-48, 139)
 first_delay = 1.7
 
-[node name="Chute3" type="Node2D" parent="Entities" unique_id=347703805]
+[node name="Chute3" type="Node2D" parent="Entities" unique_id=1055206952]
 position = Vector2(216, 84)
 script = ExtResource("14_aj5v2")
 fall = Vector2(-48, 139)
@@ -255,47 +261,47 @@ first_delay = 2.6
 position = Vector2(22, 86)
 collision_mask = 0
 
-[node name="PineGrove1" type="StaticBody2D" parent="Entities" unique_id=262216127 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove1" type="StaticBody2D" parent="Entities" unique_id=342766570 instance=ExtResource("16_r6q6g")]
 position = Vector2(58, 52)
 collision_mask = 0
 
-[node name="PineGrove2" type="StaticBody2D" parent="Entities" unique_id=1877919120 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove2" type="StaticBody2D" parent="Entities" unique_id=863039849 instance=ExtResource("16_r6q6g")]
 position = Vector2(122, 48)
 collision_mask = 0
 
-[node name="PineGrove3" type="StaticBody2D" parent="Entities" unique_id=297074705 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove3" type="StaticBody2D" parent="Entities" unique_id=1176719264 instance=ExtResource("16_r6q6g")]
 position = Vector2(186, 52)
 collision_mask = 0
 
-[node name="PineGrove4" type="StaticBody2D" parent="Entities" unique_id=1092989980 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove4" type="StaticBody2D" parent="Entities" unique_id=1623572393 instance=ExtResource("16_r6q6g")]
 position = Vector2(250, 48)
 collision_mask = 0
 
-[node name="PineGrove5" type="StaticBody2D" parent="Entities" unique_id=103259291 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove5" type="StaticBody2D" parent="Entities" unique_id=123656183 instance=ExtResource("16_r6q6g")]
 position = Vector2(314, 52)
 collision_mask = 0
 
-[node name="PineGrove6" type="StaticBody2D" parent="Entities" unique_id=23827893 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove6" type="StaticBody2D" parent="Entities" unique_id=1940211248 instance=ExtResource("16_r6q6g")]
 position = Vector2(34, 160)
 collision_mask = 0
 
-[node name="PineGrove7" type="StaticBody2D" parent="Entities" unique_id=513658528 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove7" type="StaticBody2D" parent="Entities" unique_id=588157079 instance=ExtResource("16_r6q6g")]
 position = Vector2(30, 230)
 collision_mask = 0
 
-[node name="PineGrove8" type="StaticBody2D" parent="Entities" unique_id=327808128 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove8" type="StaticBody2D" parent="Entities" unique_id=54477308 instance=ExtResource("16_r6q6g")]
 position = Vector2(152, 232)
 collision_mask = 0
 
-[node name="PineGrove9" type="StaticBody2D" parent="Entities" unique_id=817653960 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove9" type="StaticBody2D" parent="Entities" unique_id=1116769474 instance=ExtResource("16_r6q6g")]
 position = Vector2(216, 228)
 collision_mask = 0
 
-[node name="PineGrove10" type="StaticBody2D" parent="Entities" unique_id=510804294 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove10" type="StaticBody2D" parent="Entities" unique_id=1867856929 instance=ExtResource("16_r6q6g")]
 position = Vector2(276, 232)
 collision_mask = 0
 
-[node name="PineGrove11" type="StaticBody2D" parent="Entities" unique_id=2120593366 instance=ExtResource("16_r6q6g")]
+[node name="PineGrove11" type="StaticBody2D" parent="Entities" unique_id=500986563 instance=ExtResource("16_r6q6g")]
 position = Vector2(344, 230)
 collision_mask = 0
 
@@ -311,115 +317,129 @@ collision_mask = 0
 position = Vector2(190, 196)
 collision_mask = 0
 
-[node name="Bush1" type="StaticBody2D" parent="Entities" unique_id=62657710 instance=ExtResource("20_vyqu4")]
+[node name="Bush1" type="StaticBody2D" parent="Entities" unique_id=1185079422 instance=ExtResource("20_vyqu4")]
 position = Vector2(260, 186)
 collision_mask = 0
 
-[node name="Fern1" type="Node2D" parent="Entities" unique_id=807200478 instance=ExtResource("21_cxs3w")]
+[node name="Fern1" type="Node2D" parent="Entities" unique_id=1166615492 instance=ExtResource("21_cxs3w")]
 position = Vector2(128, 196)
 
-[node name="Spring" type="StaticBody2D" parent="Entities" unique_id=530537033]
+[node name="Spring" type="StaticBody2D" parent="Entities" unique_id=1528458802]
 position = Vector2(40, 96)
 collision_mask = 0
 script = ExtResource("22_qntkr")
 text = "ROAD_SPRING"
 
-[node name="Prompt" type="Sprite2D" parent="Entities/Spring" unique_id=83677992]
+[node name="Prompt" type="Sprite2D" parent="Entities/Spring" unique_id=1329902921]
 visible = false
 position = Vector2(0, -26)
 texture = ExtResource("23_ao5kd")
 
-[node name="Interactable" type="Area2D" parent="Entities/Spring" unique_id=35260075 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="Entities/Spring" unique_id=221546787 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("24_j6v11")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Spring/Interactable" unique_id=1057403607]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Spring/Interactable" unique_id=573092653]
 position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_iovwh")
 
-[node name="Shelter" type="StaticBody2D" parent="Entities" unique_id=423907423]
+[node name="Shelter" type="StaticBody2D" parent="Entities" unique_id=824387301]
 position = Vector2(330, 176)
 collision_mask = 0
 script = ExtResource("22_qntkr")
 text = "ROAD_SHELTER"
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Shelter" unique_id=1188653008]
+[node name="Sprite" type="Sprite2D" parent="Entities/Shelter" unique_id=1470710711]
 texture = ExtResource("25_ugkwy")
 centered = false
 offset = Vector2(-24, -48)
 region_enabled = true
 region_rect = Rect2(160, 0, 48, 48)
 
-[node name="@CollisionShape2D@2" type="CollisionShape2D" parent="Entities/Shelter" unique_id=902755726]
+[node name="@CollisionShape2D@2" type="CollisionShape2D" parent="Entities/Shelter" unique_id=489447775]
 position = Vector2(0, -5)
 shape = SubResource("RectangleShape2D_grvqj")
 
-[node name="Prompt" type="Sprite2D" parent="Entities/Shelter" unique_id=526827386]
+[node name="Prompt" type="Sprite2D" parent="Entities/Shelter" unique_id=1744423593]
 visible = false
 position = Vector2(0, -46)
 texture = ExtResource("23_ao5kd")
 
-[node name="Interactable" type="Area2D" parent="Entities/Shelter" unique_id=1370037078 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="Entities/Shelter" unique_id=81189218 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("24_j6v11")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Shelter/Interactable" unique_id=1872043838]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Shelter/Interactable" unique_id=2102155732]
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_5vmpk")
 
-[node name="TallyBoard" type="StaticBody2D" parent="Entities" unique_id=1196407071]
+[node name="TallyBoard" type="StaticBody2D" parent="Entities" unique_id=1840821099]
 position = Vector2(286, 152)
 collision_mask = 0
 script = ExtResource("22_qntkr")
 text = "ROAD_TALLY"
 
-[node name="Sprite" type="Sprite2D" parent="Entities/TallyBoard" unique_id=971917932]
+[node name="Sprite" type="Sprite2D" parent="Entities/TallyBoard" unique_id=566024834]
 texture = ExtResource("26_v6yg8")
 centered = false
 offset = Vector2(-9, -14)
 
-[node name="@CollisionShape2D@3" type="CollisionShape2D" parent="Entities/TallyBoard" unique_id=1374318402]
+[node name="@CollisionShape2D@3" type="CollisionShape2D" parent="Entities/TallyBoard" unique_id=1279518438]
 position = Vector2(0, -1.5)
 shape = SubResource("RectangleShape2D_7ncbp")
 
-[node name="Prompt" type="Sprite2D" parent="Entities/TallyBoard" unique_id=282526993]
+[node name="Prompt" type="Sprite2D" parent="Entities/TallyBoard" unique_id=1789223333]
 visible = false
 position = Vector2(0, -26)
 texture = ExtResource("23_ao5kd")
 
-[node name="Interactable" type="Area2D" parent="Entities/TallyBoard" unique_id=437450958 node_paths=PackedStringArray("prompt")]
+[node name="Interactable" type="Area2D" parent="Entities/TallyBoard" unique_id=1885993030 node_paths=PackedStringArray("prompt")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("24_j6v11")
 prompt = NodePath("../Prompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/TallyBoard/Interactable" unique_id=1718578371]
+[node name="Shape" type="CollisionShape2D" parent="Entities/TallyBoard/Interactable" unique_id=1007352530]
 position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_s6bfk")
 
-[node name="Shovel" type="Sprite2D" parent="Entities" unique_id=570245113]
+[node name="Shovel" type="StaticBody2D" parent="Entities" unique_id=223856021]
 position = Vector2(304, 182)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Shovel" unique_id=1512353437]
 texture = ExtResource("27_uykko")
 offset = Vector2(0, -8)
 
-[node name="Pickaxe" type="Sprite2D" parent="Entities" unique_id=1214403639]
+[node name="@CollisionShape2D@4" type="CollisionShape2D" parent="Entities/Shovel" unique_id=135476093]
+position = Vector2(0, -2.5)
+shape = SubResource("RectangleShape2D_hr5xu")
+
+[node name="Pickaxe" type="StaticBody2D" parent="Entities" unique_id=311868185]
 position = Vector2(358, 186)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Pickaxe" unique_id=1336496420]
 texture = ExtResource("28_fioc0")
 offset = Vector2(0, -8)
 
-[node name="Entries" type="Node2D" parent="." unique_id=886299156]
+[node name="@CollisionShape2D@5" type="CollisionShape2D" parent="Entities/Pickaxe" unique_id=183637619]
+position = Vector2(0, -2.5)
+shape = SubResource("RectangleShape2D_vxmvt")
 
-[node name="Trail" type="Marker2D" parent="Entries" unique_id=521511373]
+[node name="Entries" type="Node2D" parent="." unique_id=1353022151]
+
+[node name="Trail" type="Marker2D" parent="Entries" unique_id=583104268]
 position = Vector2(90, 206)
 script = ExtResource("29_8qr44")
 id = &"trail"
 facing = Vector2(0, -1)
 
-[node name="ToFarBank" type="Area2D" parent="." unique_id=656027158]
+[node name="ToFarBank" type="Area2D" parent="." unique_id=195948616]
 position = Vector2(90, 221)
 collision_layer = 0
 collision_mask = 2
@@ -427,32 +447,32 @@ script = ExtResource("30_y8bbr")
 target_area = &"far_bank"
 target_entry = &"slope"
 
-[node name="Shape" type="CollisionShape2D" parent="ToFarBank" unique_id=1045443717]
-shape = SubResource("RectangleShape2D_hr5xu")
-
-[node name="Bounds" type="StaticBody2D" parent="." unique_id=62672818]
-collision_mask = 0
-
-[node name="@CollisionShape2D@4" type="CollisionShape2D" parent="Bounds" unique_id=1053187215]
-position = Vector2(208, -8)
-shape = SubResource("RectangleShape2D_vxmvt")
-
-[node name="@CollisionShape2D@5" type="CollisionShape2D" parent="Bounds" unique_id=2039729151]
-position = Vector2(208, 232)
+[node name="Shape" type="CollisionShape2D" parent="ToFarBank" unique_id=189963660]
 shape = SubResource("RectangleShape2D_qnuxu")
 
-[node name="@CollisionShape2D@6" type="CollisionShape2D" parent="Bounds" unique_id=1330615764]
-position = Vector2(-8, 112)
+[node name="Bounds" type="StaticBody2D" parent="." unique_id=1607541839]
+collision_mask = 0
+
+[node name="@CollisionShape2D@6" type="CollisionShape2D" parent="Bounds" unique_id=1350988909]
+position = Vector2(208, -8)
 shape = SubResource("RectangleShape2D_44ghv")
 
-[node name="@CollisionShape2D@7" type="CollisionShape2D" parent="Bounds" unique_id=1227853228]
-position = Vector2(424, 112)
+[node name="@CollisionShape2D@7" type="CollisionShape2D" parent="Bounds" unique_id=1531874076]
+position = Vector2(208, 232)
 shape = SubResource("RectangleShape2D_iiv4k")
 
-[node name="@CollisionShape2D@8" type="CollisionShape2D" parent="Bounds" unique_id=1672855828]
-position = Vector2(200, 72)
+[node name="@CollisionShape2D@8" type="CollisionShape2D" parent="Bounds" unique_id=1900462809]
+position = Vector2(-8, 112)
 shape = SubResource("RectangleShape2D_rpih2")
 
-[node name="@CollisionShape2D@9" type="CollisionShape2D" parent="Bounds" unique_id=349950614]
-position = Vector2(394, 112)
+[node name="@CollisionShape2D@9" type="CollisionShape2D" parent="Bounds" unique_id=1664631708]
+position = Vector2(424, 112)
 shape = SubResource("RectangleShape2D_es84k")
+
+[node name="@CollisionShape2D@10" type="CollisionShape2D" parent="Bounds" unique_id=1706464311]
+position = Vector2(200, 72)
+shape = SubResource("RectangleShape2D_g4wwo")
+
+[node name="@CollisionShape2D@11" type="CollisionShape2D" parent="Bounds" unique_id=1217573548]
+position = Vector2(394, 112)
+shape = SubResource("RectangleShape2D_dh7g8")

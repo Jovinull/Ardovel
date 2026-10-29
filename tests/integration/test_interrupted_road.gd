@@ -188,6 +188,9 @@ func test_the_slope_can_be_walked_and_its_edges_hold() -> void:
 	assert_false(_can_reach(from, Vector2i(200, 72), bounds), "nobody walks in the ditch")
 	assert_false(_can_reach(from, Vector2i(200, 40), bounds), "nor past it into the pines")
 	assert_false(_can_reach(from, Vector2i(396, 140), bounds), "nor into the gorge")
+	for tool: String in ["Shovel", "Pickaxe"]:
+		var foot: Vector2 = game.level.get_node(NodePath("Entities/" + tool)).global_position
+		assert_false(_can_reach(from, Vector2i(foot) + Vector2i(0, -2), bounds), "the %s stands solid" % tool)
 
 
 func test_stones_roll_down_the_runoff_after_a_warning_and_hurt() -> void:
