@@ -1,0 +1,44 @@
+{
+	"area": "road_slope",
+	"checkpoint": {
+		"area": "forest",
+		"entry": "shrine"
+	},
+	"entry": "trail",
+	"equipment": {
+		"accessory": "crew_gloves"
+	},
+	"flags": [
+		"blank_map_drawn",
+		"blank_view_seen",
+		"blank_witch_gone",
+		"blank_witch_met",
+		"far_bank_bridge_tied",
+		"far_bank_iara_met",
+		"forest_shrine_awakened",
+		"heard_of_shrine",
+		"heart_vessel_ruin",
+		"road_bar_lent",
+		"road_clearing_progressed",
+		"road_ditch_cleared",
+		"road_iara_heard_cleared",
+		"road_trunk_loosened",
+		"road_work_started",
+		"ruin_heart_awakened",
+		"spring_iara_ahead",
+		"spring_iara_left",
+		"spring_iara_ready",
+		"spring_plan_heard",
+		"spring_stone_shifted",
+		"town_iara_dealt",
+		"town_iara_met",
+		"town_notice_down",
+		"town_rufina_faced",
+		"town_rufina_heard"
+	],
+	"health": 13,
+	"items": [
+		"crew_gloves"
+	],
+	"version": 3
+}

@@ -30,6 +30,8 @@
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Tool/Pickaxe.png" id="28_fioc0"]
 [ext_resource type="Script" path="res://world/area_entry.gd" id="29_8qr44"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="30_y8bbr"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="31_gloves"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/crew_gloves_ground.png" id="32_gloves"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_860d2"]
 texture = ExtResource("4_f8l3b")
@@ -430,6 +432,12 @@ offset = Vector2(0, -8)
 [node name="@CollisionShape2D@5" type="CollisionShape2D" parent="Entities/Pickaxe" unique_id=936748458]
 position = Vector2(0, -2.5)
 shape = SubResource("RectangleShape2D_vxmvt")
+
+[node name="CrewGloves" parent="Entities" unique_id=1907045213 instance=ExtResource("31_gloves")]
+position = Vector2(322, 196)
+item = &"crew_gloves"
+message = "ITEM_CREW_GLOVES_FOUND"
+ground = ExtResource("32_gloves")
 
 [node name="Entries" type="Node2D" parent="." unique_id=312710491]
 

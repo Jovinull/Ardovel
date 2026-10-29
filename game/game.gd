@@ -3,7 +3,8 @@ extends Node
 ## Root of a play session. Owns the adventure state, its save slot, the player's settings and
 ## the current area: shows the title (and applies the chosen language), loads areas (one at a
 ## time, swapped behind a fade), sends the hero back to the checkpoint after a fall, and
-## freezes the area while a dialogue is open. Also owns the brief hit-stop when the sword
+## freezes the area while a dialogue or the equipment screen is open. Applies what the hero has
+## earned to the hero (heart vessels, equipment). Also owns the brief hit-stop when the sword
 ## connects.
 
 ## Stable area ids (as written in saves and passages) and their scenes.
@@ -23,6 +24,8 @@ const FADE_TIME := 0.35
 const INTERLUDE_TIME := 2.2
 ## Health a heart vessel adds: one whole heart (four quarters).
 const HEART_VESSEL_HEALTH := 4
+## Set the first time the equipment screen is opened (until then, a hint says how).
+const EQUIPMENT_SEEN_FLAG := &"equipment_seen"
 const MUSIC_VOLUME_DB := -8.0
 const MUSIC_SILENT_DB := -40.0
 
@@ -52,6 +55,7 @@ var _base_max_health: int = 0
 @onready var _death_screen: DeathScreen = $DeathScreen
 @onready var _title: TitleScreen = $TitleScreen
 @onready var _pause: PauseScreen = $PauseScreen
+@onready var _equipment: EquipmentScreen = $EquipmentScreen
 @onready var _fade: ColorRect = %Fade
 @onready var _interlude: Label = %Interlude
 @onready var _music: AudioStreamPlayer = $Music
@@ -73,6 +77,7 @@ func _ready() -> void:
 	_pause.language_requested.connect(switch_language)
 	_pause.title_requested.connect(_return_to_title)
 	_pause.quit_requested.connect(_quit_safely)
+	_equipment.closed.connect(_set_area_frozen.bind(false))
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	var connected_joypads := Input.get_connected_joypads()
 	if not connected_joypads.is_empty():
@@ -99,6 +104,10 @@ func _exit_tree() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"equipment") and can_open_equipment():
+		open_equipment()
+		get_viewport().set_input_as_handled()
+		return
 	if not event.is_action_pressed(&"pause") or _title.is_open() or _pause.is_open():
 		return
 	if level == null or _travelling or _death_screen.is_open() or _hud.is_message_visible():
@@ -106,6 +115,28 @@ func _unhandled_input(event: InputEvent) -> void:
 	_pause.open()
 	_set_paused(true)
 	get_viewport().set_input_as_handled()
+
+
+## The equipment screen opens only while the hero is free to move: not during a trip, a
+## dialogue, the witch's map, a pause, a swing, a stagger or a fall.
+func can_open_equipment() -> bool:
+	if level == null or adventure == null or _travelling or _title.is_open() or _pause.is_open():
+		return false
+	if _equipment.is_open() or _death_screen.is_open() or _hud.is_message_visible():
+		return false
+	return level.process_mode != Node.PROCESS_MODE_DISABLED and level.player.state == Player.State.MOVE
+
+
+func open_equipment() -> void:
+	if not can_open_equipment():
+		return
+	_set_area_frozen(true)
+	_equipment.open(adventure)
+	adventure.set_flag(EQUIPMENT_SEEN_FLAG)
+
+
+func is_equipment_open() -> bool:
+	return _equipment.is_open()
 
 
 func open_title() -> void:
@@ -227,10 +258,15 @@ func hit_stop() -> void:
 func _begin(state: Adventure) -> void:
 	_set_paused(false)
 	_pause.close()
+	_equipment.close()
 	Engine.time_scale = 1.0
 	adventure = state
+	for id in adventure.items():
+		if not ItemCatalog.knows(id):
+			push_warning("The save has an item this game does not know (%s); it is kept but unused." % id)
 	adventure.changed.connect(_queue_save)
 	adventure.changed.connect(_apply_heart_vessels)
+	adventure.changed.connect(_apply_equipment)
 	adventure.changed.connect(_refresh_first_step_guidance)
 	_title.close()
 	_fade.modulate.a = 1.0
@@ -252,6 +288,7 @@ func _load_area(area: StringName, entry: StringName) -> void:
 	var player := level.player
 	_base_max_health = player.health.max_health
 	_apply_heart_vessels()
+	_apply_equipment()
 	if adventure.health == Adventure.FULL_HEALTH:
 		player.health.restore_full()
 	else:
@@ -293,6 +330,7 @@ func _return_to_title() -> void:
 		return
 	_set_paused(false)
 	_pause.close()
+	_equipment.close()
 	_death_screen.close()
 	_hud.hide_boss()
 	_music.stop()
@@ -351,6 +389,7 @@ func _update_input_prompts() -> void:
 	_death_screen.set_input_mode(_gamepad_active)
 	_title.set_input_mode(_gamepad_active, _joypad_name)
 	_pause.set_input_mode(_gamepad_active, _joypad_name)
+	_equipment.set_input_mode(_gamepad_active, _joypad_name)
 
 
 func _refresh_first_step_guidance() -> void:
@@ -359,7 +398,12 @@ func _refresh_first_step_guidance() -> void:
 		return
 	var needs_first_step := not adventure.has_flag(&"heard_of_shrine") \
 			and not adventure.has_flag(&"forest_shrine_awakened")
-	_hud.set_guidance("FIRST_STEP_GUIDANCE" if needs_first_step else "")
+	if needs_first_step:
+		_hud.set_guidance("FIRST_STEP_GUIDANCE")
+	elif not adventure.items().is_empty() and not adventure.has_flag(EQUIPMENT_SEEN_FLAG):
+		_hud.set_guidance("EQUIPMENT_GUIDANCE", [&"equipment", &"interact"])
+	else:
+		_hud.set_guidance("")
 
 
 ## Sizes the hero's health from the heart vessels found so far.
@@ -371,6 +415,12 @@ func _apply_heart_vessels() -> void:
 	var maximum := _base_max_health + vessels * HEART_VESSEL_HEALTH
 	if level.player.health.max_health != maximum:
 		level.player.health.set_maximum(maximum)
+
+
+## Gives the hero's sword what the equipment makes of it.
+func _apply_equipment() -> void:
+	if level != null:
+		HeroLoadout.apply(adventure, level.player)
 
 
 func _play_music(stream: AudioStream) -> void:
