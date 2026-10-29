@@ -1,14 +1,18 @@
 extends "res://tests/integration/adventure_case.gd"
 ## The road to Pedrabranca: Iara turning to the rockfall after the hero's first visit, her pry
 ## bar, the slope above the road where stones roll down the runoff from the choked ditch, the
-## trunk levered out with real input, the ditch running again, and what that changes on the far
-## bank as time passes.
+## trunk levered loose and the branches that jam it wrenched out from inside a chute, with real
+## input, the ditch running again, and what that changes on the far bank as time passes.
 
 const FIXTURES := "res://tests/fixtures/saves"
 const MET: Array[StringName] = [&"forest_shrine_awakened", &"far_bank_bridge_tied", &"far_bank_iara_met"]
-const DAM_FRONT := Vector2(262, 98)
+const DAM_FRONT := Vector2(270, 98)
+## Below the branches jammed against the trunk's upper end, on the last chute's course.
+const BRANCHES_FRONT := Vector2(248, 96)
 const TRAIL_UP: Array[Vector2] = [Vector2(92, 176), Vector2(112, 130), Vector2(160, 108), Vector2(220, 102),
 		DAM_FRONT]
+## The foot of the trail on the far bank, beside the runoff.
+const TRAIL_FOOT := Vector2(90, 24)
 
 
 func after_each() -> void:
@@ -48,6 +52,30 @@ func _chutes() -> Array[RollingStones]:
 		if node is RollingStones:
 			chutes.append(node)
 	return chutes
+
+
+## Waits for the chute to send a stone and for the stone to roll on past its top.
+func _wait_for_a_stone_to_pass(chute: RollingStones) -> bool:
+	var rolled := [false]
+	var listen := func(_stone: Projectile) -> void: rolled[0] = true
+	chute.rolled.connect(listen)
+	var came := await _wait_until(func() -> bool: return rolled[0], chute.interval + chute.first_delay + 2.0)
+	chute.rolled.disconnect(listen)
+	await wait_physics_frames(30)
+	return came
+
+
+## How far a point is from the course the chute's stones roll down.
+func _distance_to_course(chute: RollingStones, point: Vector2) -> float:
+	var top := chute.global_position
+	return point.distance_to(Geometry2D.get_closest_point_to_segment(point, top, top + chute.fall))
+
+
+## From in front of the trunk, round to below the branches (stepping up last, to face them).
+func _work_the_branches() -> String:
+	assert_true(await _wait_for_a_stone_to_pass(_chutes()[2]), "a stone rolls down the last chute")
+	assert_true(await _walk_through([Vector2(248, 104), BRANCHES_FRONT]), "into the chute, between stones")
+	return await _press_interact()
 
 
 func _steer(direction: Vector2) -> void:
@@ -147,6 +175,16 @@ func test_on_the_first_visit_nothing_of_the_road_has_begun() -> void:
 func test_after_the_hero_leaves_iara_turns_to_the_rockfall_and_lends_her_bar() -> void:
 	await _continue_in(&"far_bank", &"bridge", MET)
 	assert_false(_iara().is_at_the_rockfall(), "at her press on the visit she was met")
+	_player().global_position = TRAIL_FOOT
+	await wait_physics_frames(3)
+	assert_true(await _walk_until_travelling(Vector2.UP, 3.0), "up the trail")
+	await _settle()
+	assert_true(await _walk_until_travelling(Vector2.DOWN, 3.0), "and straight back down")
+	await _settle()
+	assert_false(game.adventure.has_flag(RoadWork.STARTED), "the slope above the camp is not being away")
+	assert_false(_iara().is_at_the_rockfall())
+	_player().global_position = game.level.entry(&"bridge").global_position
+	await wait_physics_frames(3)
 	assert_true(await _walk_until_travelling(Vector2.RIGHT, 4.0), "off over the bridge")
 	await _settle()
 	assert_true(game.adventure.has_flag(RoadWork.STARTED), "time passes while the hero is away")
@@ -163,14 +201,15 @@ func test_after_the_hero_leaves_iara_turns_to_the_rockfall_and_lends_her_bar() -
 
 func test_the_trail_leads_up_the_slope_and_back_on_foot() -> void:
 	await _continue_in(&"far_bank", &"bridge", _with([RoadWork.STARTED]))
-	assert_true(_can_reach(Vector2i(game.level.entry(&"bridge").global_position), Vector2i(208, 24),
+	assert_true(_can_reach(Vector2i(game.level.entry(&"bridge").global_position), Vector2i(TRAIL_FOOT),
 			Rect2i(0, 0, 416, 288)), "the trail's foot can be reached from the bridge on foot")
 	for trip in 3:
-		_player().global_position = Vector2(208, 24)
+		_player().global_position = TRAIL_FOOT
 		await wait_physics_frames(3)
 		assert_true(await _walk_until_travelling(Vector2.UP, 3.0), "up the trail, trip %d" % trip)
 		await _settle()
 		_assert_at_entry(&"road_slope", &"trail")
+		assert_almost_eq(_player().global_position.x, TRAIL_FOOT.x, 2.0, "the trail meets itself at the edge")
 		assert_true(await _walk_until_travelling(Vector2.DOWN, 3.0), "and down again, trip %d" % trip)
 		await _settle()
 		_assert_at_entry(&"far_bank", &"slope")
@@ -215,8 +254,14 @@ func test_without_the_bar_the_trunk_does_not_move() -> void:
 	_player().global_position = DAM_FRONT
 	await wait_physics_frames(3)
 	assert_eq(await _press_interact(), "ROAD_DAM")
+	_player().global_position = BRANCHES_FRONT
+	await wait_physics_frames(3)
+	assert_eq(await _press_interact(), "ROAD_DAM", "nor do the branches")
 	assert_false(_dam().is_cleared())
 	assert_false((game.level.get_node(^"Ditch") as Ditch).is_running_at(20), "dry below the trunk")
+	game.adventure.set_flag(RoadWork.BAR_LENT)
+	assert_eq(await _press_interact(), "ROAD_DEBRIS_PINNED", "the trunk's weight holds the branches")
+	assert_false(_dam().is_loosened())
 
 
 func test_the_hero_climbs_to_the_trunk_with_real_input_and_frees_the_ditch() -> void:
@@ -224,7 +269,12 @@ func test_the_hero_climbs_to_the_trunk_with_real_input_and_frees_the_ditch() -> 
 	var ditch: Ditch = game.level.get_node(^"Ditch")
 	assert_true(await _walk_through(TRAIL_UP), "up the trail and along the ditch, across the chutes")
 	assert_false(_player().health.is_dead(), "the stones hurt but do not stop a careful climb")
-	assert_eq(await _press_interact(), "ROAD_DAM_CLEARED")
+	assert_eq(await _press_interact(), "ROAD_DAM_LOOSENED")
+	assert_true(_dam().is_loosened())
+	assert_false(ditch.is_running_at(20), "the trunk has only rolled a hand's width")
+	assert_eq(await _press_interact(), "ROAD_DAM_JAMMED")
+	assert_lt(_distance_to_course(_chutes()[2], BRANCHES_FRONT), 6.0, "the branches are worked from the chute")
+	assert_eq(await _work_the_branches(), "ROAD_DAM_CLEARED")
 	assert_true(game.adventure.has_flag(RoadWork.DITCH_CLEARED))
 	assert_true(ditch.is_running_at(20), "the water runs past the trunk")
 	assert_true(ditch.is_running_at(22), "all the way to the gorge")
@@ -232,14 +282,36 @@ func test_the_hero_climbs_to_the_trunk_with_real_input_and_frees_the_ditch() -> 
 		assert_false(chute.is_active(), "%s is quiet" % chute.name)
 	assert_false((game.level.get_node(^"Decals/Runoff") as CanvasItem).visible, "no more runoff")
 	assert_true((game.level.get_node(^"Decals/Waterfall") as CanvasItem).visible, "it pours into the gorge")
+	assert_false((_dam().get_node(^"Branches") as Interactable).enabled, "the branches went with the water")
+	_player().global_position = DAM_FRONT
+	await wait_physics_frames(3)
 	assert_eq(await _press_interact(), "ROAD_DAM_AFTER")
 
 
-func test_the_freed_ditch_stays_free_after_continuing() -> void:
+func test_a_stone_hurts_whoever_waits_at_the_branches() -> void:
+	await _continue_in(&"road_slope", &"trail", _with([RoadWork.STARTED, RoadWork.BAR_LENT, RoadWork.LOOSENED]))
+	_player().global_position = BRANCHES_FRONT
+	var before := _player().health.current
+	assert_true(await _wait_until(func() -> bool: return _player().health.current < before, 6.0),
+			"standing in the chute's course, the next stone hits")
+
+
+func test_the_loosened_trunk_and_the_freed_ditch_stay_after_continuing() -> void:
 	await _continue_in(&"road_slope", &"trail", _with([RoadWork.STARTED, RoadWork.BAR_LENT]))
 	_player().global_position = DAM_FRONT
 	await wait_physics_frames(3)
-	assert_eq(await _press_interact(), "ROAD_DAM_CLEARED")
+	assert_eq(await _press_interact(), "ROAD_DAM_LOOSENED")
+	var shifted := (_dam().get_node(^"Log") as Node2D).position
+	assert_eq(game.save_now(), OK)
+	await _restart()
+	assert_true(game.continue_saved())
+	await _settle()
+	assert_true(_dam().is_loosened(), "the trunk stays where it rolled")
+	assert_eq((_dam().get_node(^"Log") as Node2D).position, shifted)
+	_player().global_position = DAM_FRONT
+	await wait_physics_frames(3)
+	assert_eq(await _press_interact(), "ROAD_DAM_JAMMED")
+	assert_eq(await _work_the_branches(), "ROAD_DAM_CLEARED")
 	assert_eq(game.save_now(), OK)
 	await _restart()
 	assert_true(game.continue_saved())
@@ -272,8 +344,11 @@ func test_iara_hears_of_the_ditch_and_the_road_moves_on_while_the_hero_is_away()
 	assert_true((_iara().get_node(^"PryBar") as CanvasItem).visible, "she has her bar back")
 	assert_eq(await _talk("Iara"), "IARA_ROAD_CLEARING")
 	assert_not_null(game.level.get_node_or_null(^"Entities/RockfallLoose"), "nothing moved in front of the hero")
-	assert_true(await _walk_until_travelling(Vector2.UP, 6.0) or await _take_exit_succeeds())
+	await _take_exit("ToSlope")
+	assert_false(game.adventure.has_flag(RoadWork.PROGRESSED), "a look at the ditch is not being away")
+	game.travel(&"far_bank", &"slope")
 	await _settle()
+	await _take_exit("ToWest")
 	assert_true(game.adventure.has_flag(RoadWork.PROGRESSED), "she worked while the hero was away")
 	game.travel(&"far_bank", &"slope")
 	await _settle()
@@ -289,11 +364,6 @@ func test_iara_hears_of_the_ditch_and_the_road_moves_on_while_the_hero_is_away()
 			Rect2i(0, 0, 416, 288)), "the biggest stone still closes the road")
 
 
-func _take_exit_succeeds() -> bool:
-	await _take_exit("ToSlope")
-	return true
-
-
 func test_saves_from_before_find_the_road_as_it_was() -> void:
 	for file_name: String in ["v1_back_in_village.json", "v2_stall_worked.json"]:
 		var file := FileAccess.open(game.save_slot.path, FileAccess.WRITE)
@@ -307,14 +377,15 @@ func test_saves_from_before_find_the_road_as_it_was() -> void:
 		_player().global_position = DAM_FRONT
 		await wait_physics_frames(3)
 		assert_eq(await _press_interact(), "ROAD_DAM", "no bar, %s" % file_name)
-		for flag in [RoadWork.STARTED, RoadWork.BAR_LENT, RoadWork.DITCH_CLEARED]:
+		for flag in [RoadWork.STARTED, RoadWork.BAR_LENT, RoadWork.LOOSENED, RoadWork.DITCH_CLEARED]:
 			assert_false(game.adventure.has_flag(flag), "%s %s" % [file_name, flag])
 		await _restart()
 
 
 func test_texts_exist_in_both_languages() -> void:
 	for key in ["IARA_ROAD_BAR", "IARA_ROAD_WAITING", "IARA_ROAD_CLEARED", "IARA_ROAD_CLEARING",
-			"IARA_ROAD_PROGRESS", "FAR_ROCKFALL_CLEARING", "ROAD_DAM", "ROAD_DAM_CLEARED", "ROAD_DAM_AFTER",
+			"IARA_ROAD_PROGRESS", "FAR_ROCKFALL_CLEARING", "ROAD_DAM", "ROAD_DAM_LOOSENED", "ROAD_DAM_JAMMED",
+			"ROAD_DEBRIS_PINNED", "ROAD_DAM_CLEARED", "ROAD_DAM_AFTER",
 			"ROAD_SPRING", "ROAD_SHELTER", "ROAD_TALLY"]:
 		for locale in ["pt_BR", "en"]:
 			var translation := TranslationServer.get_translation_object(locale)

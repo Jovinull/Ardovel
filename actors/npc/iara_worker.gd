@@ -49,8 +49,9 @@ func is_at_the_rockfall() -> bool:
 
 ## Time passes while the hero is away: after meeting her she turns to the road, and once the
 ## ditch runs again she gets the smaller stones out of the way.
-func _on_hero_leaves(_area: StringName, _entry: StringName) -> void:
-	if not _adventure.has_flag(MET_FLAG):
+func _on_hero_leaves(area: StringName, _entry: StringName) -> void:
+	# Going up to the slope above is not being away: the camp is right below it.
+	if not _adventure.has_flag(MET_FLAG) or area == &"road_slope":
 		return
 	if not _adventure.has_flag(RoadWork.STARTED):
 		_adventure.set_flag(RoadWork.STARTED)

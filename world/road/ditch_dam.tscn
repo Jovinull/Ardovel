@@ -9,41 +9,59 @@
 [ext_resource type="Script" path="res://interaction/interactable.gd" id="7_2ac5i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_drluv"]
-size = Vector2(36, 30)
+size = Vector2(26, 30)
 
-[node name="DitchDam" type="Node2D" unique_id=1789173773]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fns3i"]
+size = Vector2(16, 30)
+
+[node name="DitchDam" type="Node2D" unique_id=1377684906]
 script = ExtResource("1_n6erb")
 
-[node name="Debris" type="Sprite2D" parent="." unique_id=694452737]
+[node name="Debris" type="Sprite2D" parent="." unique_id=1342333720]
 position = Vector2(-20, -14)
 texture = ExtResource("2_01jgd")
 centered = false
 
-[node name="Log" type="Sprite2D" parent="." unique_id=904583682]
+[node name="Log" type="Sprite2D" parent="." unique_id=1847943408]
 position = Vector2(-6, -14)
 texture = ExtResource("3_uc2dm")
 centered = false
 
-[node name="LogAside" type="Sprite2D" parent="." unique_id=1498510320]
+[node name="LogAside" type="Sprite2D" parent="." unique_id=492986784]
 position = Vector2(-4, 4)
 texture = ExtResource("4_p87ms")
 centered = false
 
-[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=1295105272]
+[node name="Sound" type="AudioStreamPlayer2D" parent="." unique_id=1031189945]
 stream = ExtResource("5_sxmb1")
 volume_db = -6.0
 
-[node name="Prompt" type="Sprite2D" parent="." unique_id=603121750]
+[node name="TrunkPrompt" type="Sprite2D" parent="." unique_id=680777590]
 visible = false
-position = Vector2(0, -22)
+position = Vector2(8, -22)
 texture = ExtResource("6_gbnsg")
 
-[node name="Interactable" type="Area2D" parent="." unique_id=1078031355 node_paths=PackedStringArray("prompt")]
+[node name="Trunk" type="Area2D" parent="." unique_id=363485664 node_paths=PackedStringArray("prompt")]
+position = Vector2(9, 2)
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("7_2ac5i")
-prompt = NodePath("../Prompt")
+prompt = NodePath("../TrunkPrompt")
 
-[node name="Shape" type="CollisionShape2D" parent="Interactable" unique_id=1300836180]
-position = Vector2(0, 2)
+[node name="Shape" type="CollisionShape2D" parent="Trunk" unique_id=1694484329]
 shape = SubResource("RectangleShape2D_drluv")
+
+[node name="BranchesPrompt" type="Sprite2D" parent="." unique_id=2113480185]
+visible = false
+position = Vector2(-14, -22)
+texture = ExtResource("6_gbnsg")
+
+[node name="Branches" type="Area2D" parent="." unique_id=988439474 node_paths=PackedStringArray("prompt")]
+position = Vector2(-14, 2)
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("7_2ac5i")
+prompt = NodePath("../BranchesPrompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Branches" unique_id=2106476477]
+shape = SubResource("RectangleShape2D_fns3i")
