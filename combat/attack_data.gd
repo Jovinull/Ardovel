@@ -16,6 +16,15 @@ const TIME_EPSILON := 1e-6
 @export var knockback: float = 140.0
 ## Distance from the attacker's origin to the hitbox centre, along the attack direction.
 @export var reach: float = 12.0
+## Size of the blow's area, authored for a downward swing (across, along): a sweep is wide, a
+## thrust narrow and long, a chop compact.
+@export var hitbox_size: Vector2 = Vector2(20, 14)
+## Seconds a walking creature struck is kept from acting.
+@export var stagger: float = 0.25
+## Seconds the world freezes when it connects.
+@export var hit_stop: float = 0.06
+## How long before the end of the recovery a new swing may already start (quick weapons chain).
+@export var chain: float = 0.0
 
 
 func duration() -> float:

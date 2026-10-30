@@ -24,6 +24,10 @@ extends Resource
 @export var attack: AttackData
 ## Weapons: the hero's 120x160 attack sheet drawn with this weapon in hand.
 @export var attack_sheet: Texture2D
+## Shields: how they guard when raised.
+@export var guard: GuardData
+## Shields: the hero holding this shield up, 96x24 (down, up, left, right).
+@export var guard_sheet: Texture2D
 ## Consumables: quarters of a heart given back when used (before healing bonuses).
 @export var heal: int = 0
 

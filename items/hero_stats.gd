@@ -50,6 +50,14 @@ const BAND_LIMIT: Dictionary[StringName, float] = {LIGHT: 0.30, NORMAL: 0.60, HE
 ## Top speed and acceleration in each band, as fractions of the hero's own.
 const BAND_SPEED: Dictionary[StringName, float] = {LIGHT: 1.0, NORMAL: 0.94, HEAVY: 0.85, OVERLOADED: 0.70}
 const BAND_ACCELERATION: Dictionary[StringName, float] = {LIGHT: 1.0, NORMAL: 1.0, HEAVY: 0.8, OVERLOADED: 0.6}
+## The dodge in each band: distance (px), untouchable moment and recovery (s). The step itself always
+## takes DODGE_TIME; heavier loads go less far, stay touchable sooner and recover later.
+const DODGE_TIME := 0.18
+const DODGE_DISTANCE: Dictionary[StringName, float] = {LIGHT: 44.0, NORMAL: 40.0, HEAVY: 32.0, OVERLOADED: 24.0}
+const DODGE_UNTOUCHABLE: Dictionary[StringName, float] = {LIGHT: 0.14, NORMAL: 0.12, HEAVY: 0.10, OVERLOADED: 0.07}
+const DODGE_RECOVERY: Dictionary[StringName, float] = {LIGHT: 0.10, NORMAL: 0.14, HEAVY: 0.20, OVERLOADED: 0.30}
+## How fast breath comes back in each band, as a fraction of the hero's own.
+const BAND_BREATH: Dictionary[StringName, float] = {LIGHT: 1.0, NORMAL: 1.0, HEAVY: 0.85, OVERLOADED: 0.65}
 
 
 ## `base` changed by every modifier of `stat` in `modifiers`, within the stat's bounds.

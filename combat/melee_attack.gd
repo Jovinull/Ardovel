@@ -16,6 +16,10 @@ var _elapsed: float = 0.0
 
 func _ready() -> void:
 	set_physics_process(false)
+	# Each attacker sizes its own blow; never the scene's shared shape.
+	var shape := hitbox.get_node_or_null(^"Shape") as CollisionShape2D
+	if shape != null and shape.shape != null:
+		shape.shape = shape.shape.duplicate()
 
 
 func _physics_process(delta: float) -> void:
@@ -39,6 +43,10 @@ func start(toward: Vector2) -> bool:
 	_elapsed = 0.0
 	hitbox.damage = data.damage
 	hitbox.knockback = data.knockback
+	hitbox.stagger = data.stagger
+	var shape := hitbox.get_node_or_null(^"Shape") as CollisionShape2D
+	if shape != null and shape.shape is RectangleShape2D:
+		(shape.shape as RectangleShape2D).size = data.hitbox_size
 	# Aim during wind-up so overlaps are up to date by the time the hitbox becomes active.
 	# The hitbox shape is authored for a downward swing.
 	hitbox.position = direction * data.reach
@@ -46,6 +54,11 @@ func start(toward: Vector2) -> bool:
 	set_physics_process(true)
 	_set_phase(AttackData.Phase.WINDUP)
 	return true
+
+
+## True in the last `data.chain` seconds of the recovery: a quick weapon may swing again.
+func can_chain() -> bool:
+	return phase == AttackData.Phase.RECOVERY and data.chain > 0.0 and remaining() <= data.chain
 
 
 func cancel() -> void:

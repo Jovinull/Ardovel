@@ -18,6 +18,8 @@ const GUIDANCE_HOLD_TIME := 9.0
 const GUIDANCE_FADE_TIME := 0.7
 ## Inner width of the boss health bar.
 const BOSS_BAR_WIDTH := 138.0
+## Inner width of the breath bar under the hearts.
+const BREATH_WIDTH := 44.0
 
 var _heart_frames: Array[AtlasTexture] = []
 var _message_tween: Tween
@@ -44,6 +46,12 @@ var _boss_health: Health
 @onready var _boss_bar: Control = %BossBar
 @onready var _boss_name: Label = %Name
 @onready var _boss_fill: ColorRect = %Fill
+@onready var _breath: Control = %Breath
+@onready var _breath_fill: ColorRect = %BreathFill
+@onready var _quick: Control = %Quick
+@onready var _quick_icon: TextureRect = %QuickIcon
+@onready var _quick_count: Label = %QuickCount
+@onready var _quick_key: Label = %QuickKey
 
 
 func _ready() -> void:
@@ -62,6 +70,8 @@ func _notification(what: int) -> void:
 
 func bind_player(player: Player) -> void:
 	player.health.changed.connect(show_health)
+	player.stamina.changed.connect(show_breath)
+	show_breath(player.stamina.current, player.stamina.maximum)
 	player.interactor.interacted.connect(_on_interacted)
 	show_health(player.health.current, player.health.max_health)
 
@@ -79,6 +89,29 @@ func show_health(current: int, maximum: int) -> void:
 	for i in heart_count:
 		var quarters := clampi(current - i * QUARTERS_PER_HEART, 0, QUARTERS_PER_HEART)
 		(_hearts.get_child(i) as TextureRect).texture = _heart_frames[quarters]
+
+
+## Breath, under the hearts: shown while it is not full, so a calm walk keeps the screen clean.
+func show_breath(current: float, maximum: float) -> void:
+	_breath_fill.size.x = BREATH_WIDTH * current / maxf(maximum, 1.0)
+	_breath.visible = current < maximum - 0.5
+
+
+func is_breath_visible() -> bool:
+	return _breath.visible
+
+
+## The food the quick-use key eats, with how many are left (no icon: the slot hides).
+func show_quick_item(icon: Texture2D, count: int) -> void:
+	_quick.visible = icon != null
+	_quick_icon.texture = icon
+	_quick_count.text = str(count) if count > 1 else ""
+	_quick_key.text = InputPrompts.action_label(&"quick_item", _gamepad_active, _joypad_name).split(" / ", false)[0] \
+			if not InputPrompts.action_label(&"quick_item", _gamepad_active, _joypad_name).is_empty() else ""
+
+
+func is_quick_item_visible() -> bool:
+	return _quick.visible
 
 
 ## Shows the boss bar for `health` under the name `name_key` (a translation key).

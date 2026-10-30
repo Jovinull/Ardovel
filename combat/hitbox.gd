@@ -10,6 +10,10 @@ signal landed(hurtbox: Hurtbox)
 
 @export var damage: int = 1
 @export var knockback: float = 100.0
+## Whether a raised shield can stop this blow.
+@export var blockable: bool = true
+## Seconds the blow keeps a walking creature from acting.
+@export var stagger: float = 0.0
 ## A swing hits each target once per activation; contact damage leaves this off and relies on
 ## the target's invulnerability window instead.
 @export var hit_once_per_activation: bool = true
@@ -40,7 +44,10 @@ func strike(hurtbox: Hurtbox) -> bool:
 		return false
 	if hit_once_per_activation:
 		_already_hit[hurtbox] = true
-	if not hurtbox.receive_hit(Hit.new(damage, knockback, global_position)):
+	var hit := Hit.new(damage, knockback, global_position)
+	hit.blockable = blockable
+	hit.stagger = stagger
+	if not hurtbox.receive_hit(hit):
 		return false
 	landed.emit(hurtbox)
 	return true

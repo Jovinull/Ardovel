@@ -110,11 +110,13 @@ func _on_body_exited(body: Node2D) -> void:
 		target = null
 
 
-func _on_hit_received(_hit: Hit) -> void:
+## Rooted, it is never pushed: a blow makes it shut and stop shooting, longer for a heavy weapon.
+func _on_hit_received(hit: Hit) -> void:
 	_hit_sound.play()
 	_hit_flash.flash()
 	if state != State.DEAD:
 		_enter(State.HURT)
+		_state_left = maxf(hurt_time, hit.stagger * 1.5)
 
 
 func _on_died() -> void:

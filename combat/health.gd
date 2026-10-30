@@ -40,9 +40,18 @@ func is_invulnerable() -> bool:
 
 ## Returns true when the damage was applied (not ignored by death or invulnerability).
 func take_damage(amount: int) -> bool:
-	if amount <= 0 or is_dead() or is_invulnerable():
+	return take_hit(amount, 1)
+
+
+## Takes `amount` quarters (a shield may have let only part through, hence a fraction), reduced by
+## defence, at least `minimum`. True when something was taken.
+func take_hit(amount: float, minimum: int) -> bool:
+	if amount <= 0.0 or is_dead() or is_invulnerable():
 		return false
-	current = maxi(current - reduced(amount), 0)
+	var taken := reduced(amount, minimum)
+	if taken <= 0:
+		return false
+	current = maxi(current - taken, 0)
 	changed.emit(current, max_health)
 	if is_dead():
 		died.emit()
@@ -52,14 +61,22 @@ func take_damage(amount: int) -> bool:
 	return true
 
 
-## What a hit of `amount` takes after defence (and the remainder carried from earlier hits).
-func reduced(amount: int) -> int:
-	if defense_percent <= 0.0:
-		return amount
+## What a hit of `amount` takes after defence (and the remainder carried from earlier hits), at
+## least `minimum`.
+func reduced(amount: float, minimum: int = 1) -> int:
+	if defense_percent <= 0.0 and is_equal_approx(amount, roundf(amount)) and _carried_damage == 0.0:
+		return maxi(roundi(amount), minimum)
 	var owed := amount * (1.0 - clampf(defense_percent, 0.0, 100.0) / 100.0) + _carried_damage
-	var taken := maxi(floori(owed + 0.0001), 1)
+	var taken := maxi(floori(owed + 0.0001), minimum)
 	_carried_damage = maxf(owed - taken, 0.0)
 	return taken
+
+
+## Ignores damage for `seconds` (after a blocked hit, so one blow is not blocked every frame).
+func grant_invulnerability(seconds: float) -> void:
+	if seconds > _invulnerable_left:
+		_invulnerable_left = seconds
+		set_physics_process(true)
 
 
 func heal(amount: int) -> void:

@@ -24,6 +24,8 @@ const FADE_TIME := 0.35
 const INTERLUDE_TIME := 2.2
 ## Health a heart vessel adds: one whole heart (four quarters).
 const HEART_VESSEL_HEALTH := 4
+## The wayfarer sword's own hit-stop: `hit_stop_time` is what it freezes for.
+const SWORD_HIT_STOP := 0.06
 ## Set the first time the equipment screen is opened (until then, a hint says how).
 const EQUIPMENT_SEEN_FLAG := &"equipment_seen"
 const MUSIC_VOLUME_DB := -8.0
@@ -135,7 +137,7 @@ func open_equipment() -> void:
 	if not can_open_equipment():
 		return
 	_set_area_frozen(true)
-	_equipment.open(adventure, base_health(), level.player.health, use_item)
+	_equipment.open(adventure, base_health(), level.player.health)
 	adventure.set_flag(EQUIPMENT_SEEN_FLAG)
 
 
@@ -251,13 +253,18 @@ func is_travelling() -> bool:
 	return _travelling
 
 
+## Freezes the world briefly when the hero's blow lands: `hit_stop_time` for the wayfarer sword,
+## and in proportion for other weapons (a maul holds twice as long, a machete less).
 func hit_stop() -> void:
 	if hit_stop_time <= 0.0:
 		return
+	var seconds := hit_stop_time
+	if level != null and level.player.weapon_attack() != null:
+		seconds *= level.player.weapon_attack().hit_stop / SWORD_HIT_STOP
 	_hit_stop_token += 1
 	var token := _hit_stop_token
 	Engine.time_scale = 0.0
-	await get_tree().create_timer(hit_stop_time, true, false, true).timeout
+	await get_tree().create_timer(seconds, true, false, true).timeout
 	# A later hit may have extended the freeze; only the latest one releases it.
 	if token == _hit_stop_token:
 		Engine.time_scale = 1.0
@@ -274,6 +281,7 @@ func _begin(state: Adventure) -> void:
 			push_warning("The save has an item this game does not know (%s); it is kept but unused." % id)
 	adventure.changed.connect(_queue_save)
 	adventure.changed.connect(_apply_equipment)
+	adventure.changed.connect(_refresh_quick_slot)
 	adventure.changed.connect(_refresh_first_step_guidance)
 	_title.close()
 	_fade.modulate.a = 1.0
@@ -302,6 +310,9 @@ func _load_area(area: StringName, entry: StringName) -> void:
 		player.health.current = clampi(adventure.health, 1, player.health.max_health)
 	player.died.connect(_death_screen.open)
 	player.hit_landed.connect(hit_stop)
+	player.can_quick_use = can_quick_use
+	player.quick_use_finished.connect(_finish_quick_use)
+	_refresh_quick_slot()
 	level.exit_requested.connect(travel)
 	_hud.bind_player(player)
 	_refresh_first_step_guidance()
@@ -443,6 +454,42 @@ func use_item(id: StringName) -> bool:
 	if level == null or _profile == null:
 		return false
 	return HeroLoadout.use(adventure, _profile, level.player.health, id)
+
+
+## The food the quick-use key eats: the one chosen in the menu while there is some left, else the
+## first food the hero has (empty: none).
+func quick_item() -> StringName:
+	if adventure == null:
+		return &""
+	if adventure.count(adventure.quick_item) > 0 and ItemCatalog.find(adventure.quick_item) != null \
+			and ItemCatalog.find(adventure.quick_item).is_usable():
+		return adventure.quick_item
+	for id in adventure.items():
+		var item := ItemCatalog.find(id)
+		if item != null and item.is_usable():
+			return id
+	return &""
+
+
+## Eating takes time in the world: possible only with food in the quick slot and health missing.
+func can_quick_use() -> bool:
+	if level == null or quick_item().is_empty():
+		return false
+	var health := level.player.health
+	return not health.is_dead() and health.current < health.max_health
+
+
+func _finish_quick_use() -> void:
+	use_item(quick_item())
+
+
+func _refresh_quick_slot() -> void:
+	if adventure == null or level == null:
+		return
+	var id := quick_item()
+	var item := ItemCatalog.find(id)
+	level.player.set_held_item(item.icon if item != null else null)
+	_hud.show_quick_item(item.icon if item != null else null, adventure.count(id))
 
 
 func _play_music(stream: AudioStream) -> void:

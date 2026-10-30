@@ -14,6 +14,10 @@ recovery = 0.26
 damage = 2
 knockback = 240.0
 reach = 12.0
+hitbox_size = Vector2(22, 18)
+stagger = 0.7
+hit_stop = 0.12
+chain = 0.0
 
 [resource]
 script = ExtResource("1_item")

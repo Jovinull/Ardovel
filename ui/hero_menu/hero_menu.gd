@@ -6,7 +6,9 @@ extends CanvasLayer
 ## accessory); choosing a slot lists the pieces that fit it and compares each with what is worn
 ## (the hero's statistics now and after the change). Inventory: everything the hero has, by
 ## category, in a grid that scrolls, with quantities and what is worn marked; a piece is equipped
-## or taken off, food is eaten. Status: the statistics that are real in play.
+## or taken off, and food is put in the quick slot (it is eaten in the world, where eating takes
+## time and a blow interrupts it, never here with the world held still). Status: the statistics
+## that are real in play.
 ##
 ## It shows and changes only through the adventure and the rules (Equipment, Bag, HeroLoadout);
 ## nothing is computed here. While open it takes the keys that would close it before anything else
@@ -85,7 +87,6 @@ var _scroll := 0
 var _adventure: Adventure
 var _base_health := 12
 var _health: Health
-var _use_item: Callable
 var _notice := ""
 var _gamepad_active := false
 var _joypad_name := ""
@@ -119,14 +120,13 @@ func _notification(what: int) -> void:
 
 
 ## Opens on `start` for `adventure`, whose hero has `base_health` quarters before equipment and
-## `health` now; `use_item` (id -> bool) eats food on the hero.
-func open(adventure: Adventure, base_health: int, health: Health, use_item: Callable, start: Page = Page.EQUIPMENT) -> void:
+## `health` now.
+func open(adventure: Adventure, base_health: int, health: Health, start: Page = Page.EQUIPMENT) -> void:
 	if _root == null:
 		_build()  # on first use: a few hundred controls nobody needs before
 	_adventure = adventure
 	_base_health = base_health
 	_health = health
-	_use_item = use_item
 	_choosing = false
 	_notice = ""
 	page = start
@@ -359,12 +359,9 @@ func _use_selected() -> void:
 	if item == null:
 		return
 	if item.is_usable():
-		if _use_item.call(id):
-			_accept.play()
-		else:
-			_notice = "MENU_FULL_HEALTH"
-			_cancel.play()
-		_cell = mini(_cell, maxi(shown_items().size() - 1, 0))
+		_adventure.set_quick_item(id)
+		_notice = "MENU_QUICK_SET"
+		_accept.play()
 	elif item.is_equippable():
 		var worn_in := _slot_holding(id)
 		var done := false
@@ -690,6 +687,8 @@ func _refresh_inventory() -> void:
 		kind = tr(CATEGORY_NAMES.get(item.category, ""))
 		if _adventure.count(id) > 1:
 			kind += "  x%d" % _adventure.count(id)
+		if item.is_usable() and _adventure.quick_item == id:
+			kind += "  " + tr("MENU_QUICK_MARK")
 		if item.is_equippable():
 			kind += "  " + tr("MENU_WEIGHT") % _number(item.weight, 1)
 	(_inv_info.get_node(^"Kind") as Label).text = kind
@@ -699,7 +698,7 @@ func _refresh_inventory() -> void:
 	var action := ""
 	if item != null:
 		if item.is_usable():
-			action = "MENU_HINT_USE"
+			action = "MENU_HINT_QUICK"
 		elif item.is_equippable() and _slot_holding(id) != ItemCatalog.MAIN_HAND:
 			action = "MENU_HINT_TAKE_OFF" if _adventure.equipped_copies(id) > 0 else "MENU_HINT_EQUIP"
 	var hints: Array = []
