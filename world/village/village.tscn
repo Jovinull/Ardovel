@@ -589,6 +589,7 @@ count = 1
 flag = &"found_village_padded_doublet"
 message = "PICKUP_HOME_CHEST"
 chest = ExtResource("pk_chest")
+keeps_storage = true
 
 [node name="Found_CornBread" parent="Entities" instance=ExtResource("pk_pickup")]
 position = Vector2(330, 330)
