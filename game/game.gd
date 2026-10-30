@@ -24,6 +24,8 @@ const FADE_TIME := 0.35
 const INTERLUDE_TIME := 2.2
 ## Health a heart vessel adds: one whole heart (four quarters).
 const HEART_VESSEL_HEALTH := 4
+## The wayfarer sword's own hit-stop: `hit_stop_time` is what it freezes for.
+const SWORD_HIT_STOP := 0.06
 ## Set the first time the equipment screen is opened (until then, a hint says how).
 const EQUIPMENT_SEEN_FLAG := &"equipment_seen"
 const MUSIC_VOLUME_DB := -8.0
@@ -251,13 +253,14 @@ func is_travelling() -> bool:
 	return _travelling
 
 
-## Freezes the world for the weapon's own hit-stop (a maul holds longer than a machete).
+## Freezes the world briefly when the hero's blow lands: `hit_stop_time` for the wayfarer sword,
+## and in proportion for other weapons (a maul holds twice as long, a machete less).
 func hit_stop() -> void:
 	if hit_stop_time <= 0.0:
 		return
 	var seconds := hit_stop_time
 	if level != null and level.player.weapon_attack() != null:
-		seconds = level.player.weapon_attack().hit_stop
+		seconds *= level.player.weapon_attack().hit_stop / SWORD_HIT_STOP
 	_hit_stop_token += 1
 	var token := _hit_stop_token
 	Engine.time_scale = 0.0
