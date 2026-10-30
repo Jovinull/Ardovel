@@ -5,6 +5,15 @@ extends RefCounted
 ## reads the same Profiles to show and compare, so nothing is computed in two places.
 
 
+## A dodge as the weight carried allows it.
+class Dodge:
+	extends RefCounted
+	var distance: float = 40.0
+	var duration: float = HeroStats.DODGE_TIME
+	var untouchable: float = 0.12
+	var recovery: float = 0.14
+
+
 ## Everything derived from one adventure's equipment.
 class Profile:
 	extends RefCounted
@@ -17,6 +26,10 @@ class Profile:
 	var carried: float = 0.0
 	## A HeroStats band.
 	var band: StringName = HeroStats.LIGHT
+	## The shield's guard (null without a shield) and its frames.
+	var guard: GuardData
+	var guard_sheet: Texture2D
+	var dodge := Dodge.new()
 
 	func value(stat: StringName) -> float:
 		return stats.get(stat, 0.0)
@@ -63,6 +76,13 @@ static func profile(adventure: Adventure, base_health: int) -> Profile:
 	attack.windup = sword.windup * swing
 	attack.recovery = sword.recovery * swing
 	result.attack = attack
+	var shield := ItemCatalog.find(adventure.equipped(ItemCatalog.OFF_HAND))
+	if ItemCatalog.fits(shield, ItemCatalog.OFF_HAND) and shield.guard != null:
+		result.guard = shield.guard
+		result.guard_sheet = shield.guard_sheet
+	result.dodge.distance = HeroStats.DODGE_DISTANCE[result.band]
+	result.dodge.untouchable = HeroStats.DODGE_UNTOUCHABLE[result.band]
+	result.dodge.recovery = HeroStats.DODGE_RECOVERY[result.band]
 	return result
 
 
@@ -81,6 +101,9 @@ static func profile_if(adventure: Adventure, base_health: int, slot: StringName,
 ## mobility.
 static func apply(profile: Profile, player: Player) -> void:
 	player.set_weapon(profile.attack, profile.weapon.attack_sheet)
+	player.set_guard(profile.guard, profile.guard_sheet)
+	player.set_dodge(profile.dodge)
+	player.stamina.regen_factor = HeroStats.BAND_BREATH[profile.band]
 	if player.health.max_health != profile.max_health():
 		player.health.set_maximum(profile.max_health())
 	player.health.defense_percent = profile.value(HeroStats.DEFENSE)
