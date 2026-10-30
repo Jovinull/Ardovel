@@ -1,7 +1,8 @@
 extends GutTest
 ## The item catalog and its stable ids, the bag (quantities, stacks, capacity), the equipment rules
 ## (slots, compatibility, two rings, the main hand), the derived statistics (weight bands,
-## defence, firmness, attack, healing) and the save format (version 4, upgrades from 1, 2 and 3).
+## defence, firmness, attack, healing) and the save format (stacks and slots since version 4,
+## upgrades from 1, 2 and 3; the chest at home, version 5, is in test_storage.gd).
 
 const GLOVES := &"crew_gloves"
 const SWORD := &"wayfarer_sword"
@@ -349,7 +350,7 @@ func test_format_4_round_trip() -> void:
 	Equipment.equip(adventure, ItemCatalog.RING_2, &"whitestone_ring")
 	Equipment.equip(adventure, ItemCatalog.ACCESSORY, GLOVES)
 	var data := adventure.to_dict()
-	assert_eq(data["version"], 4)
+	assert_eq(data["version"], Adventure.FORMAT_VERSION)
 	assert_false(data.has("items"), "the old list is gone")
 	var back := _round_trip(adventure)
 	assert_eq(back.items(), adventure.items())
@@ -368,7 +369,7 @@ func test_a_version_3_save_gains_the_sword_and_keeps_its_gloves() -> void:
 	assert_true(adventure.has_flag(&"found_slope_crew_gloves"), "their pickup was taken")
 	assert_eq(adventure.health, 9)
 	assert_true(adventure.has_flag(&"heart_vessel_ruin"))
-	assert_eq(adventure.to_dict()["version"], 4)
+	assert_eq(adventure.to_dict()["version"], Adventure.FORMAT_VERSION)
 
 
 func test_versions_1_and_2_upgrade_through_3() -> void:

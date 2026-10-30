@@ -1,0 +1,64 @@
+{
+	"area": "village",
+	"checkpoint": {
+		"area": "forest",
+		"entry": "shrine"
+	},
+	"entry": "north",
+	"equipment": {
+		"head": "quarry_helm",
+		"legs": "traveller_boots",
+		"main_hand": "woodcutter_hatchet",
+		"off_hand": "barrel_lid_buckler",
+		"torso": "padded_doublet"
+	},
+	"flags": [
+		"equipment_seen",
+		"forest_shrine_awakened",
+		"found_village_barrel_lid_buckler",
+		"found_village_padded_doublet",
+		"found_village_woodcutter_hatchet",
+		"heard_of_shrine"
+	],
+	"health": 10,
+	"inventory": [
+		{
+			"count": 1,
+			"id": "wayfarer_sword"
+		},
+		{
+			"count": 1,
+			"id": "padded_doublet"
+		},
+		{
+			"count": 1,
+			"id": "barrel_lid_buckler"
+		},
+		{
+			"count": 1,
+			"id": "woodcutter_hatchet"
+		},
+		{
+			"count": 1,
+			"id": "quarry_helm"
+		},
+		{
+			"count": 1,
+			"id": "traveller_boots"
+		},
+		{
+			"count": 3,
+			"id": "corn_bread"
+		},
+		{
+			"count": 4,
+			"id": "pine_resin"
+		},
+		{
+			"count": 1,
+			"id": "lantern_of_tomorrow"
+		}
+	],
+	"quick_item": "corn_bread",
+	"version": 4
+}

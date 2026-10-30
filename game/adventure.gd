@@ -2,11 +2,13 @@ class_name Adventure
 extends RefCounted
 ## Everything one adventure remembers, as plain data: where the hero stands, the shrine they
 ## return to after a fall, their health, the flags the world has earned, the items they have (how
-## many of each) and what they have equipped. Flags are the story's progress: the shrine, the
-## objectives and small permanent changes are each one named flag. Items are kept by their stable
-## ids (ItemCatalog); nothing derived from them (the hero's statistics) is saved. The rules for
-## what fits in the bag and what goes in which slot live with the catalog (Bag, Equipment): this is
-## only the record.
+## many of each), what they have equipped and what they keep in the chest at home. Flags are the
+## story's progress: the shrine, the objectives and small permanent changes are each one named
+## flag. Items are kept by their stable ids (ItemCatalog); nothing derived from them (the hero's
+## statistics) is saved. The rules for what fits in the bag, in the chest and what goes in which
+## slot live with the catalog (Bag, Storage, Equipment): this is only the record. What is in the
+## chest is apart from what the hero has (`count` never includes it), so it can be neither worn
+## nor used until taken back.
 ##
 ## Two places are kept apart. The resume point (`area`, `entry`) follows the hero: it is the
 ## entry they last arrived through, or the shrine they last touched, and it is where Continue
@@ -17,7 +19,7 @@ extends RefCounted
 ## Emitted whenever something worth saving changes.
 signal changed
 
-const FORMAT_VERSION := 4
+const FORMAT_VERSION := 5
 ## Health value meaning "full", whatever the hero's maximum is.
 const FULL_HEALTH := -1
 ## The sword every hero carries from the start (format 3 saves gain it on upgrade).
@@ -45,6 +47,9 @@ var _equipment: Dictionary[StringName, StringName] = {}
 ## The food the quick-use key eats (empty: the first food the hero has). Saved as an optional key
 ## of format 4, so saves without it read as before.
 var quick_item: StringName = &""
+## The chest at home: ids in the order first put there, and how many of each.
+var _stored_items: Array[StringName] = []
+var _stored: Dictionary[StringName, int] = {}
 
 
 func _init(start_area: StringName = &"village", start_entry: StringName = &"start") -> void:
@@ -102,6 +107,48 @@ func remove_item(id: StringName, amount: int = 1) -> bool:
 	if _counts[id] == 0:
 		_counts.erase(id)
 		_items.erase(id)
+	changed.emit()
+	return true
+
+
+## How many of `id` are in the chest.
+func stored(id: StringName) -> int:
+	return _stored.get(id, 0)
+
+
+## Ids in the chest, in the order first put there.
+func stored_items() -> Array[StringName]:
+	return _stored_items.duplicate()
+
+
+## Moves `amount` of `id` from what the hero has into the chest, in one change; never the copies
+## equipped. Whether the chest has room is Storage's to say. False (and nothing moved) otherwise.
+func store(id: StringName, amount: int) -> bool:
+	if id.is_empty() or amount <= 0 or count(id) - amount < equipped_copies(id):
+		return false
+	_counts[id] = count(id) - amount
+	if _counts[id] == 0:
+		_counts.erase(id)
+		_items.erase(id)
+	if not _stored.has(id):
+		_stored_items.append(id)
+	_stored[id] = stored(id) + amount
+	changed.emit()
+	return true
+
+
+## Moves `amount` of `id` from the chest back to the hero, in one change. Whether the bag has room
+## is Storage's to say. False (and nothing moved) if the chest has fewer.
+func retrieve(id: StringName, amount: int) -> bool:
+	if id.is_empty() or amount <= 0 or stored(id) < amount:
+		return false
+	_stored[id] = stored(id) - amount
+	if _stored[id] == 0:
+		_stored.erase(id)
+		_stored_items.erase(id)
+	if not _counts.has(id):
+		_items.append(id)
+	_counts[id] = count(id) + amount
 	changed.emit()
 	return true
 
@@ -188,6 +235,9 @@ func to_dict() -> Dictionary:
 	var equipment := {}
 	for slot in _equipment:
 		equipment[String(slot)] = String(_equipment[slot])
+	var storage: Array[Dictionary] = []
+	for id in _stored_items:
+		storage.append({"id": String(id), "count": _stored[id]})
 	return {
 		"version": FORMAT_VERSION,
 		"area": String(area),
@@ -199,6 +249,7 @@ func to_dict() -> Dictionary:
 		"inventory": stacks,
 		"equipment": equipment,
 		"quick_item": String(quick_item),
+		"storage": storage,
 	}
 
 
@@ -216,6 +267,8 @@ static func from_dict(data: Variant) -> Adventure:
 		d = _upgraded_from_v3(d)
 		if d.is_empty():
 			return null
+	if _is_whole(d.get("version")) and int(d["version"]) == 4:
+		d = _upgraded_from_v4(d)
 	if not _is_whole(d.get("version")) or int(d["version"]) != FORMAT_VERSION:
 		return null
 	if not _is_name(d.get("area")) or not _is_name(d.get("entry")):
@@ -226,7 +279,8 @@ static func from_dict(data: Variant) -> Adventure:
 		return null
 	if not _is_whole(d.get("health")) or int(d["health"]) < FULL_HEALTH:
 		return null
-	if not d.get("flags") is Array or not d.get("inventory") is Array or not d.get("equipment") is Dictionary:
+	if not d.get("flags") is Array or not d.get("inventory") is Array or not d.get("equipment") is Dictionary \
+			or not d.get("storage") is Array:
 		return null
 	var adventure := Adventure.new(StringName(d["area"]), StringName(d["entry"]))
 	adventure._items.clear()
@@ -241,13 +295,19 @@ static func from_dict(data: Variant) -> Adventure:
 			return null
 		adventure._flags[StringName(flag)] = true
 	for stack: Variant in d["inventory"]:
-		if not stack is Dictionary or not _is_name(stack.get("id")) or not _is_whole(stack.get("count")) \
-				or int(stack["count"]) < 1:
+		if not _is_stack(stack):
 			return null
 		var id := StringName(stack["id"])
 		if not adventure._counts.has(id):
 			adventure._items.append(id)
 		adventure._counts[id] = adventure.count(id) + int(stack["count"])
+	for stack: Variant in d["storage"]:
+		if not _is_stack(stack):
+			return null
+		var id := StringName(stack["id"])
+		if not adventure._stored.has(id):
+			adventure._stored_items.append(id)
+		adventure._stored[id] = adventure.stored(id) + int(stack["count"])
 	var equipment: Dictionary = d["equipment"]
 	var slots: Array = equipment.keys()
 	slots.sort()
@@ -316,6 +376,20 @@ static func _upgraded_from_v3(v3: Dictionary) -> Dictionary:
 		(v4["flags"] as Array).append(V3_GLOVES_PICKUP_FLAG)
 	v4["inventory"] = stacks
 	return v4
+
+
+## Version 4 had no chest at home: an adventure from then keeps nothing there.
+static func _upgraded_from_v4(v4: Dictionary) -> Dictionary:
+	var v5 := v4.duplicate()
+	v5["version"] = 5
+	v5["storage"] = []
+	return v5
+
+
+## {"id": a name, "count": a whole number from 1}.
+static func _is_stack(stack: Variant) -> bool:
+	return stack is Dictionary and _is_name(stack.get("id")) and _is_whole(stack.get("count")) \
+			and int(stack["count"]) >= 1
 
 
 ## JSON numbers arrive as floats; accept only whole values.
