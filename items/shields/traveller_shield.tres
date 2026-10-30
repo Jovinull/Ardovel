@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://items/item_def.gd" id="1_item"]
 [ext_resource type="Script" path="res://items/stat_modifier.gd" id="2_mod"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/items/shields/traveller_shield.png" id="3_icon"]
+[ext_resource type="Script" path="res://combat/guard_data.gd" id="6_guard"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/shields/traveller_shield_guard.png" id="7_sheet"]
 
 [sub_resource type="Resource" id="Resource_mod0"]
 script = ExtResource("2_mod")
@@ -16,6 +18,15 @@ stat = &"poise"
 kind = 0
 value = 15.0
 
+[sub_resource type="Resource" id="Resource_guard"]
+script = ExtResource("6_guard")
+absorb = 0.8
+breath_per_quarter = 8.0
+raise_time = 0.09
+move_factor = 0.6
+arc = 120.0
+stability = 0.7
+
 [resource]
 script = ExtResource("1_item")
 id = &"traveller_shield"
@@ -27,3 +38,5 @@ weight = 4.0
 stack_limit = 1
 slot = &"off_hand"
 modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_mod0"), SubResource("Resource_mod1")])
+guard = SubResource("Resource_guard")
+guard_sheet = ExtResource("7_sheet")
