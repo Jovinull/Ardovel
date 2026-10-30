@@ -36,6 +36,8 @@
 [ext_resource type="Texture2D" path="res://assets/ardovel/blank/breu_perch.png" id="34_u068o"]
 [ext_resource type="Script" path="res://world/area_entry.gd" id="35_4hp76"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="36_4ukx0"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7bw8j"]
 size = Vector2(30, 14)
@@ -480,3 +482,35 @@ shape = SubResource("RectangleShape2D_x3k5j")
 [node name="@CollisionShape2D@7" type="CollisionShape2D" parent="Bounds" unique_id=1412640528]
 position = Vector2(276, 62)
 shape = SubResource("RectangleShape2D_ag8wt")
+
+[node name="Found_TravellerStaff" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(332, 120)
+item = &"traveller_staff"
+count = 1
+flag = &"found_halt_traveller_staff"
+
+[node name="Found_TravellerShield" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(300, 216)
+item = &"traveller_shield"
+count = 1
+flag = &"found_halt_traveller_shield"
+
+[node name="Found_TravellerCoat" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(160, 208)
+item = &"traveller_coat"
+count = 1
+flag = &"found_halt_traveller_coat"
+message = "PICKUP_WAYSTOP_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_TravellerCharm" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(60, 120)
+item = &"traveller_charm"
+count = 1
+flag = &"found_halt_traveller_charm"
+
+[node name="Found_HerbTea" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(312, 198)
+item = &"herb_tea"
+count = 1
+flag = &"found_halt_herb_tea"

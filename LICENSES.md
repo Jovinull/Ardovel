@@ -19,6 +19,7 @@ was written for this project.
 | `Backgrounds/Tilesets/tileset_camp.png` | Iara's tent, fire pit, pot, lamp post, coil of rope, oil jars, stools and log bench; the road crew's torn shelter |
 | `Backgrounds/Tilesets/TilesetWater.png` | the brook under the slab bridge on the road to Pedrabranca |
 | `Items/Tool/Shovel.png`, `Pickaxe.png` | the road crew's tools left at their shelter |
+| `Items/Treasure/LittleTreasureChest.png` | the small chests that keep items in the world (closed and open) |
 | `Backgrounds/Tilesets/TilesetNature.png` | the pack's trees, bushes, flowers, rocks and stumps, and the grey crags, stacked stones and pebbles of the western slope |
 | `Backgrounds/Tilesets/TilesetHouse.png` | village houses, shop, arch, stall, barrels, banner, fence, the guardian statue and the ruin's grey guardians; Pedrabranca's pale houses, gate pillars, oil stall, barrels and stone guardian |
 | `Backgrounds/Tilesets/Interior/TilesetWallSimple.png` | the ruin's mossy walls |
@@ -39,7 +40,7 @@ was written for this project.
 | `FX/Magic/Circle/SpriteSheetSpark.png` | shrine awakening spark |
 | `FX/Smoke/SmokeCircular/SpriteSheet.png` | dust of the warden's slam |
 | `FX/Magic/Spirit/SpriteSheetBlue.png` | the warden's light flying to the ruin's heart |
-| `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact2`, `Impact3`, `Impact4`, `Spirit`, `Launch`, `Magic1`, `Bonus`, `PowerUp1`, `Grass`, `Grass2`, `Explosion`, `Explosion2`, `Whoosh`, `Bounce`, `Water2`) | sound effects |
+| `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact2`, `Impact3`, `Impact4`, `Spirit`, `Launch`, `Magic1`, `Bonus`, `PowerUp1`, `Grass`, `Grass2`, `Explosion`, `Explosion2`, `Whoosh`, `Bounce`, `Water2`), `Audio/Sounds/Menu/Accept.wav`, `Cancel.wav`, `Move1.wav` | sound effects; the hero menu's choose, back and move sounds |
 | `Audio/Musics/33 - Calm Village.ogg`, `11 - Clearing.ogg`, `30 - Ruins.ogg`, `17 - Fight.ogg`, `23 - Road.ogg` | village, forest, ruin, warden fight, far bank and road (halt, Pedrabranca) music |
 
 ## Ardovel original art — `assets/ardovel/`
@@ -78,6 +79,7 @@ production tools are kept outside this repository.
 | `road/ditch.png`, `road/dam_log.png`, `road/dam_debris.png`, `road/log_aside.png`, `road/runoff.png`, `road/runoff_far_bank.png`, `road/ditch_fall.png`, `road/rolling_stone.png`, `road/tally_board.png`, `road/pry_bar.png` | hand drawn drainage ditch (dry and running), the fallen trunk and debris that choke it, the trunk levered aside, the runoff down the slope and onto the road, the ditch pouring into the gorge, a rolling stone, the road crew's tally board and Iara's pry bar |
 | `spring/road_ditch.png`, `spring/bridge.png`, `spring/stake.png`, `spring/milestone.png`, `spring/bar_ready.png`, `spring/bar_heave.png`, `spring/wedge.png`, `spring/drag.png`, `spring/load.png`, `spring/load_side.png`, `spring/note.png` | hand drawn roadside ditch (cleared, from the slope's ditch, and choked), the slab bridge, the crew's section-end stake, a milestone, the crew's long bar (ready and borne down), a wedge, the furrows of the walked stone, Iara's carrying frame with her oil (standing and side on) and her note |
 | `blank/board.png`, `blank/board_note.png`, `blank/map_ground.png`, `blank/map_blank.png`, `blank/map_drawn.png`, `blank/breu_perch.png` | hand drawn travellers' board at the halt, the witch's note on it, her map on the ground and up close (blank and drawn), and Breu perched |
+| `items/weapons/*.png`, `items/shields/*.png`, `items/armor/*.png`, `items/rings/*.png`, `items/accessories/*.png`, `items/consumables/*.png`, `items/materials/*.png` | hand drawn icons of the 7.0.5 arsenal (40 items: weapons, shields, armour, rings, accessories, food and materials), and for each new weapon (`*_attack.png`) the hero's attack frames with that weapon in hand, drawn as two in-hand poses placed like the wayfarer sword's |
 | `items/crew_gloves.png`, `items/crew_gloves_ground.png` | hand drawn Crew Gloves: the road crew's leather work glove with the crew's red rag round the cuff, as an icon and lying on the ground |
 | `town/quarry.png`, `town/steps.png`, `town/block.png`, `town/pole_block.png`, `town/cart.png`, `town/notice.png`, `town/notice_post.png` | hand drawn Pedrabranca: the quarry terrace and its cut face (one block just taken out), the worked steps, a cut block of white stone, the block slung from a carrying pole, a hand cart of blocks, the crew's notice on its post at the gate and the post once it is down |
 | `characters/bruxa_walk.png`, `characters/bruxa_idle.png`, `characters/bruxa_faceset.png`, `characters/morcego_fly.png` | hand drawn travelling witch (walk in 16x20 frames, idle, portrait) and her bat Breu in flight; original art made for Ardovel, an affectionate homage to the little witch shown by the Brazilian creator Gemaplys on his development streams; no asset, name or code of that project is used |

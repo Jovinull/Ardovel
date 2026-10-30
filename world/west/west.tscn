@@ -35,6 +35,8 @@
 [ext_resource type="PackedScene" path="res://world/props/fern.tscn" id="33_8vlow"]
 [ext_resource type="Script" path="res://world/area_entry.gd" id="34_cqbwn"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="35_gg0dy"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8ukon"]
 texture = ExtResource("4_jqcuu")
@@ -462,3 +464,21 @@ shape = SubResource("RectangleShape2D_ctjx6")
 [node name="@CollisionShape2D@11" type="CollisionShape2D" parent="Bounds" unique_id=1682079573]
 position = Vector2(124, 365)
 shape = SubResource("RectangleShape2D_eqmec")
+
+[node name="Found_HerbPouch" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(40, 332)
+item = &"herb_pouch"
+count = 1
+flag = &"found_west_herb_pouch"
+
+[node name="Found_HerbTea" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(176, 92)
+item = &"herb_tea"
+count = 1
+flag = &"found_west_herb_tea"
+
+[node name="Found_CardosaSeed" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(336, 238)
+item = &"cardosa_seed"
+count = 3
+flag = &"found_west_cardosa_seed"

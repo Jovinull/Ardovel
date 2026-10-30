@@ -47,6 +47,8 @@
 [ext_resource type="PackedScene" path="res://world/props/west/pebbles_b.tscn" id="45_skkp0"]
 [ext_resource type="Script" path="res://world/area_entry.gd" id="46_usdl1"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="47_gevsj"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rkdel"]
 texture = ExtResource("4_a40p8")
@@ -673,3 +675,21 @@ shape = SubResource("RectangleShape2D_s021g")
 [node name="@CollisionShape2D@9" type="CollisionShape2D" parent="Bounds" unique_id=1946111905]
 position = Vector2(394, 208)
 shape = SubResource("RectangleShape2D_2rapm")
+
+[node name="Found_TravellerBoots" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(60, 178)
+item = &"traveller_boots"
+count = 1
+flag = &"found_bank_traveller_boots"
+
+[node name="Found_CarterRing" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(176, 244)
+item = &"carter_ring"
+count = 1
+flag = &"found_bank_carter_ring"
+
+[node name="Found_CornBread" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(362, 156)
+item = &"corn_bread"
+count = 1
+flag = &"found_bank_corn_bread"

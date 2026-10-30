@@ -50,12 +50,16 @@ var _active_joypad: int = -1
 var _joypad_name: String = ""
 ## The hero's maximum health before heart vessels (as set in the player scene).
 var _base_max_health: int = 0
+## What the hero's equipment and heart vessels make of them (see HeroLoadout).
+var _profile: HeroLoadout.Profile
+## What the profile was last built from, so unrelated changes (a flag) do not rebuild it.
+var _profile_source: String = ""
 
 @onready var _hud: Hud = $HUD
 @onready var _death_screen: DeathScreen = $DeathScreen
 @onready var _title: TitleScreen = $TitleScreen
 @onready var _pause: PauseScreen = $PauseScreen
-@onready var _equipment: EquipmentScreen = $EquipmentScreen
+@onready var _equipment: HeroMenu = $HeroMenu
 @onready var _fade: ColorRect = %Fade
 @onready var _interlude: Label = %Interlude
 @onready var _music: AudioStreamPlayer = $Music
@@ -117,7 +121,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
-## The equipment screen opens only while the hero is free to move: not during a trip, a
+## The hero's menu (equipment, inventory, status) opens only while the hero is free to move: not during a trip, a
 ## dialogue, the witch's map, a pause, a swing, a stagger or a fall.
 func can_open_equipment() -> bool:
 	if level == null or adventure == null or _travelling or _title.is_open() or _pause.is_open():
@@ -131,12 +135,16 @@ func open_equipment() -> void:
 	if not can_open_equipment():
 		return
 	_set_area_frozen(true)
-	_equipment.open(adventure)
+	_equipment.open(adventure, base_health(), level.player.health, use_item)
 	adventure.set_flag(EQUIPMENT_SEEN_FLAG)
 
 
 func is_equipment_open() -> bool:
 	return _equipment.is_open()
+
+
+func hero_menu() -> HeroMenu:
+	return _equipment
 
 
 func open_title() -> void:
@@ -265,7 +273,6 @@ func _begin(state: Adventure) -> void:
 		if not ItemCatalog.knows(id):
 			push_warning("The save has an item this game does not know (%s); it is kept but unused." % id)
 	adventure.changed.connect(_queue_save)
-	adventure.changed.connect(_apply_heart_vessels)
 	adventure.changed.connect(_apply_equipment)
 	adventure.changed.connect(_refresh_first_step_guidance)
 	_title.close()
@@ -287,7 +294,7 @@ func _load_area(area: StringName, entry: StringName) -> void:
 		push_warning("Area %s has no entry %s; using the scene's start." % [area, entry])
 	var player := level.player
 	_base_max_health = player.health.max_health
-	_apply_heart_vessels()
+	_profile_source = ""
 	_apply_equipment()
 	if adventure.health == Adventure.FULL_HEALTH:
 		player.health.restore_full()
@@ -400,27 +407,42 @@ func _refresh_first_step_guidance() -> void:
 			and not adventure.has_flag(&"forest_shrine_awakened")
 	if needs_first_step:
 		_hud.set_guidance("FIRST_STEP_GUIDANCE")
-	elif not adventure.items().is_empty() and not adventure.has_flag(EQUIPMENT_SEEN_FLAG):
+	elif adventure.items().size() > 1 and not adventure.has_flag(EQUIPMENT_SEEN_FLAG):
 		_hud.set_guidance("EQUIPMENT_GUIDANCE", [&"equipment", &"interact"])
 	else:
 		_hud.set_guidance("")
 
 
-## Sizes the hero's health from the heart vessels found so far.
-func _apply_heart_vessels() -> void:
-	if level == null:
-		return
+## The hero's health before equipment: the player scene's plus the heart vessels found.
+func base_health() -> int:
 	var vessels := adventure.flags().filter(
 			func(flag: StringName) -> bool: return String(flag).begins_with(HeartVessel.FLAG_PREFIX)).size()
-	var maximum := _base_max_health + vessels * HEART_VESSEL_HEALTH
-	if level.player.health.max_health != maximum:
-		level.player.health.set_maximum(maximum)
+	return _base_max_health + vessels * HEART_VESSEL_HEALTH
 
 
-## Gives the hero's sword what the equipment makes of it.
+## What the hero's equipment and heart vessels make of them now.
+func hero_profile() -> HeroLoadout.Profile:
+	return _profile
+
+
+## Rebuilds the hero's profile and gives it to the hero when what it depends on has changed (the
+## equipment, or a heart vessel found).
 func _apply_equipment() -> void:
-	if level != null:
-		HeroLoadout.apply(adventure, level.player)
+	if level == null or adventure == null:
+		return
+	var source := "%s|%d" % [adventure.equipment(), base_health()]
+	if source == _profile_source:
+		return
+	_profile_source = source
+	_profile = HeroLoadout.profile(adventure, base_health())
+	HeroLoadout.apply(_profile, level.player)
+
+
+## Uses one `id` from the bag on the hero (a consumable). False if nothing happened.
+func use_item(id: StringName) -> bool:
+	if level == null or _profile == null:
+		return false
+	return HeroLoadout.use(adventure, _profile, level.player.health, id)
 
 
 func _play_music(stream: AudioStream) -> void:

@@ -34,6 +34,8 @@
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Hunter/Faceset.png" id="32_ul6py"]
 [ext_resource type="Script" path="res://world/area_entry.gd" id="33_x0qlb"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="34_fiaml"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ksvog"]
 size = Vector2(56, 14)
@@ -1253,3 +1255,51 @@ shape = SubResource("RectangleShape2D_36ge4")
 [node name="@CollisionShape2D@13" type="CollisionShape2D" parent="Bounds" unique_id=956521840]
 position = Vector2(456, 32)
 shape = SubResource("RectangleShape2D_5x28l")
+
+[node name="Found_QuarryMaul" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(380, 22)
+item = &"quarry_maul"
+count = 1
+flag = &"found_town_quarry_maul"
+
+[node name="Found_WhitestoneRing" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(130, 22)
+item = &"whitestone_ring"
+count = 1
+flag = &"found_town_whitestone_ring"
+
+[node name="Found_QuarryHelm" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(320, 272)
+item = &"quarry_helm"
+count = 1
+flag = &"found_town_quarry_helm"
+message = "PICKUP_QUARRY_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_QuarryBreastplate" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(196, 262)
+item = &"quarry_breastplate"
+count = 1
+flag = &"found_town_quarry_breastplate"
+message = "PICKUP_QUARRY_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_QuarryGreaves" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(296, 258)
+item = &"quarry_greaves"
+count = 1
+flag = &"found_town_quarry_greaves"
+message = "PICKUP_QUARRY_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_QuarryGauntlets" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(160, 200)
+item = &"quarry_gauntlets"
+count = 1
+flag = &"found_town_quarry_gauntlets"
+
+[node name="Found_WhiteStoneChip" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(320, 80)
+item = &"white_stone_chip"
+count = 5
+flag = &"found_town_white_stone_chip"

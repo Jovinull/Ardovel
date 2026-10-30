@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://items/item_def.gd" id="1_item"]
+[ext_resource type="Script" path="res://items/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/armor/ruin_circlet.png" id="3_icon"]
+
+[sub_resource type="Resource" id="Resource_mod0"]
+script = ExtResource("2_mod")
+stat = &"defense"
+kind = 0
+value = 1.0
+
+[sub_resource type="Resource" id="Resource_mod1"]
+script = ExtResource("2_mod")
+stat = &"max_health"
+kind = 0
+value = 4.0
+
+[resource]
+script = ExtResource("1_item")
+id = &"ruin_circlet"
+category = &"armor"
+name_key = "ITEM_RUIN_CIRCLET"
+description_key = "ITEM_RUIN_CIRCLET_DESC"
+icon = ExtResource("3_icon")
+weight = 0.5
+stack_limit = 1
+slot = &"head"
+modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_mod0"), SubResource("Resource_mod1")])

@@ -26,8 +26,12 @@ var state: State = State.MOVE
 var facing: Vector2 = Vector2.DOWN
 var _hurt_left: float = 0.0
 var _attack_buffered: bool = false
-## The sword as the scene defines it; what is equipped changes a copy of it (set_sword_power).
-var _base_sword: AttackData
+## Percent of the knockback taken that the hero's footing absorbs (from what is worn).
+var poise_percent: float = 0.0
+## Top speed and acceleration as fractions of the scene's (from the weight carried).
+var _speed_factor: float = 1.0
+var _acceleration_factor: float = 1.0
+var _attack_sheet: Texture2D
 
 @onready var health: Health = $Health
 @onready var camera: Camera2D = $Camera
@@ -47,7 +51,8 @@ func _ready() -> void:
 	_attack.phase_changed.connect(_on_attack_phase_changed)
 	_attack.finished.connect(_on_attack_finished)
 	_sword.landed.connect(_on_sword_landed)
-	_base_sword = _attack.data
+	# Each hero swaps the attack frames to the weapon in hand; never the shared resource.
+	_sprite.sprite_frames = _sprite.sprite_frames.duplicate(true)
 	_sprite.play(&"idle_down")
 
 
@@ -87,7 +92,8 @@ func _process_move(delta: float) -> void:
 		return
 	if Input.is_action_just_pressed(&"interact"):
 		interactor.interact(self)
-	velocity = PlayerMotion.next_velocity(velocity, input, max_speed, acceleration, friction, delta)
+	velocity = PlayerMotion.next_velocity(velocity, input, max_speed * _speed_factor,
+			acceleration * _acceleration_factor, friction, delta)
 	move_and_slide()
 	_lean_on_blocks(input, delta)
 	facing = PlayerMotion.next_facing(input, facing)
@@ -144,21 +150,37 @@ func _on_sword_landed(target: Hurtbox) -> void:
 	hit_landed.emit()
 
 
-func base_sword() -> AttackData:
-	return _base_sword
+## The weapon in hand: its swing (derived from what is worn) and the attack frames drawn with it.
+## A swing under way keeps the damage and knockback it started with.
+func set_weapon(attack: AttackData, sheet: Texture2D) -> void:
+	_attack.data = attack
+	if sheet == null or sheet == _attack_sheet:
+		return
+	_attack_sheet = sheet
+	for direction in ["down", "up", "left", "right"]:
+		var animation := StringName("attack_" + direction)
+		for i in _sprite.sprite_frames.get_frame_count(animation):
+			var frame := _sprite.sprite_frames.get_frame_texture(animation, i) as AtlasTexture
+			if frame != null:
+				frame.atlas = sheet
 
 
-## The sword's damage and knockback (derived from what is equipped); its timing and reach stay
-## the scene's. A swing under way keeps the values it started with.
-func set_sword_power(damage: int, knockback: float) -> void:
-	var sword := _base_sword.duplicate() as AttackData
-	sword.damage = damage
-	sword.knockback = knockback
-	_attack.data = sword
-
-
-func sword_power() -> AttackData:
+func weapon_attack() -> AttackData:
 	return _attack.data
+
+
+func weapon_sheet() -> Texture2D:
+	return _attack_sheet
+
+
+## Top speed and acceleration as fractions of the scene's.
+func set_mobility(speed_factor: float, acceleration_factor: float) -> void:
+	_speed_factor = speed_factor
+	_acceleration_factor = acceleration_factor
+
+
+func top_speed() -> float:
+	return max_speed * _speed_factor
 
 
 ## A shove that costs no health (people carrying a load across a crowded yard): knocked back from
@@ -182,7 +204,7 @@ func _stagger(hit: Hit) -> void:
 	_attack_buffered = false
 	state = State.HURT
 	_hurt_left = hurt_time
-	velocity = hit.knockback_velocity(global_position)
+	velocity = hit.knockback_velocity(global_position) * (1.0 - clampf(poise_percent, 0.0, 100.0) / 100.0)
 	# Face whoever hit us; the knockback carries the hero backwards, away from them.
 	var toward_source := global_position.direction_to(hit.source_position)
 	if toward_source != Vector2.ZERO:

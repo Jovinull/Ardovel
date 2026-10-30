@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://items/item_def.gd" id="1_item"]
+[ext_resource type="Script" path="res://items/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/shields/barrel_lid_buckler.png" id="3_icon"]
+
+[sub_resource type="Resource" id="Resource_mod0"]
+script = ExtResource("2_mod")
+stat = &"defense"
+kind = 0
+value = 3.0
+
+[sub_resource type="Resource" id="Resource_mod1"]
+script = ExtResource("2_mod")
+stat = &"poise"
+kind = 0
+value = 5.0
+
+[resource]
+script = ExtResource("1_item")
+id = &"barrel_lid_buckler"
+category = &"shield"
+name_key = "ITEM_BARREL_LID_BUCKLER"
+description_key = "ITEM_BARREL_LID_BUCKLER_DESC"
+icon = ExtResource("3_icon")
+weight = 1.5
+stack_limit = 1
+slot = &"off_hand"
+modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_mod0"), SubResource("Resource_mod1")])

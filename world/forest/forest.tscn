@@ -26,6 +26,8 @@
 [ext_resource type="Texture2D" path="res://assets/ardovel/forest/light_traces.png" id="28_traces"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/forest/distant_glint.png" id="30_glint"]
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Magic1.wav" id="31_glint_sound"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_77kt1"]
 size = Vector2(672, 16)
@@ -439,3 +441,33 @@ target_entry = &"east"
 shape = SubResource("exit_west")
 
 [connection signal="answered" from="Entities/EchoStone" to="Entities/EchoTrail" method="flash_reply"]
+
+[node name="Found_BarkShield" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(360, 402)
+item = &"bark_shield"
+count = 1
+flag = &"found_forest_bark_shield"
+
+[node name="Found_MossWraps" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(290, 140)
+item = &"moss_wraps"
+count = 1
+flag = &"found_forest_moss_wraps"
+
+[node name="Found_RootRing" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(186, 318)
+item = &"root_ring"
+count = 1
+flag = &"found_forest_root_ring"
+
+[node name="Found_WildHoney" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(530, 192)
+item = &"wild_honey"
+count = 3
+flag = &"found_forest_wild_honey"
+
+[node name="Found_PineResin" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(496, 164)
+item = &"pine_resin"
+count = 4
+flag = &"found_forest_pine_resin"

@@ -215,20 +215,173 @@ A night at the carters' halt; in the morning, the white quarries high in the val
 TOWN_ROAD_EAST,"Uma jornada e meia de volta para o leste,
 até o pouso.","A day and a half back east,
 to the halt."
-CONTROL_EQUIPMENT_KEYBOARD,"Equipamento: %s","Equipment: %s"
-CONTROL_EQUIPMENT_GAMEPAD,"Equipamento: %s","Equipment: %s"
-EQUIPMENT_TITLE,"Equipamento","Equipment"
+CONTROL_EQUIPMENT_KEYBOARD,"Menu do herói: %s","Hero menu: %s"
+CONTROL_EQUIPMENT_GAMEPAD,"Menu do herói: %s","Hero menu: %s"
 SLOT_ACCESSORY,"Acessório","Accessory"
-EQUIPMENT_ITEMS,"Itens","Items"
-EQUIPMENT_EMPTY_SLOT,"vazio","empty"
-EQUIPMENT_NO_ITEMS,"Nada por enquanto.","Nothing yet."
-EQUIPMENT_WORN,"Equipado","Equipped"
-EQUIPMENT_NOT_WORN,"Não equipado","Not equipped"
-EQUIPMENT_HINT_EQUIP,"%s: equipar | %s: fechar","%s: equip | %s: close"
-EQUIPMENT_HINT_REMOVE,"%s: remover | %s: fechar","%s: remove | %s: close"
-EQUIPMENT_HINT_CLOSE,"%s: fechar","%s: close"
-EQUIPMENT_GUIDANCE,"Algo novo na bolsa.\n%s: equipamento | %s: fechar","Something new in your bag.\n%s: equipment | %s: hide"
+EQUIPMENT_GUIDANCE,"Algo novo na bolsa.\n%s: menu do herói | %s: fechar","Something new in your bag.\n%s: hero menu | %s: hide"
 ITEM_CREW_GLOVES,"Luvas da Turma","Crew Gloves"
 ITEM_CREW_GLOVES_DESC,"Couro grosso, endurecido na forma de outras mãos. No punho, o trapo vermelho do mutirão de Pedrabranca.","Thick leather, stiffened into the shape of other hands. Round the cuff, the red rag of Pedrabranca's road crew."
-ITEM_CREW_GLOVES_EFFECT,"A espada empurra os inimigos mais longe (+50%).","The sword knocks enemies further back (+50%)."
-ITEM_CREW_GLOVES_FOUND,"Junto da lona rasgada, esquecidas entre as ferramentas, um par de luvas de couro com um trapo vermelho no punho.\n\nVocê pegou as Luvas da Turma.","By the torn canvas, forgotten among the tools, a pair of leather gloves with a red rag round the cuff.\n\nYou took the Crew Gloves."
+ITEM_CREW_GLOVES_FOUND,"Junto da lona rasgada, esquecidas entre as ferramentas, um par de luvas de couro com um trapo vermelho no punho.","By the torn canvas, forgotten among the tools, a pair of leather gloves with a red rag round the cuff."
+ITEM_WAYFARER_SWORD,Espada de Viagem,Wayfarer Sword
+ITEM_WAYFARER_SWORD_DESC,A espada curta que você sempre levou. Nem pesada nem leve: serve para tudo.,The short sword you have always carried. Neither heavy nor light: good for anything.
+ITEM_CREW_MACHETE,Facão do Mutirão,Crew Machete
+ITEM_CREW_MACHETE_DESC,"Facão de roçar mato, cabo enrolado em corda. Rápido, mas empurra pouco.","A brush-cutting machete, its grip bound in cord. Quick, but it barely pushes."
+ITEM_WOODCUTTER_HATCHET,Machadinha de Lenha,Woodcutter's Hatchet
+ITEM_WOODCUTTER_HATCHET_DESC,"Machadinha de rachar lenha da vila. Curta, mas joga o que acerta para longe.","The village's firewood hatchet. Short, but it throws what it hits far back."
+ITEM_TRAVELLER_STAFF,Bordão de Viajante,Traveller's Staff
+ITEM_TRAVELLER_STAFF_DESC,"Bordão de freixo com ponteira de ferro, gasto de estrada. Alcança longe, mas é lento.","An ash staff with an iron tip, worn by the road. It reaches far, but it is slow."
+ITEM_RUIN_BLADE,Lâmina de Bronze,Bronze Blade
+ITEM_RUIN_BLADE_DESC,"Uma lâmina antiga em forma de folha, tirada da ruína. Corta fundo, mas cansa o braço.","An old leaf-shaped blade taken from the ruin. It cuts deep, but it tires the arm."
+ITEM_QUARRY_MAUL,Marreta de Pedreiro,Quarryman's Maul
+ITEM_QUARRY_MAUL_DESC,"Marreta de cabo curto de quem racha bloco na pedreira. Esmaga, devagar.","The short-handled maul of those who split blocks at the quarry. It crushes, slowly."
+ITEM_BARREL_LID_BUCKLER,Broquel de Tampa,Barrel-Lid Buckler
+ITEM_BARREL_LID_BUCKLER_DESC,"Uma tampa de barril com alça de couro. Leve, e já aparou mais de um golpe.","A barrel lid with a leather strap. Light, and it has turned more than one blow."
+ITEM_BARK_SHIELD,Escudo de Casca,Bark Shield
+ITEM_BARK_SHIELD_DESC,Casca grossa de árvore velha presa em ripas. Quase não pesa.,Thick bark from an old tree pinned to slats. It weighs next to nothing.
+ITEM_TRAVELLER_SHIELD,Escudo de Viajante,Traveller's Shield
+ITEM_TRAVELLER_SHIELD_DESC,"Escudo redondo de madeira com aro de ferro, deixado no pouso.","A round wooden shield with an iron rim, left at the halt."
+ITEM_CREW_BOARD_SHIELD,Tábua do Mutirão,Crew Board Shield
+ITEM_CREW_BOARD_SHIELD_DESC,Uma tábua de escorar barranco com alças. Pesada; segura o corpo no lugar.,A bank-shoring board with handles. Heavy; it holds you in place.
+ITEM_STRAW_HAT,Chapéu de Palha,Straw Hat
+ITEM_STRAW_HAT_DESC,Chapéu de aba larga trançado na vila. Protege mais do sol que de golpes.,A wide-brimmed hat woven in the village. More shelter from sun than from blows.
+ITEM_TRAVELLER_HOOD,Capuz de Viajante,Traveller's Hood
+ITEM_TRAVELLER_HOOD_DESC,"Capuz de lã batida, bom para chuva e para pancada leve.","A hood of fulled wool, good for rain and for a light knock."
+ITEM_RUIN_CIRCLET,Diadema da Ruína,Ruin Circlet
+ITEM_RUIN_CIRCLET_DESC,Um aro fino de bronze com uma pedra verde. Não protege; dá fôlego.,A thin bronze band set with a green stone. It does not guard; it gives breath.
+ITEM_QUARRY_HELM,Elmo de Pedreiro,Quarryman's Helm
+ITEM_QUARRY_HELM_DESC,"Capacete de couro fervido com chapa na testa, contra lasca que voa.","A boiled-leather cap with a brow plate, against flying chips."
+ITEM_PADDED_DOUBLET,Gibão Acolchoado,Padded Doublet
+ITEM_PADDED_DOUBLET_DESC,"Gibão de pano grosso recheado de lã, costurado na vila.","A thick cloth doublet stuffed with wool, sewn in the village."
+ITEM_TRAVELLER_COAT,Casaco de Viajante,Traveller's Coat
+ITEM_TRAVELLER_COAT_DESC,"Casaco longo de couro, com remendos de muitas estradas.","A long leather coat, patched along many roads."
+ITEM_CREW_VEST,Colete do Mutirão,Crew Vest
+ITEM_CREW_VEST_DESC,Colete de couro duro com o trapo vermelho do mutirão costurado no peito.,A hard leather vest with the crew's red rag sewn on the chest.
+ITEM_QUARRY_BREASTPLATE,Peitoral de Pedreiro,Quarryman's Breastplate
+ITEM_QUARRY_BREASTPLATE_DESC,Couro e placas de ferro de quem trabalha embaixo da frente. Muito pesado.,Leather and iron plates for those who work under the face. Very heavy.
+ITEM_WORK_MITTS,Luvas de Lida,Work Mitts
+ITEM_WORK_MITTS_DESC,Luvas de pano grosso de quem cuida da horta.,Thick cloth mitts for tending the garden.
+ITEM_MOSS_WRAPS,Faixas de Musgo,Moss Wraps
+ITEM_MOSS_WRAPS_DESC,Tiras de pano forradas de musgo seco. Leves; a mão nem sente.,Cloth strips lined with dry moss. Light; the hand hardly feels them.
+ITEM_TRAVELLER_BRACERS,Braçadeiras de Viajante,Traveller's Bracers
+ITEM_TRAVELLER_BRACERS_DESC,"Braçadeiras de couro com fivela, para pulsos que carregam peso.","Buckled leather bracers, for wrists that carry loads."
+ITEM_QUARRY_GAUNTLETS,Manoplas de Pedreiro,Quarryman's Gauntlets
+ITEM_QUARRY_GAUNTLETS_DESC,"Manoplas de couro com dedos de ferro. Pesam, e o golpe pesa junto.","Leather gauntlets with iron fingers. They weigh, and so does the blow."
+ITEM_ROPE_SANDALS,Alpargatas de Corda,Rope Sandals
+ITEM_ROPE_SANDALS_DESC,"Alpargatas de sola de corda. Não protegem nada, mas o pé corre.","Rope-soled sandals. They guard nothing, but the feet run."
+ITEM_TRAVELLER_BOOTS,Botas de Viajante,Traveller's Boots
+ITEM_TRAVELLER_BOOTS_DESC,"Botas de cano curto, amaciadas por muitas léguas.","Short boots, softened by many leagues."
+ITEM_CREW_BOOTS,Botas do Mutirão,Crew Boots
+ITEM_CREW_BOOTS_DESC,"Botas de couro com biqueira, para cavar vala o dia inteiro.","Toe-capped leather boots, for digging ditches all day."
+ITEM_QUARRY_GREAVES,Grevas de Pedreiro,Quarryman's Greaves
+ITEM_QUARRY_GREAVES_DESC,Caneleiras de ferro sobre botas grossas. Firmes como o chão.,Iron shin guards over thick boots. As steady as the ground.
+ITEM_ROOT_RING,Anel de Raiz,Root Ring
+ITEM_ROOT_RING_DESC,Uma raiz fina que cresceu em volta de si mesma. Quem usa respira melhor.,A thin root grown round on itself. Whoever wears it breathes deeper.
+ITEM_QUILL_RING,Anel de Espinho,Quill Ring
+ITEM_QUILL_RING_DESC,Um espinho de Musgorico curvado num aro. Firma o passo.,A Musgorico quill bent into a band. It steadies the step.
+ITEM_WHITESTONE_RING,Anel de Pedra Branca,White Stone Ring
+ITEM_WHITESTONE_RING_DESC,"Um aro de pedra branca polida, como os que os pedreiros dão de lembrança.","A band of polished white stone, like those the quarry folk give as keepsakes."
+ITEM_CARTER_RING,Anel do Carreteiro,Carter's Ring
+ITEM_CARTER_RING_DESC,"Um elo de corrente de carroça, gasto até virar anel. Ajuda a carregar.",A link of cart chain worn down into a ring. It helps you carry.
+ITEM_HERB_POUCH,Bolsinha de Ervas,Herb Pouch
+ITEM_HERB_POUCH_DESC,"Uma bolsinha de pano com ervas secas. Tudo que cura, cura mais.",A small cloth pouch of dried herbs. Everything that heals heals more.
+ITEM_TRAVELLER_CHARM,Fita de Viajante,Traveller's Ribbon
+ITEM_TRAVELLER_CHARM_DESC,Uma fita trançada que os viajantes amarram no pulso. O braço volta mais rápido.,A braided ribbon travellers tie round the wrist. The arm comes back quicker.
+ITEM_CORN_BREAD,Pão de Milho,Corn Bread
+ITEM_CORN_BREAD_DESC,"Pão de milho da vila, ainda macio.","Village corn bread, still soft."
+ITEM_WILD_HONEY,Mel do Bosque,Wild Honey
+ITEM_WILD_HONEY_DESC,Um favo pequeno de mel escuro da floresta.,A small comb of dark forest honey.
+ITEM_HERB_TEA,Chá de Ervas,Herb Tea
+ITEM_HERB_TEA_DESC,Um cantil de chá forte de ervas de viagem.,A flask of strong travelling-herb tea.
+ITEM_WHITE_STONE_CHIP,Lasca de Pedra Branca,White Stone Chip
+ITEM_WHITE_STONE_CHIP_DESC,"Lasca da pedra de Pedrabranca. Ainda não serve para nada, mas é bonita.","A chip of Pedrabranca's stone. No use yet, but it is fine to look at."
+ITEM_PINE_RESIN,Resina de Pinheiro,Pine Resin
+ITEM_PINE_RESIN_DESC,"Resina grudenta de pinheiro, cheirando a mato.","Sticky pine resin, smelling of the woods."
+ITEM_ROOT_FIBER,Fibra de Raiz,Root Fibre
+ITEM_ROOT_FIBER_DESC,"Fibras de raiz da ruína, fortes como corda.","Root fibres from the ruin, strong as rope."
+ITEM_CARDOSA_SEED,Semente de Cardosa,Cardosa Seed
+ITEM_CARDOSA_SEED_DESC,Uma semente dura das Cardosas do mirante.,A hard seed from the lookout's Cardosas.
+ITEM_OLD_BRONZE,Bronze Velho,Old Bronze
+ITEM_OLD_BRONZE_DESC,Pedaços de bronze esverdeado da ruína.,Greened scraps of bronze from the ruin.
+MENU_PAGE_EQUIPMENT,"Equipamento","Equipment"
+MENU_PAGE_INVENTORY,"Inventário","Inventory"
+MENU_PAGE_STATUS,"Status","Status"
+MENU_GROUP_WEAPONS,"Armas","Weapons"
+MENU_GROUP_ARMOR,"Proteções","Protection"
+MENU_GROUP_RINGS,"Anéis e acessório","Rings and accessory"
+SLOT_MAIN_HAND,"Arma","Weapon"
+SLOT_OFF_HAND,"Mão secundária","Off hand"
+SLOT_HEAD,"Cabeça","Head"
+SLOT_TORSO,"Torso","Body"
+SLOT_HANDS,"Mãos","Hands"
+SLOT_LEGS,"Pés e pernas","Feet and legs"
+SLOT_RING_1,"Anel 1","Ring 1"
+SLOT_RING_2,"Anel 2","Ring 2"
+MENU_TAB_ALL,"Tudo","All"
+MENU_TAB_WEAPONS,"Armas","Weapons"
+MENU_TAB_ARMOR,"Proteções","Armour"
+MENU_TAB_RINGS,"Acessórios","Trinkets"
+MENU_TAB_CONSUMABLES,"Comida","Food"
+MENU_TAB_MATERIALS,"Materiais","Materials"
+CATEGORY_WEAPON,"Arma","Weapon"
+CATEGORY_SHIELD,"Escudo","Shield"
+CATEGORY_ARMOR,"Proteção","Armour"
+CATEGORY_RING,"Anel","Ring"
+CATEGORY_ACCESSORY,"Acessório","Accessory"
+CATEGORY_CONSUMABLE,"Comida","Food"
+CATEGORY_MATERIAL,"Material","Material"
+MENU_SORT_FOUND,"ordem: achado","order: found"
+MENU_SORT_NAME,"ordem: nome","order: name"
+MENU_SORT_CATEGORY,"ordem: tipo","order: kind"
+MENU_SORT_WEIGHT,"ordem: peso","order: weight"
+MENU_EMPTY,"vazio","empty"
+MENU_TAKE_OFF,"(tirar)","(take off)"
+MENU_WORN_MARK,"(em uso)","(worn)"
+MENU_NOTHING,"Nada aqui.","Nothing here."
+MENU_BAG,"Bolsa %s/%s","Bag %s/%s"
+MENU_ROWS,"%s/%s","%s/%s"
+MENU_WEIGHT,"peso %s","weight %s"
+MENU_HEALS,"Recupera %s de vida","Restores %s of health"
+MENU_SECONDS,"%s s","%s s"
+MENU_NO_USE_YET,"Ainda sem uso.","No use yet."
+MENU_FULL_HEALTH,"Sua vida já está cheia.","Your health is already full."
+MENU_BAG_FULL,"A bolsa está cheia.","The bag is full."
+MENU_MAIN_HAND,"A mão da arma nunca fica vazia.","The weapon hand is never empty."
+MENU_WORN_ELSEWHERE,"Já está em uso em outro lugar.","It is already worn elsewhere."
+MENU_NO_CHANGE,"Nada muda.","Nothing changes."
+MENU_HINT_CHOOSE,"%s escolher","%s choose"
+MENU_HINT_CLOSE,"%s fechar","%s close"
+MENU_HINT_EQUIP,"%s equipar","%s equip"
+MENU_HINT_TAKE_OFF,"%s tirar","%s take off"
+MENU_HINT_BACK,"%s voltar","%s back"
+MENU_HINT_USE,"%s usar","%s use"
+MENU_HINT_TABS,"%s/%s categorias","%s/%s categories"
+MENU_HINT_PAGES,"%s/%s páginas","%s/%s pages"
+MENU_STATUS_LIFE,"Vida e defesa","Life and defence"
+MENU_STATUS_COMBAT,"Combate","Combat"
+MENU_STATUS_LOAD,"Carga e bolsa","Load and bag"
+STAT_MAX_HEALTH,"Corações","Hearts"
+STAT_HEALTH_NOW,"Vida agora","Health now"
+STAT_ATTACK,"Ataque","Attack"
+STAT_KNOCKBACK,"Recuo","Knockback"
+STAT_REACH,"Alcance","Reach"
+STAT_SWING,"Golpe","Swing"
+STAT_DEFENSE,"Defesa","Defence"
+STAT_POISE,"Firmeza","Poise"
+STAT_LOAD,"Carga","Load"
+STAT_SPEED,"Velocidade","Speed"
+STAT_HEALING,"Cura","Healing"
+STAT_MOBILITY,"Mobilidade","Mobility"
+STAT_BAG,"Bolsa","Bag"
+BAND_LIGHT,"leve","light"
+BAND_NORMAL,"normal","normal"
+BAND_HEAVY,"pesado","heavy"
+BAND_OVERLOADED,"sobrecarga","overloaded"
+ITEM_FOUND,"Você pegou: %s.","You took: %s."
+ITEM_FOUND_MANY,"Você pegou: %s x%s.","You took: %s x%s."
+PICKUP_BAG_FULL,"A bolsa está cheia. Fica aqui por enquanto.","The bag is full. It stays here for now."
+PICKUP_HOME_CHEST,"O baú de casa. Lá no fundo, o gibão que sua mãe costurou para o inverno.","The chest at home. At the bottom, the doublet your mother sewed for the winter."
+PICKUP_SHOP_CHEST,"Um baú junto da venda, com um bilhete: PARA QUEM FOR À FLORESTA.","A chest by the shop, with a note: FOR WHOEVER GOES TO THE FOREST."
+PICKUP_RUIN_CHEST,"Um cofre antigo, sem tranca, coberto de raiz fina.","An old coffer, unlocked, covered in thin roots."
+PICKUP_CREW_CHEST,"O baú da turma, embaixo da lona. Ninguém voltou para buscar.","The crew's chest, under the canvas. Nobody came back for it."
+PICKUP_WAYSTOP_CHEST,"O baú do pouso: coisas que viajantes deixam para quem vem depois.","The halt's chest: things travellers leave for whoever comes after."
+PICKUP_QUARRY_CHEST,"Um baú de equipamento velho da turma. Na tampa, a giz: QUEM FOR AJUDAR NA ESTRADA, PEGUE.","A chest of the crew's old gear. On the lid, in chalk: IF YOU ARE HELPING ON THE ROAD, TAKE IT."
