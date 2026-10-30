@@ -31,6 +31,8 @@
 [ext_resource type="Script" path="res://world/area_entry.gd" id="29_r7lyk"]
 [ext_resource type="Script" path="res://world/flag_shown.gd" id="30_tg67y"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="31_mbntt"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0ihrn"]
 texture = ExtResource("4_alopq")
@@ -453,3 +455,15 @@ shape = SubResource("RectangleShape2D_rj4wm")
 [node name="@CollisionShape2D@10" type="CollisionShape2D" parent="Bounds" unique_id=835569053]
 position = Vector2(152, 120)
 shape = SubResource("RectangleShape2D_8uevl")
+
+[node name="Found_TravellerHood" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(56, 112)
+item = &"traveller_hood"
+count = 1
+flag = &"found_road_traveller_hood"
+
+[node name="Found_TravellerBracers" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(182, 110)
+item = &"traveller_bracers"
+count = 1
+flag = &"found_road_traveller_bracers"

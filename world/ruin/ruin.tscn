@@ -55,6 +55,8 @@
 [ext_resource type="Script" path="res://world/area_entry.gd" id="52_ir0x1"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="53_hnqhf"]
 [ext_resource type="Script" path="res://world/void_walls.gd" id="54_voidw"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="Resource" id="Resource_48sup"]
 script = ExtResource("16_wgxo5")
@@ -532,3 +534,37 @@ shape = SubResource("RectangleShape2D_su5w5")
 
 [node name="Ambience" type="CanvasModulate" parent="." unique_id=938396563]
 color = Color(0.82, 0.86, 0.9, 1)
+
+[node name="Found_RuinBlade" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(540, 124)
+item = &"ruin_blade"
+count = 1
+flag = &"found_ruin_ruin_blade"
+message = "PICKUP_RUIN_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_RuinCirclet" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(700, 322)
+item = &"ruin_circlet"
+count = 1
+flag = &"found_ruin_ruin_circlet"
+message = "PICKUP_RUIN_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_QuillRing" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(640, 540)
+item = &"quill_ring"
+count = 1
+flag = &"found_ruin_quill_ring"
+
+[node name="Found_RootFiber" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(360, 540)
+item = &"root_fiber"
+count = 3
+flag = &"found_ruin_root_fiber"
+
+[node name="Found_OldBronze" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(380, 72)
+item = &"old_bronze"
+count = 2
+flag = &"found_ruin_old_bronze"

@@ -32,6 +32,7 @@
 [ext_resource type="Script" path="res://world/area_exit.gd" id="30_y8bbr"]
 [ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="31_gloves"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/items/crew_gloves_ground.png" id="32_gloves"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_860d2"]
 texture = ExtResource("4_f8l3b")
@@ -436,6 +437,7 @@ shape = SubResource("RectangleShape2D_vxmvt")
 [node name="CrewGloves" parent="Entities" unique_id=1907045213 instance=ExtResource("31_gloves")]
 position = Vector2(322, 196)
 item = &"crew_gloves"
+flag = &"found_slope_crew_gloves"
 message = "ITEM_CREW_GLOVES_FOUND"
 ground = ExtResource("32_gloves")
 
@@ -484,3 +486,29 @@ shape = SubResource("RectangleShape2D_g4wwo")
 [node name="@CollisionShape2D@11" type="CollisionShape2D" parent="Bounds" unique_id=616285721]
 position = Vector2(394, 112)
 shape = SubResource("RectangleShape2D_dh7g8")
+
+[node name="Found_CrewMachete" parent="Entities" instance=ExtResource("31_gloves")]
+position = Vector2(276, 188)
+item = &"crew_machete"
+count = 1
+flag = &"found_slope_crew_machete"
+
+[node name="Found_CrewVest" parent="Entities" instance=ExtResource("31_gloves")]
+position = Vector2(376, 168)
+item = &"crew_vest"
+count = 1
+flag = &"found_slope_crew_vest"
+message = "PICKUP_CREW_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_CrewBoots" parent="Entities" instance=ExtResource("31_gloves")]
+position = Vector2(262, 162)
+item = &"crew_boots"
+count = 1
+flag = &"found_slope_crew_boots"
+
+[node name="Found_CrewBoardShield" parent="Entities" instance=ExtResource("31_gloves")]
+position = Vector2(296, 108)
+item = &"crew_board_shield"
+count = 1
+flag = &"found_slope_crew_board_shield"

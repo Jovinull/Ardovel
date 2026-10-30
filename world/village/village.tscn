@@ -42,6 +42,8 @@
 [ext_resource type="PackedScene" path="res://world/props/village/hen_yard.tscn" id="43_hen_yard"]
 [ext_resource type="PackedScene" path="res://world/props/village/egg_basket.tscn" id="44_egg_basket"]
 [ext_resource type="PackedScene" path="res://world/props/village/hen_pen.tscn" id="45_hen_pen"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
 
 [sub_resource type="Resource" id="Resource_cida_hens_after"]
 script = ExtResource("17_aj1lm")
@@ -579,3 +581,49 @@ shape = SubResource("RectangleShape2D_rhmmp")
 [node name="@CollisionShape2D@5" type="CollisionShape2D" parent="Bounds" unique_id=396014926]
 position = Vector2(488, 192)
 shape = SubResource("RectangleShape2D_45l1j")
+
+[node name="Found_PaddedDoublet" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(164, 308)
+item = &"padded_doublet"
+count = 1
+flag = &"found_village_padded_doublet"
+message = "PICKUP_HOME_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_CornBread" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(372, 322)
+item = &"corn_bread"
+count = 2
+flag = &"found_village_corn_bread"
+message = "PICKUP_SHOP_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_StrawHat" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(428, 322)
+item = &"straw_hat"
+count = 1
+flag = &"found_village_straw_hat"
+
+[node name="Found_WorkMitts" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(352, 230)
+item = &"work_mitts"
+count = 1
+flag = &"found_village_work_mitts"
+
+[node name="Found_RopeSandals" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(392, 184)
+item = &"rope_sandals"
+count = 1
+flag = &"found_village_rope_sandals"
+
+[node name="Found_BarrelLidBuckler" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(296, 314)
+item = &"barrel_lid_buckler"
+count = 1
+flag = &"found_village_barrel_lid_buckler"
+
+[node name="Found_WoodcutterHatchet" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(88, 200)
+item = &"woodcutter_hatchet"
+count = 1
+flag = &"found_village_woodcutter_hatchet"
