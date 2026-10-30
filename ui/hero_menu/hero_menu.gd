@@ -587,7 +587,10 @@ func _refresh_equipment() -> void:
 		var worn := ItemCatalog.find(_adventure.equipped(slot))
 		(_info.get_node(^"Slot") as Label).text = tr(ItemCatalog.slot_name_key(slot))
 		(_info.get_node(^"Name") as Label).text = tr(worn.name_key) if worn != null else tr("MENU_EMPTY")
-		(_info.get_node(^"Effect") as Label).text = "\n".join(effect_lines(worn)) if worn != null else ""
+		var lines := effect_lines(worn)
+		if worn != null:
+			lines.append(tr("MENU_WEIGHT") % _number(worn.weight, 1))
+		(_info.get_node(^"Effect") as Label).text = "\n".join(lines)
 		_summary_lines(_stat_summary(profile))
 		_hint.text = _hints([["MENU_HINT_CHOOSE", [&"interact"]], ["MENU_HINT_CLOSE", [&"equipment"]]])
 	else:
@@ -733,8 +736,6 @@ func effect_lines(item: ItemDef) -> Array[String]:
 		lines.append(tr("MENU_HEALS") % _hearts(item.heal))
 	if item.category == ItemCatalog.MATERIAL:
 		lines.append(tr("MENU_NO_USE_YET"))
-	if item.is_equippable() and item.attack == null:
-		lines.append(tr("MENU_WEIGHT") % _number(item.weight, 1))
 	return lines
 
 
