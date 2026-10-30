@@ -24,7 +24,7 @@ func _items(ids: Array[StringName]) -> Array[ItemDef]:
 
 
 func _image(texture: Texture2D) -> Image:
-	var image := texture.get_image()
+	var image := texture.get_image().duplicate() as Image
 	image.convert(Image.FORMAT_RGBA8)
 	return image
 
@@ -218,6 +218,20 @@ func test_the_three_kits_look_different() -> void:
 	assert_ne(walks[1], walks[2])
 	assert_ne(walks[0], walks[2])
 	assert_ne(walks[0], _image(HeroLook.WALK).get_data())
+
+
+func test_putting_looks_together_never_changes_the_sheets() -> void:
+	var maul := ItemCatalog.find(&"quarry_maul")
+	var shield := ItemCatalog.find(&"crew_board_shield")
+	var sheets: Array[Texture2D] = [HeroLook.WALK, HeroLook.HURT, HeroLook.DEATH, maul.attack_sheet, shield.guard_sheet]
+	var before: Array[PackedByteArray] = []
+	for sheet in sheets:
+		before.append(_image(sheet).get_data())
+	for kit: Array[StringName] in [LIGHT, BALANCED, HEAVY]:
+		HeroLook.forget()
+		HeroLook.of(maul, shield, _items(kit))
+	for i in sheets.size():
+		assert_eq(_image(sheets[i]).get_data(), before[i], "sheet %d untouched" % i)
 
 
 func test_a_look_is_put_together_once_and_kept() -> void:

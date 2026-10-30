@@ -128,8 +128,10 @@ static func _layered(texture: Texture2D, sheets: Array[Image], at: Rect2i) -> Im
 	return image
 
 
+## A copy of `texture`'s pixels to draw on: the image a texture hands out may be its own (it is
+## without a GPU), and the hero's sheets must never change.
 static func _image(texture: Texture2D) -> Image:
-	var image := texture.get_image()
+	var image := texture.get_image().duplicate() as Image
 	if image.is_compressed():
 		image.decompress()
 	image.convert(Image.FORMAT_RGBA8)
