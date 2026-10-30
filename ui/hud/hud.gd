@@ -3,6 +3,11 @@ extends CanvasLayer
 ## Heads-up display: hearts for the player's health, the dialogue box and, during a boss fight,
 ## the boss's name and health bar. Messages are shown page by page (a blank line starts a new
 ## page) and wait for the player to read them.
+##
+## Growth stays out of the way: under the hearts, the level and a thin experience bar show for a
+## moment when experience comes in; the level and a small gold mark stay while attribute points
+## wait to be spent; a level reached shows a short notice at the top and a sound, and the play goes
+## on underneath (nothing waits for it).
 
 signal dialogue_started
 signal dialogue_finished
@@ -20,6 +25,15 @@ const GUIDANCE_FADE_TIME := 0.7
 const BOSS_BAR_WIDTH := 138.0
 ## Inner width of the breath bar under the hearts.
 const BREATH_WIDTH := 44.0
+const CHOICE_BOX := preload("res://assets/ninja_adventure/Ui/Dialog/ChoiceBox.png")
+const LEVEL_SOUND := preload("res://assets/ninja_adventure/Audio/Sounds/Bonus/Bonus.wav")
+const GOLD := Color("f1c471")
+const DARK := Color("141b1b")
+const XP_WIDTH := 44.0
+## Seconds the experience bar stays after experience comes in, and the level notice.
+const XP_HOLD_TIME := 2.4
+const LEVEL_HOLD_TIME := 2.8
+const FADE_TIME := 0.4
 
 var _heart_frames: Array[AtlasTexture] = []
 var _message_tween: Tween
@@ -33,6 +47,20 @@ var _guidance_tween: Tween
 var _gamepad_active: bool = false
 var _joypad_name: String = ""
 var _boss_health: Health
+var _growth: Control
+var _level_label: Label
+var _points_mark: Control
+var _xp_bar: Control
+var _xp_fill: ColorRect
+var _xp_gain: Label
+var _level_box: NinePatchRect
+var _level_title: Label
+var _level_points: Label
+var _level_sound: AudioStreamPlayer
+var _growth_tween: Tween
+var _level_tween: Tween
+var _shown_level := 1
+var _free_points := 0
 
 @onready var _hearts: HBoxContainer = %Hearts
 @onready var _message_box: Control = %MessageBox
@@ -61,11 +89,15 @@ func _ready() -> void:
 		frame.region = Rect2(quarter * HEART_SIZE, 0, HEART_SIZE, HEART_SIZE)
 		_heart_frames.append(frame)
 	_close_box()
+	_build_growth()
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_update_guidance()
+		if _level_label != null:
+			_level_label.text = tr("HUD_LEVEL") % _shown_level
+			_lay_out_growth()
 
 
 func bind_player(player: Player) -> void:
@@ -99,6 +131,181 @@ func show_breath(current: float, maximum: float) -> void:
 
 func is_breath_visible() -> bool:
 	return _breath.visible
+
+
+func _build_growth() -> void:
+	var frame := get_node(^"Frame") as Control
+	_growth = Control.new()
+	_growth.name = "Growth"
+	_growth.position = Vector2(6, 27)
+	_growth.size = Vector2(96, 10)
+	_growth.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_growth.visible = false
+	frame.add_child(_growth)
+	_level_label = _hud_label(_growth, "Level", Rect2(0, 0, 24, 10), GOLD)
+	_points_mark = _diamond(_growth)
+	_xp_bar = Control.new()
+	_xp_bar.name = "Experience"
+	_xp_bar.position = Vector2(30, 3)
+	_xp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_growth.add_child(_xp_bar)
+	var back := ColorRect.new()
+	back.color = DARK
+	back.size = Vector2(XP_WIDTH + 2, 4)
+	back.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_xp_bar.add_child(back)
+	_xp_fill = ColorRect.new()
+	_xp_fill.color = GOLD
+	_xp_fill.position = Vector2(1, 1)
+	_xp_fill.size = Vector2(0, 2)
+	_xp_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	back.add_child(_xp_fill)
+	_xp_gain = _hud_label(_growth, "Gain", Rect2(XP_WIDTH + 34, 0, 40, 10), GOLD)
+	_level_box = NinePatchRect.new()
+	_level_box.name = "LevelUp"
+	_level_box.texture = CHOICE_BOX
+	_level_box.patch_margin_left = 4
+	_level_box.patch_margin_top = 4
+	_level_box.patch_margin_right = 4
+	_level_box.patch_margin_bottom = 4
+	# below the growth row, so neither covers the other
+	_level_box.position = Vector2(86, 42)
+	_level_box.size = Vector2(148, 28)
+	_level_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_level_box.visible = false
+	frame.add_child(_level_box)
+	_level_title = _hud_label(_level_box, "Title", Rect2(6, 4, 136, 10), Color("8f3e56"), false)
+	_level_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_level_points = _hud_label(_level_box, "Points", Rect2(6, 14, 136, 10), Color("3b3643"), false)
+	_level_points.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_level_sound = AudioStreamPlayer.new()
+	_level_sound.name = "LevelSound"
+	_level_sound.stream = LEVEL_SOUND
+	_level_sound.volume_db = -6.0
+	add_child(_level_sound)
+
+
+func _hud_label(parent: Control, node_name: String, rect: Rect2, colour: Color, shadow: bool = true) -> Label:
+	var label := Label.new()
+	label.name = node_name
+	label.position = rect.position
+	label.size = rect.size
+	label.add_theme_color_override(&"font_color", colour)
+	if not shadow:
+		label.add_theme_color_override(&"font_shadow_color", Color(0, 0, 0, 0))
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(label)
+	return label
+
+
+## A 5x5 gold diamond with a dark edge: attribute points wait to be spent.
+func _diamond(parent: Control) -> Control:
+	var mark := Control.new()
+	mark.name = "Points"
+	mark.size = Vector2(7, 7)
+	mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(mark)
+	for row: Array in [[3, 0, 1], [2, 1, 3], [1, 2, 5], [2, 3, 3], [3, 4, 1]]:
+		var edge := ColorRect.new()
+		edge.color = DARK
+		edge.position = Vector2(row[0] - 1, row[1] + 1)
+		edge.size = Vector2(row[2] + 2, 1)
+		edge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		mark.add_child(edge)
+	for row: Array in [[3, 0, 1], [2, 1, 3], [1, 2, 5], [2, 3, 3], [3, 4, 1]]:
+		var light := ColorRect.new()
+		light.color = GOLD
+		light.position = Vector2(row[0], row[1] + 1)
+		light.size = Vector2(row[2], 1)
+		light.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		mark.add_child(light)
+	return mark
+
+
+## The hero's growth now: `level`, `progress` (gained, needed in this level; zero at the last),
+## `free_points` waiting, and `gained` experience just now (0: nothing came in, only keep the mark
+## right).
+func show_growth(level: int, progress: Vector2i, free_points: int, gained: int) -> void:
+	if _growth == null:
+		return
+	_shown_level = level
+	_free_points = free_points
+	_level_label.text = tr("HUD_LEVEL") % level
+	_points_mark.visible = free_points > 0
+	_lay_out_growth()
+	_xp_fill.size.x = XP_WIDTH * progress.x / maxf(progress.y, 1.0) if progress.y > 0 else XP_WIDTH
+	if gained > 0:
+		_xp_gain.text = tr("HUD_XP_GAIN") % gained
+		_flash_growth()
+	elif _growth_tween == null or not _growth_tween.is_running():
+		_settle_growth()
+
+
+## The mark, the bar and the gain one after another, as wide as the level's text is ("Nv 9" or "Nv 10").
+func _lay_out_growth() -> void:
+	var after_level := ceilf(_level_label.get_minimum_size().x) + 3.0
+	_points_mark.position = Vector2(after_level, 1)
+	_xp_bar.position.x = after_level + (10.0 if _points_mark.visible else 2.0)
+	_xp_gain.position.x = _xp_bar.position.x + XP_WIDTH + 5.0
+
+
+func _flash_growth() -> void:
+	if _growth_tween != null:
+		_growth_tween.kill()
+	_growth.visible = true
+	_growth.modulate.a = 1.0
+	_xp_bar.visible = true
+	_xp_gain.visible = true
+	_growth_tween = create_tween()
+	_growth_tween.tween_interval(XP_HOLD_TIME)
+	_growth_tween.tween_callback(_settle_growth)
+
+
+## Between gains: only the level and the mark, and only while points wait.
+func _settle_growth() -> void:
+	_xp_bar.visible = false
+	_xp_gain.visible = false
+	_growth.visible = _free_points > 0
+	_growth.modulate.a = 1.0
+
+
+## A level reached: a short notice at the top and a sound; nothing waits for it.
+func show_level_up(level: int, free_points: int) -> void:
+	if _level_box == null:
+		return
+	_level_title.text = tr("HUD_LEVEL_UP") % level
+	_level_points.text = tr("HUD_POINTS_ONE") if free_points == 1 else tr("HUD_POINTS") % free_points
+	# under the first steps' guidance when it is showing, never over it
+	_level_box.position.y = 58.0 if _guidance_box.visible else 42.0
+	_level_box.visible = true
+	_level_box.modulate.a = 1.0
+	_level_sound.play()
+	if _level_tween != null:
+		_level_tween.kill()
+	_level_tween = create_tween()
+	_level_tween.tween_interval(LEVEL_HOLD_TIME)
+	_level_tween.tween_property(_level_box, ^"modulate:a", 0.0, FADE_TIME)
+	_level_tween.tween_callback(_level_box.hide)
+
+
+func is_growth_visible() -> bool:
+	return _growth != null and _growth.visible
+
+
+func is_experience_bar_visible() -> bool:
+	return is_growth_visible() and _xp_bar.visible
+
+
+func is_points_mark_visible() -> bool:
+	return is_growth_visible() and _points_mark.visible
+
+
+func is_level_notice_visible() -> bool:
+	return _level_box != null and _level_box.visible
+
+
+func level_notice_text() -> String:
+	return _level_title.text + "\n" + _level_points.text if _level_box != null else ""
 
 
 ## The food the quick-use key eats, with how many are left (no icon: the slot hides).

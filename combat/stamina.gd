@@ -54,5 +54,12 @@ func refill() -> void:
 	changed.emit(current, maximum)
 
 
+## Changes the maximum (the hero's breath grows); what is left is kept, never refilled by it.
+func set_maximum(value: float) -> void:
+	maximum = maxf(value, 1.0)
+	current = minf(current, maximum)
+	changed.emit(current, maximum)
+
+
 func is_full() -> bool:
 	return current >= maximum - 0.001

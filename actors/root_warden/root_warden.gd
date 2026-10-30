@@ -179,7 +179,7 @@ func _on_hit_received(hit: Hit) -> void:
 		return
 	_hit_sound.play()
 	_hit_flash.flash()
-	health.take_damage(hit.damage)
+	health.take_hit(hit.damage * hit.power, 1)
 	health_changed.emit(health.current, health.max_health)
 
 

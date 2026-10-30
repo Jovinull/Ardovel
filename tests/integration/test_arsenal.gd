@@ -612,12 +612,11 @@ func test_the_menu_texts_fit_in_both_languages() -> void:
 			menu.page = HeroMenu.Page.STATUS
 			menu._refresh()
 			await wait_process_frames(1)
-			for p in 3:
-				for r in 4:
-					var name := menu.get_node("Root/Status/Panel%d/Name%d" % [p, r]) as Label
-					var value := menu.get_node("Root/Status/Panel%d/Value%d" % [p, r]) as Label
-					assert_lte(name.get_minimum_size().x + value.get_minimum_size().x + 4, name.size.x,
-							"%s status %d/%d: %s %s" % [locale, p, r, name.text, value.text])
+			for r in HeroMenu.VALUE_ROWS * 2:
+				var name := menu.get_node("Root/Status/Values/Name%d" % r) as Label
+				var value := menu.get_node("Root/Status/Values/Value%d" % r) as Label
+				assert_lte(name.get_minimum_size().x + value.get_minimum_size().x + 3, name.size.x,
+						"%s status %d: %s %s" % [locale, r, name.text, value.text])
 			menu.close()
 	TranslationServer.set_locale("pt_BR")
 

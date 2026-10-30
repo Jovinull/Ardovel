@@ -20,6 +20,9 @@ signal quick_use_finished
 
 enum State { MOVE, ATTACK, HURT, DEAD, GUARD, DODGE, USE }
 
+const LEVEL_GLINT: Texture2D = preload("res://assets/ardovel/fx/level_up.png")
+const LEVEL_GLINT_FRAMES := 5
+const LEVEL_GLINT_TIME := 0.7
 const HIT_SPARK := preload("res://fx/hit_spark.tscn")
 const AFTERIMAGE_EVERY := 0.05
 ## Breath one dodge costs.
@@ -419,6 +422,21 @@ func set_body(walk: Texture2D, hurt: Texture2D, death: Texture2D) -> void:
 			var frame := _sprite.sprite_frames.get_frame_texture(&"death", i) as AtlasTexture
 			if frame != null:
 				frame.atlas = death
+
+
+## Light rising around the hero once (a level reached). It asks nothing of the hero and stops
+## nothing: they keep moving and fighting while it plays.
+func celebrate() -> void:
+	var glint := Sprite2D.new()
+	glint.name = "LevelGlint"
+	glint.texture = LEVEL_GLINT
+	glint.hframes = LEVEL_GLINT_FRAMES
+	glint.position = Vector2(0, -12)
+	glint.z_index = 1
+	add_child(glint)
+	var tween := glint.create_tween()
+	tween.tween_property(glint, ^"frame", LEVEL_GLINT_FRAMES - 1, LEVEL_GLINT_TIME)
+	tween.tween_callback(glint.queue_free)
 
 
 ## The sheets the hero is drawn with now: walk, hurt, death, attack, guard (tests, previews).

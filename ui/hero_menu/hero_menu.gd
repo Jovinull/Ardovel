@@ -15,6 +15,11 @@ extends CanvasLayer
 ## It shows and changes only through the adventure and the rules (Equipment, Bag, HeroLoadout);
 ## nothing is computed here. While open it takes the keys that would close it before anything else
 ## sees them, so the pause key never also opens the pause menu.
+##
+## Status also shows how the hero has grown (level, experience, attribute points) and lets free
+## points be spent: the interact key starts, up and down choose an attribute, left and right add or
+## take back a point, and the values beside show what they would become; the interact key confirms
+## (only then are points spent), the back key leaves without spending anything.
 
 signal closed
 
@@ -65,6 +70,17 @@ const GRID_COLUMNS := 7
 const GRID_ROWS := 5
 const CELL := 20
 const LIST_ROWS := 4
+## Status: the attributes, top to bottom, and the values shown (two columns of seven).
+const ATTRIBUTE_ROW := 22
+const VALUE_ROWS := 7
+const ATTRIBUTE_KEYS: Dictionary[StringName, String] = {
+	HeroGrowth.VIGOR: "ATTR_VIGOR", HeroGrowth.STRENGTH: "ATTR_STRENGTH", HeroGrowth.ENDURANCE: "ATTR_ENDURANCE",
+	HeroGrowth.BREATH: "ATTR_BREATH",
+}
+const ATTRIBUTE_EFFECT_KEYS: Dictionary[StringName, String] = {
+	HeroGrowth.VIGOR: "ATTR_VIGOR_EFFECT", HeroGrowth.STRENGTH: "ATTR_STRENGTH_EFFECT",
+	HeroGrowth.ENDURANCE: "ATTR_ENDURANCE_EFFECT", HeroGrowth.BREATH: "ATTR_BREATH_EFFECT",
+}
 ## The preview turns to the next side this often (seconds); down, left, up, right.
 const PREVIEW_TURN := 1.2
 const PREVIEW_SIDES: Array[int] = [0, 2, 1, 3]
@@ -109,6 +125,10 @@ var _grid: Control
 var _inv_info: Control
 var _bag: Label
 var _status: Control
+## Status: spending points (the attribute under the cursor, the points added so far).
+var _distributing := false
+var _attribute := 0
+var _plan: Dictionary[StringName, int] = {}
 var _preview: TextureRect
 var _preview_look: HeroLook
 var _preview_side := 0
@@ -157,6 +177,7 @@ func open(adventure: Adventure, base_health: int, health: Health, start: Page = 
 func close() -> void:
 	if not is_open():
 		return
+	_stop_distributing()  # nothing is spent unless confirmed
 	_root.hide()
 	set_process_input(false)
 	closed.emit()
@@ -168,6 +189,20 @@ func is_open() -> bool:
 
 func is_choosing() -> bool:
 	return _choosing
+
+
+func is_distributing() -> bool:
+	return _distributing
+
+
+## The attribute under the cursor while spending points.
+func selected_attribute() -> StringName:
+	return HeroGrowth.ATTRIBUTES[_attribute]
+
+
+## Points added so far while spending (attribute -> points), not yet invested.
+func plan() -> Dictionary[StringName, int]:
+	return _plan.duplicate()
 
 
 func set_input_mode(gamepad: bool, joypad_name: String) -> void:
@@ -248,13 +283,19 @@ func _input(event: InputEvent) -> void:
 			_choosing = false
 			_cancel.play()
 			_refresh()
+		elif _distributing:
+			_stop_distributing()
+			_cancel.play()
+			_refresh()
 		else:
 			close()
 			_cancel.play()
-	elif event.is_action_pressed(&"menu_prev"):
+	elif event.is_action_pressed(&"menu_prev") and not _distributing:
 		_turn_page(-1)
-	elif event.is_action_pressed(&"menu_next"):
+	elif event.is_action_pressed(&"menu_next") and not _distributing:
 		_turn_page(1)
+	elif (event.is_action_pressed(&"menu_prev") or event.is_action_pressed(&"menu_next")) and _distributing:
+		pass  # the page stays while points are being spent
 	elif event.is_action_pressed(&"category_prev") and page == Page.INVENTORY:
 		_set_tab(_tab - 1)
 	elif event.is_action_pressed(&"category_next") and page == Page.INVENTORY:
@@ -286,6 +327,7 @@ func _input(event: InputEvent) -> void:
 func _turn_page(by: int) -> void:
 	page = posmod(page + by, Page.size()) as Page
 	_choosing = false
+	_stop_distributing()
 	_notice = ""
 	_move.play()
 	_refresh()
@@ -326,7 +368,14 @@ func _step(direction: Vector2i) -> void:
 			elif row >= _scroll + GRID_ROWS:
 				_scroll = row - GRID_ROWS + 1
 		Page.STATUS:
-			return
+			if not _distributing:
+				return
+			if direction.y != 0:
+				_attribute = posmod(_attribute + direction.y, HeroGrowth.ATTRIBUTES.size())
+			elif not _change_plan(direction.x):
+				_cancel.play()
+				_refresh()
+				return
 	_move.play()
 	_refresh()
 
@@ -344,7 +393,63 @@ func _confirm() -> void:
 				_apply_choice()
 		Page.INVENTORY:
 			_use_selected()
+		Page.STATUS:
+			_confirm_status()
 	_refresh()
+
+
+## Status: the interact key starts spending free points, then confirms them.
+func _confirm_status() -> void:
+	if not _distributing:
+		if HeroGrowth.points_free(_adventure) <= 0:
+			_notice = "MENU_NO_POINTS"
+			_cancel.play()
+			return
+		_distributing = true
+		_attribute = 0
+		_plan.clear()
+		_accept.play()
+		return
+	if _planned() == 0:
+		_notice = "MENU_PLAN_EMPTY"
+		_cancel.play()
+		return
+	if HeroGrowth.invest(_adventure, _plan):
+		_notice = "MENU_POINTS_SPENT"
+		_accept.play()
+	else:
+		_cancel.play()
+	_stop_distributing()
+
+
+## Adds (`by` 1) or takes back (-1) a point of the attribute under the cursor. False if it cannot:
+## no point left, the attribute full, or nothing added to take back.
+func _change_plan(by: int) -> bool:
+	var attribute := selected_attribute()
+	var next: int = _plan.get(attribute, 0) + by
+	if next < 0:
+		return false
+	var trial := _plan.duplicate()
+	trial[attribute] = next
+	if by > 0 and not HeroGrowth.can_invest(_adventure, trial):
+		return false
+	if next == 0:
+		_plan.erase(attribute)
+	else:
+		_plan[attribute] = next
+	return true
+
+
+func _planned() -> int:
+	var total := 0
+	for attribute in _plan:
+		total += _plan[attribute]
+	return total
+
+
+func _stop_distributing() -> void:
+	_distributing = false
+	_plan.clear()
 
 
 ## Pieces for `slot`: "take it off" first when that is allowed, then every piece that fits.
@@ -503,16 +608,39 @@ func _build_inventory() -> void:
 func _build_status() -> void:
 	_status = _control(_root, "Status", Rect2(0, 0, 320, 180))
 	_pages.append(_status)
-	var panels := [["MENU_STATUS_LIFE", Rect2(8, 24, 148, 64), 4], ["MENU_STATUS_COMBAT", Rect2(164, 24, 148, 64), 4],
-			["MENU_STATUS_LOAD", Rect2(8, 94, 304, 64), 4]]
-	for p in panels.size():
-		var box := _patch(_status, "Panel%d" % p, BOX, panels[p][1], 6)
-		_label(box, "Title", Rect2(8, 5, 140, 10), TEAL, 0, false)
-		for r in panels[p][2]:
-			var width: float = panels[p][1].size.x - 16
-			_label(box, "Name%d" % r, Rect2(8, 17 + r * 10, width, 10), DARK, 0, false)
-			_label(box, "Value%d" % r, Rect2(8, 17 + r * 10, width, 10), DARK, HORIZONTAL_ALIGNMENT_RIGHT, false)
-
+	var growth := _patch(_status, "Growth", BOX, Rect2(8, 21, 304, 26), 6)
+	_label(growth, "Level", Rect2(8, 8, 60, 10), WINE, 0, false)
+	var bar := ColorRect.new()
+	bar.name = "Bar"
+	bar.color = DARK
+	bar.position = Vector2(70, 11)
+	bar.size = Vector2(102, 5)
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	growth.add_child(bar)
+	var fill := ColorRect.new()
+	fill.name = "Fill"
+	fill.color = GOLD
+	fill.position = Vector2(1, 1)
+	fill.size = Vector2(0, 3)
+	fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar.add_child(fill)
+	_label(growth, "Experience", Rect2(176, 8, 62, 10), DARK, 0, false)
+	_label(growth, "Points", Rect2(232, 8, 64, 10), TEAL, HORIZONTAL_ALIGNMENT_RIGHT, false)
+	var attributes := _patch(_status, "Attributes", BOX, Rect2(8, 50, 112, 112), 6)
+	_label(attributes, "Title", Rect2(8, 5, 96, 10), TEAL, 0, false)
+	for r in HeroGrowth.ATTRIBUTES.size():
+		var row := _control(attributes, "Row%d" % r, Rect2(4, 16 + r * ATTRIBUTE_ROW, 104, ATTRIBUTE_ROW))
+		_patch(row, "Chosen", CHOICE, Rect2(0, 0, 104, ATTRIBUTE_ROW), 4)
+		_label(row, "Name", Rect2(5, 2, 64, 10), DARK, 0, false)
+		_label(row, "Value", Rect2(64, 2, 34, 10), DARK, HORIZONTAL_ALIGNMENT_RIGHT, false)
+		_label(row, "Effect", Rect2(5, 11, 96, 10), DIM, 0, false)
+	var values := _patch(_status, "Values", BOX, Rect2(124, 50, 188, 112), 6)
+	_label(values, "Title", Rect2(8, 5, 172, 10), TEAL, 0, false)
+	for r in VALUE_ROWS * 2:
+		var x := 8.0 if r < VALUE_ROWS else 96.0
+		var y := 17.0 + (r % VALUE_ROWS) * 12.0
+		_label(values, "Name%d" % r, Rect2(x, y, 84, 10), DARK, 0, false)
+		_label(values, "Value%d" % r, Rect2(x, y, 84, 10), DARK, HORIZONTAL_ALIGNMENT_RIGHT, false)
 
 func _control(parent: Node, node_name: String, rect: Rect2) -> Control:
 	var control := Control.new()
@@ -758,32 +886,75 @@ func _refresh_inventory() -> void:
 
 
 func _refresh_status() -> void:
-	var profile := _profile()
-	var panels := [
-		["MENU_STATUS_LIFE", [
-			["STAT_MAX_HEALTH", _hearts(profile.max_health())],
-			["STAT_HEALTH_NOW", _hearts(_health.current if _health != null else profile.max_health())],
-			["STAT_DEFENSE", "%d%%" % roundi(profile.value(HeroStats.DEFENSE))],
-			["STAT_POISE", "%d%%" % roundi(profile.value(HeroStats.POISE))]]],
-		["MENU_STATUS_COMBAT", [
-			["STAT_ATTACK", str(profile.attack.damage)],
-			["STAT_KNOCKBACK", str(roundi(profile.attack.knockback))],
-			["STAT_REACH", str(roundi(profile.attack.reach))],
-			["STAT_SWING", tr("MENU_SECONDS") % _number(profile.swing_seconds(), 2)]]],
-		["MENU_STATUS_LOAD", [
-			["STAT_LOAD", "%s / %s  (%d%%)" % [_number(profile.carried, 1), _number(profile.value(HeroStats.LOAD), 1),
-					roundi(profile.load_ratio() * 100.0)]],
-			["STAT_MOBILITY", "%s  %d%%" % [tr(BAND_NAMES[profile.band]), roundi(profile.speed_factor() * 100.0)]],
-			["STAT_HEALING", "+%d%%" % roundi(profile.value(HeroStats.HEALING))],
-			["STAT_BAG", "%d / %d" % [Bag.spaces_used(_adventure), Bag.CAPACITY]]]],
+	var now := _profile()
+	var shown := HeroLoadout.profile(_adventure, _base_health, _plan) if _distributing else now
+	var current_level := HeroGrowth.level(_adventure)
+	var progress := HeroGrowth.progress(_adventure)
+	var free := HeroGrowth.points_free(_adventure) - _planned()
+	var growth := _status.get_node(^"Growth") as Control
+	(growth.get_node(^"Level") as Label).text = tr("MENU_LEVEL") % current_level
+	var fill := growth.get_node(^"Bar/Fill") as ColorRect
+	fill.size.x = 100.0 * progress.x / maxf(progress.y, 1.0) if progress.y > 0 else 100.0
+	(growth.get_node(^"Experience") as Label).text = tr("MENU_EXPERIENCE") % [progress.x, progress.y] \
+			if progress.y > 0 else tr("MENU_LEVEL_MAX")
+	var points := growth.get_node(^"Points") as Label
+	points.text = tr("MENU_POINTS") % free
+	_colour(points, TEAL if free > 0 else DIM, false)
+	var attributes := _status.get_node(^"Attributes") as Control
+	(attributes.get_node(^"Title") as Label).text = tr("MENU_ATTRIBUTES")
+	for r in HeroGrowth.ATTRIBUTES.size():
+		var attribute := HeroGrowth.ATTRIBUTES[r]
+		var row := attributes.get_node("Row%d" % r) as Control
+		var added: int = _plan.get(attribute, 0)
+		(row.get_node(^"Chosen") as CanvasItem).visible = _distributing and r == _attribute
+		(row.get_node(^"Name") as Label).text = tr(ATTRIBUTE_KEYS[attribute])
+		var value := row.get_node(^"Value") as Label
+		value.text = str(_adventure.attribute(attribute)) + ("+%d" % added if added > 0 else "")
+		_colour(value, BETTER if added > 0 else DARK, false)
+		(row.get_node(^"Effect") as Label).text = tr(ATTRIBUTE_EFFECT_KEYS[attribute])
+	var values := _status.get_node(^"Values") as Control
+	(values.get_node(^"Title") as Label).text = tr("MENU_PREVIEW" if _distributing else "MENU_VALUES")
+	var health_now := _health.current if _health != null else now.max_health()
+	var rows := [
+		["STAT_MAX_HEALTH", _hearts(now.max_health()), _hearts(shown.max_health())],
+		["STAT_HEALTH_NOW", _hearts(health_now), _hearts(mini(health_now, shown.max_health()))],
+		["STAT_DEFENSE", "%d%%" % roundi(now.value(HeroStats.DEFENSE)), "%d%%" % roundi(shown.value(HeroStats.DEFENSE))],
+		["STAT_POISE", "%d%%" % roundi(now.value(HeroStats.POISE)), "%d%%" % roundi(shown.value(HeroStats.POISE))],
+		["STAT_BREATH", str(roundi(now.value(HeroStats.BREATH))), str(roundi(shown.value(HeroStats.BREATH)))],
+		["STAT_BREATH_REGEN", "%d%%" % roundi(now.value(HeroStats.BREATH_REGEN)),
+				"%d%%" % roundi(shown.value(HeroStats.BREATH_REGEN))],
+		["STAT_HEALING", "+%d%%" % roundi(now.value(HeroStats.HEALING)), "+%d%%" % roundi(shown.value(HeroStats.HEALING))],
+		["STAT_ATTACK", blow_text(now.blow()), blow_text(shown.blow())],
+		["STAT_KNOCKBACK", str(roundi(now.attack.knockback)), str(roundi(shown.attack.knockback))],
+		["STAT_REACH", str(roundi(now.attack.reach)), str(roundi(shown.attack.reach))],
+		["STAT_SWING", tr("MENU_SECONDS") % _number(now.swing_seconds(), 2),
+				tr("MENU_SECONDS") % _number(shown.swing_seconds(), 2)],
+		["STAT_LOAD", "%d%%" % roundi(now.load_ratio() * 100.0), "%d%%" % roundi(shown.load_ratio() * 100.0)],
+		["STAT_MOBILITY", "%d%%" % roundi(now.speed_factor() * 100.0), "%d%%" % roundi(shown.speed_factor() * 100.0)],
+		["STAT_BAG", "%d/%d" % [Bag.spaces_used(_adventure), Bag.CAPACITY], "%d/%d" % [Bag.spaces_used(_adventure), Bag.CAPACITY]],
 	]
-	for p in panels.size():
-		var box := _status.get_node("Panel%d" % p) as Control
-		(box.get_node(^"Title") as Label).text = tr(panels[p][0])
-		for r in 4:
-			(box.get_node("Name%d" % r) as Label).text = tr(panels[p][1][r][0])
-			(box.get_node("Value%d" % r) as Label).text = panels[p][1][r][1]
-	_hint.text = _hints([["MENU_HINT_PAGES", [&"menu_prev", &"menu_next"]], ["MENU_HINT_CLOSE", [&"equipment"]]])
+	for r in rows.size():
+		(values.get_node("Name%d" % r) as Label).text = tr(rows[r][0])
+		var label := values.get_node("Value%d" % r) as Label
+		label.text = rows[r][2]
+		_colour(label, BETTER if rows[r][2] != rows[r][1] else DARK, false)
+	if _distributing:
+		_hint.text = _hints([["MENU_HINT_CONFIRM", [&"interact"]], ["MENU_HINT_POINT", [&"move_left", &"move_right"]],
+				["MENU_HINT_BACK", [&"ui_cancel"]]])
+	elif HeroGrowth.points_free(_adventure) > 0:
+		_hint.text = _hints([["MENU_HINT_SPEND", [&"interact"]], ["MENU_HINT_PAGES", [&"menu_prev", &"menu_next"]],
+				["MENU_HINT_CLOSE", [&"equipment"]]])
+	else:
+		_hint.text = _hints([["MENU_HINT_PAGES", [&"menu_prev", &"menu_next"]], ["MENU_HINT_CLOSE", [&"equipment"]]])
+	if not _notice.is_empty():
+		_hint.text = tr(_notice)
+
+
+## Quarters one blow takes, as the menu shows it: a whole number, or with up to two decimals.
+func blow_text(value: float) -> String:
+	if is_equal_approx(value, roundf(value)):
+		return str(roundi(value))
+	return _number(value, 2).trim_suffix("0")
 
 
 # ---------------------------------------------------------------- texts
@@ -820,7 +991,7 @@ func _modifier_text(modifier: StatModifier) -> String:
 ## The hero's main numbers, for the equipment page.
 func _stat_summary(profile: HeroLoadout.Profile) -> Array:
 	return [
-		["%s %d   %s %d%%" % [tr("STAT_ATTACK"), profile.attack.damage, tr("STAT_DEFENSE"), roundi(profile.value(HeroStats.DEFENSE))], DARK],
+		["%s %s   %s %d%%" % [tr("STAT_ATTACK"), blow_text(profile.blow()), tr("STAT_DEFENSE"), roundi(profile.value(HeroStats.DEFENSE))], DARK],
 		["%s %d   %s %d%%" % [tr("STAT_KNOCKBACK"), roundi(profile.attack.knockback), tr("STAT_POISE"), roundi(profile.value(HeroStats.POISE))], DARK],
 		["%s %s/%s  %s" % [tr("STAT_LOAD"), _number(profile.carried, 1), _number(profile.value(HeroStats.LOAD), 1),
 				tr(BAND_NAMES[profile.band])], DARK],
@@ -831,7 +1002,7 @@ func _stat_summary(profile: HeroLoadout.Profile) -> Array:
 func compare_lines(before: HeroLoadout.Profile, after: HeroLoadout.Profile) -> Array:
 	# name, before, after, how to show it, whether more is better
 	var rows := [
-		["STAT_ATTACK", before.attack.damage, after.attack.damage, "", true],
+		["STAT_ATTACK", before.blow(), after.blow(), "blow", true],
 		["STAT_KNOCKBACK", before.attack.knockback, after.attack.knockback, "", true],
 		["STAT_REACH", before.attack.reach, after.attack.reach, "", true],
 		["STAT_SWING", before.swing_seconds(), after.swing_seconds(), "s", false],
@@ -840,6 +1011,8 @@ func compare_lines(before: HeroLoadout.Profile, after: HeroLoadout.Profile) -> A
 		["STAT_POISE", before.value(HeroStats.POISE), after.value(HeroStats.POISE), "%", true],
 		["STAT_MOBILITY", before.speed_factor() * 100.0, after.speed_factor() * 100.0, "%", true],
 		["STAT_HEALING", before.value(HeroStats.HEALING), after.value(HeroStats.HEALING), "%", true],
+		["STAT_BREATH", before.value(HeroStats.BREATH), after.value(HeroStats.BREATH), "", true],
+		["STAT_BREATH_REGEN", before.value(HeroStats.BREATH_REGEN), after.value(HeroStats.BREATH_REGEN), "%", true],
 	]
 	var lines: Array = []
 	for row in rows:
@@ -865,6 +1038,8 @@ func _shown(value: float, unit: String) -> String:
 	match unit:
 		"hearts":
 			return _hearts(roundi(value))
+		"blow":
+			return blow_text(value)
 		"s":
 			return tr("MENU_SECONDS") % _number(value, 2)
 		"%":

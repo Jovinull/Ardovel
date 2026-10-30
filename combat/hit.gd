@@ -3,6 +3,8 @@ extends RefCounted
 ## One landed attack, as seen by the receiver.
 
 var damage: int
+## Multiplies `damage` (the attacker's strength); what is taken is damage x power x share.
+var power: float = 1.0
 var knockback: float
 var source_position: Vector2
 ## Whether a raised shield can stop it (a slam from above or roots from the ground cannot).

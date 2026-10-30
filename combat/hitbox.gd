@@ -9,6 +9,8 @@ extends Area2D
 signal landed(hurtbox: Hurtbox)
 
 @export var damage: int = 1
+## Multiplies `damage` where it lands (see AttackData.power).
+@export var power: float = 1.0
 @export var knockback: float = 100.0
 ## Whether a raised shield can stop this blow.
 @export var blockable: bool = true
@@ -45,6 +47,7 @@ func strike(hurtbox: Hurtbox) -> bool:
 	if hit_once_per_activation:
 		_already_hit[hurtbox] = true
 	var hit := Hit.new(damage, knockback, global_position)
+	hit.power = power
 	hit.blockable = blockable
 	hit.stagger = stagger
 	if not hurtbox.receive_hit(hit):

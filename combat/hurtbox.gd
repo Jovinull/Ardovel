@@ -25,7 +25,7 @@ func receive_hit(hit: Hit) -> bool:
 		hit = guard.call(hit)
 		if hit == null:
 			return false
-	if health != null and not health.take_hit(hit.damage * hit.share, 0 if hit.blocked else 1) and not hit.blocked:
+	if health != null and not health.take_hit(hit.damage * hit.power * hit.share, 0 if hit.blocked else 1) and not hit.blocked:
 		return false
 	hit_received.emit(hit)
 	return true

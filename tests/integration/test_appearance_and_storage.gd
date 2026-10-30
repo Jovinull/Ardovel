@@ -313,7 +313,7 @@ func test_a_version_4_save_continues_with_an_empty_chest_and_its_kit() -> void:
 	await _press(&"ui_cancel")
 	assert_eq(game.save_now(), OK)
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(game.save_slot.path))
-	assert_eq(int(data["version"]), 5)
+	assert_eq(int(data["version"]), Adventure.FORMAT_VERSION)
 	assert_eq(data["storage"], [])
 
 
