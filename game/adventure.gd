@@ -42,6 +42,9 @@ var _items: Array[StringName] = []
 var _counts: Dictionary[StringName, int] = {}
 ## Slot -> id of the item equipped there (always one of the copies the hero has).
 var _equipment: Dictionary[StringName, StringName] = {}
+## The food the quick-use key eats (empty: the first food the hero has). Saved as an optional key
+## of format 4, so saves without it read as before.
+var quick_item: StringName = &""
 
 
 func _init(start_area: StringName = &"village", start_entry: StringName = &"start") -> void:
@@ -111,6 +114,14 @@ func equipped(slot: StringName) -> StringName:
 ## Slot -> id of everything equipped.
 func equipment() -> Dictionary[StringName, StringName]:
 	return _equipment.duplicate()
+
+
+## Chooses the food the quick-use key eats.
+func set_quick_item(id: StringName) -> void:
+	if quick_item == id:
+		return
+	quick_item = id
+	changed.emit()
 
 
 ## How many slots hold `id`.
@@ -187,6 +198,7 @@ func to_dict() -> Dictionary:
 		"flags": flag_names,
 		"inventory": stacks,
 		"equipment": equipment,
+		"quick_item": String(quick_item),
 	}
 
 
@@ -247,6 +259,11 @@ static func from_dict(data: Variant) -> Adventure:
 			push_warning("Save equips %s in %s without a copy to spare; left unequipped." % [id, slot])
 			continue
 		adventure._equipment[StringName(slot)] = StringName(id)
+	var quick: Variant = d.get("quick_item", "")
+	if quick is String:
+		adventure.quick_item = StringName(quick)
+	else:
+		push_warning("Save's quick item is not a name; the first food will be used.")
 	return adventure
 
 

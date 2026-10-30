@@ -158,3 +158,77 @@ offset_right = 139.0
 offset_bottom = 5.0
 mouse_filter = 2
 color = Color(0.878431, 0.223529, 0.298039, 1)
+
+[node name="Breath" type="Control" parent="Frame"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 6.0
+offset_top = 21.0
+offset_right = 52.0
+offset_bottom = 25.0
+mouse_filter = 2
+
+[node name="Back" type="ColorRect" parent="Frame/Breath"]
+layout_mode = 0
+offset_right = 46.0
+offset_bottom = 4.0
+mouse_filter = 2
+color = Color(0.0784314, 0.105882, 0.105882, 1)
+
+[node name="BreathFill" type="ColorRect" parent="Frame/Breath/Back"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 45.0
+offset_bottom = 3.0
+mouse_filter = 2
+color = Color(0.678431, 0.737255, 0.227451, 1)
+
+[node name="Quick" type="Control" parent="Frame"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 294.0
+offset_top = 4.0
+offset_right = 316.0
+offset_bottom = 26.0
+mouse_filter = 2
+
+[node name="Box" type="NinePatchRect" parent="Frame/Quick"]
+layout_mode = 0
+offset_right = 22.0
+offset_bottom = 22.0
+mouse_filter = 2
+texture = ExtResource("4_face_box")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="QuickIcon" type="TextureRect" parent="Frame/Quick"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 19.0
+offset_bottom = 19.0
+mouse_filter = 2
+
+[node name="QuickCount" type="Label" parent="Frame/Quick"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 12.0
+offset_right = 21.0
+offset_bottom = 22.0
+horizontal_alignment = 2
+
+[node name="QuickKey" type="Label" parent="Frame/Quick"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -16.0
+offset_top = 6.0
+offset_right = -2.0
+offset_bottom = 16.0
+horizontal_alignment = 2
