@@ -107,6 +107,7 @@ func _input(event: InputEvent) -> void:
 func _exit_tree() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
+	HeroLook.forget()
 
 
 func _unhandled_input(event: InputEvent) -> void:

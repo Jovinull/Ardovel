@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://items/item_def.gd" id="1_item"]
 [ext_resource type="Script" path="res://items/stat_modifier.gd" id="2_mod"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/items/armor/ruin_circlet.png" id="3_icon"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/armor/ruin_circlet_worn.png" id="9_worn"]
 
 [sub_resource type="Resource" id="Resource_mod0"]
 script = ExtResource("2_mod")
@@ -27,3 +28,4 @@ weight = 0.5
 stack_limit = 1
 slot = &"head"
 modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_mod0"), SubResource("Resource_mod1")])
+worn_sheet = ExtResource("9_worn")
