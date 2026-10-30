@@ -382,22 +382,21 @@ func test_the_inventory_scrolls_sorts_and_reaches_its_last_item() -> void:
 	assert_gte(ItemCatalog.find(by_weight[0]).weight, ItemCatalog.find(by_weight[by_weight.size() - 1]).weight)
 
 
-func test_food_is_eaten_from_the_inventory() -> void:
-	await _continue_with(_state(&"road_slope", &"trail", {&"corn_bread": 2}))
+func test_the_inventory_puts_food_in_the_quick_slot_and_never_eats_it() -> void:
+	await _continue_with(_state(&"road_slope", &"trail", {&"corn_bread": 2, &"herb_tea": 1}))
 	_player().health.take_damage(6)
 	var health := _player().health.current
 	await _press(&"equipment")
 	await _press(&"menu_next")
 	for i in 4:
 		await _press(&"category_next")
-	assert_eq(_menu().shown_items(), [&"corn_bread"] as Array[StringName])
+	assert_eq(_menu().shown_items(), [&"corn_bread", &"herb_tea"] as Array[StringName])
+	await _press(&"move_right")
 	await _press(&"interact")
-	assert_eq(_player().health.current, health + 4, "a heart back")
-	assert_eq(game.adventure.count(&"corn_bread"), 1, "one eaten")
-	_player().health.restore_full()
-	await _press(&"interact")
-	assert_eq(game.adventure.count(&"corn_bread"), 1, "not wasted at full health")
-	assert_eq(_menu().notice(), "MENU_FULL_HEALTH")
+	assert_eq(game.adventure.quick_item, &"herb_tea", "E puts the tea in the quick slot")
+	assert_eq(_menu().notice(), "MENU_QUICK_SET")
+	assert_eq(_player().health.current, health, "nothing is eaten with the world held still")
+	assert_eq(game.adventure.count(&"herb_tea"), 1)
 
 
 func test_a_weapon_changes_the_swing_its_damage_and_its_frames() -> void:
@@ -577,7 +576,7 @@ func test_the_menu_texts_fit_in_both_languages() -> void:
 		TranslationServer.set_locale(locale)
 		for gamepad in [false, true]:
 			menu.set_input_mode(gamepad, "")
-			menu.open(adventure, 12, health, func(_id: StringName) -> bool: return false, HeroMenu.Page.INVENTORY)
+			menu.open(adventure, 12, health, HeroMenu.Page.INVENTORY)
 			for id in menu.shown_items():
 				menu._cell = menu.shown_items().find(id)
 				menu._refresh()
@@ -588,7 +587,7 @@ func test_the_menu_texts_fit_in_both_languages() -> void:
 				_assert_fits(menu, "Root/Inventory/Info/Effect", 3, locale + " " + String(id))
 			_assert_fits(menu, "Root/Hint", 1, locale + " inventory hint")
 			menu.close()
-			menu.open(adventure, 12, health, func(_id: StringName) -> bool: return false, HeroMenu.Page.EQUIPMENT)
+			menu.open(adventure, 12, health, HeroMenu.Page.EQUIPMENT)
 			for group: Array in HeroMenu.GROUPS:
 				for slot: StringName in group[1]:
 					for id in Equipment.candidates(adventure, slot):
