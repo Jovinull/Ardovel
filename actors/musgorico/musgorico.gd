@@ -24,12 +24,24 @@ const ARRIVE_DISTANCE := 3.0
 @export var lunge_time: float = 0.22
 @export var recover_time: float = 0.6
 @export var hurt_time: float = 0.25
+## Seconds of staggering it takes within STAGGER_WINDOW before it shrugs blows off for a moment:
+## quick weapons push and sting it, but cannot hold it forever.
+@export var stagger_limit: float = 0.7
+## Seconds it then shrugs blows off (it still takes the damage and the push).
+@export var steady_time: float = 1.0
 ## Speed of the hop backwards after its quills prick something.
 @export var recoil_speed: float = 90.0
 @export var friction: float = 600.0
 ## Fixed seed for reproducible wandering (0 = random).
 @export var rng_seed: int = 0
 
+## Staggering decays over this many seconds.
+const STAGGER_WINDOW := 1.5
+var _staggered := 0.0
+var _last_stagger := -10.0
+var _steady_until := -10.0
+## Physics time it has lived (blows are timed on it, so a hit-stop or a pause does not count).
+var _clock := 0.0
 var state: State = State.IDLE
 var facing: Vector2 = Vector2.DOWN
 var home: Vector2
@@ -64,6 +76,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_clock += delta
 	if state == State.DEAD:
 		return
 	_state_left -= delta
@@ -190,7 +203,22 @@ func _on_hit_received(hit: Hit) -> void:
 	if state == State.DEAD:
 		return
 	velocity = hit.knockback_velocity(global_position)
+	var now := _clock
+	if now < _steady_until:
+		return  # bristling: the blow lands, but it keeps doing what it was doing
+	var stagger := maxf(hurt_time, hit.stagger)
+	_staggered = _staggered * clampf(1.0 - (now - _last_stagger) / STAGGER_WINDOW, 0.0, 1.0) + stagger
+	_last_stagger = now
+	if _staggered >= stagger_limit:
+		_staggered = 0.0
+		_steady_until = now + steady_time
 	_enter(State.HURT)
+	_state_left = stagger
+
+
+## Whether it is shrugging blows off now.
+func is_steady() -> bool:
+	return _clock < _steady_until
 
 
 func _on_died() -> void:
