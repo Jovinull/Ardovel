@@ -97,6 +97,7 @@ func _notification(what: int) -> void:
 		_update_guidance()
 		if _level_label != null:
 			_level_label.text = tr("HUD_LEVEL") % _shown_level
+			_lay_out_growth()
 
 
 func bind_player(player: Player) -> void:
@@ -159,7 +160,7 @@ func _build_growth() -> void:
 	_xp_fill.size = Vector2(0, 2)
 	_xp_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	back.add_child(_xp_fill)
-	_xp_gain = _hud_label(_growth, "Gain", Rect2(XP_WIDTH + 34, 0, 30, 10), GOLD)
+	_xp_gain = _hud_label(_growth, "Gain", Rect2(XP_WIDTH + 34, 0, 40, 10), GOLD)
 	_level_box = NinePatchRect.new()
 	_level_box.name = "LevelUp"
 	_level_box.texture = CHOICE_BOX
@@ -167,14 +168,15 @@ func _build_growth() -> void:
 	_level_box.patch_margin_top = 4
 	_level_box.patch_margin_right = 4
 	_level_box.patch_margin_bottom = 4
-	_level_box.position = Vector2(100, 30)
-	_level_box.size = Vector2(120, 28)
+	# below the growth row, so neither covers the other
+	_level_box.position = Vector2(86, 42)
+	_level_box.size = Vector2(148, 28)
 	_level_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_level_box.visible = false
 	frame.add_child(_level_box)
-	_level_title = _hud_label(_level_box, "Title", Rect2(4, 4, 112, 10), Color("8f3e56"), false)
+	_level_title = _hud_label(_level_box, "Title", Rect2(6, 4, 136, 10), Color("8f3e56"), false)
 	_level_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_level_points = _hud_label(_level_box, "Points", Rect2(4, 14, 112, 10), Color("3b3643"), false)
+	_level_points = _hud_label(_level_box, "Points", Rect2(6, 14, 136, 10), Color("3b3643"), false)
 	_level_points.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_level_sound = AudioStreamPlayer.new()
 	_level_sound.name = "LevelSound"
@@ -229,14 +231,22 @@ func show_growth(level: int, progress: Vector2i, free_points: int, gained: int) 
 	_shown_level = level
 	_free_points = free_points
 	_level_label.text = tr("HUD_LEVEL") % level
-	_points_mark.position = Vector2(_level_label.get_minimum_size().x + 2, 1)
 	_points_mark.visible = free_points > 0
+	_lay_out_growth()
 	_xp_fill.size.x = XP_WIDTH * progress.x / maxf(progress.y, 1.0) if progress.y > 0 else XP_WIDTH
 	if gained > 0:
 		_xp_gain.text = tr("HUD_XP_GAIN") % gained
 		_flash_growth()
 	elif _growth_tween == null or not _growth_tween.is_running():
 		_settle_growth()
+
+
+## The mark, the bar and the gain one after another, as wide as the level's text is ("Nv 9" or "Nv 10").
+func _lay_out_growth() -> void:
+	var after_level := ceilf(_level_label.get_minimum_size().x) + 3.0
+	_points_mark.position = Vector2(after_level, 1)
+	_xp_bar.position.x = after_level + (10.0 if _points_mark.visible else 2.0)
+	_xp_gain.position.x = _xp_bar.position.x + XP_WIDTH + 5.0
 
 
 func _flash_growth() -> void:
@@ -265,6 +275,8 @@ func show_level_up(level: int, free_points: int) -> void:
 		return
 	_level_title.text = tr("HUD_LEVEL_UP") % level
 	_level_points.text = tr("HUD_POINTS_ONE") if free_points == 1 else tr("HUD_POINTS") % free_points
+	# under the first steps' guidance when it is showing, never over it
+	_level_box.position.y = 58.0 if _guidance_box.visible else 42.0
 	_level_box.visible = true
 	_level_box.modulate.a = 1.0
 	_level_sound.play()
