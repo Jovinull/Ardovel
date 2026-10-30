@@ -13,6 +13,9 @@ const TIME_EPSILON := 1e-6
 @export_range(0.01, 1.0, 0.005) var active: float = 0.12
 @export_range(0.0, 1.0, 0.005) var recovery: float = 0.15
 @export var damage: int = 1
+## How much harder than `damage` each blow lands (the wielder's strength): 1.2 takes 1.2 quarters a
+## blow from a 1-damage weapon, the fraction carried over to the next blow on the same target.
+@export var power: float = 1.0
 @export var knockback: float = 140.0
 ## Distance from the attacker's origin to the hitbox centre, along the attack direction.
 @export var reach: float = 12.0

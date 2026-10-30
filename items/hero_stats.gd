@@ -1,7 +1,7 @@
 class_name HeroStats
 extends RefCounted
 ## The hero's derived statistics: base values (the hero's own scene, the weapon in hand, the heart
-## vessels found) changed by what is worn. Never saved: rebuilt from the saved equipment whenever
+## vessels found) changed by the attribute points invested (HeroGrowth) and what is worn. Never saved: rebuilt from the saved equipment whenever
 ## it changes.
 ##
 ## value = clamp((base + sum of ADD) * (1 + sum of PERCENT / 100), MINIMUM, MAXIMUM)
@@ -28,17 +28,25 @@ const LOAD := &"load"
 const SPEED := &"speed"
 ## Percent added to the health consumables give back.
 const HEALING := &"healing"
+## Percent of the weapon's damage each blow lands with (100: as made; the hero's strength).
+const POWER := &"power"
+## Breath the hero can hold (Stamina.maximum).
+const BREATH := &"breath"
+## Percent of the breath that comes back each second (100: the hero's own pace).
+const BREATH_REGEN := &"breath_regen"
 
 const MINIMUM: Dictionary[StringName, float] = {
 	MAX_HEALTH: 4.0, ATTACK: 1.0, KNOCKBACK: 0.0, REACH: 6.0, SWING: 50.0, DEFENSE: 0.0, POISE: 0.0,
-	LOAD: 10.0, SPEED: -30.0, HEALING: 0.0,
+	LOAD: 10.0, SPEED: -30.0, HEALING: 0.0, POWER: 50.0, BREATH: 50.0, BREATH_REGEN: 50.0,
 }
 const MAXIMUM: Dictionary[StringName, float] = {
 	MAX_HEALTH: 80.0, ATTACK: 8.0, KNOCKBACK: 600.0, REACH: 24.0, SWING: 150.0, DEFENSE: 50.0,
-	POISE: 75.0, LOAD: 120.0, SPEED: 15.0, HEALING: 200.0,
+	POISE: 75.0, LOAD: 120.0, SPEED: 15.0, HEALING: 200.0, POWER: 200.0, BREATH: 200.0, BREATH_REGEN: 200.0,
 }
 ## What the hero carries with nothing but the starting kit.
 const BASE_LOAD := 30.0
+## Breath the hero holds with no point in breath (Stamina's own maximum).
+const BASE_BREATH := 100.0
 
 ## Weight bands, by worn weight over load (upper bound inclusive).
 const LIGHT := &"light"
@@ -75,9 +83,11 @@ static func combine(base: float, stat: StringName, modifiers: Array[StatModifier
 	return clampf(value, MINIMUM.get(stat, -INF), MAXIMUM.get(stat, INF))
 
 
-## Every statistic in `base` (id -> value) changed by what `items` modify.
-static func derive(base: Dictionary[StringName, float], items: Array[ItemDef]) -> Dictionary[StringName, float]:
-	var modifiers: Array[StatModifier] = []
+## Every statistic in `base` (id -> value) changed by what `items` modify and by `extra` modifiers (the
+## attribute points), all in the one sum above.
+static func derive(base: Dictionary[StringName, float], items: Array[ItemDef],
+		extra: Array[StatModifier] = []) -> Dictionary[StringName, float]:
+	var modifiers: Array[StatModifier] = extra.duplicate()
 	for item in items:
 		modifiers.append_array(item.modifiers)
 	var derived: Dictionary[StringName, float] = {}

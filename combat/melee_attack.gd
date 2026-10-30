@@ -42,6 +42,7 @@ func start(toward: Vector2) -> bool:
 	direction = toward.normalized()
 	_elapsed = 0.0
 	hitbox.damage = data.damage
+	hitbox.power = data.power
 	hitbox.knockback = data.knockback
 	hitbox.stagger = data.stagger
 	var shape := hitbox.get_node_or_null(^"Shape") as CollisionShape2D
