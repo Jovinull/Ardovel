@@ -3,9 +3,10 @@ extends Node
 ## Root of a play session. Owns the adventure state, its save slot, the player's settings and
 ## the current area: shows the title (and applies the chosen language), loads areas (one at a
 ## time, swapped behind a fade), sends the hero back to the checkpoint after a fall, and
-## freezes the area while a dialogue, the equipment screen or the chest at home is open. Applies what the hero has
-## earned to the hero (heart vessels, equipment). Also owns the brief hit-stop when the sword
-## connects.
+## freezes the area while a dialogue, the equipment screen or the chest at home is open. Applies what
+## the hero has earned to the hero (heart vessels, equipment, and growth: experience for creatures
+## defeated, deeds done and areas first reached, see HeroGrowth). Also owns the brief hit-stop when
+## the sword connects.
 
 ## Stable area ids (as written in saves and passages) and their scenes.
 const AREAS: Dictionary[StringName, String] = {
@@ -56,6 +57,11 @@ var _base_max_health: int = 0
 var _profile: HeroLoadout.Profile
 ## What the profile was last built from, so unrelated changes (a flag) do not rebuild it.
 var _profile_source: String = ""
+## The experience and level last shown, to tell what a change brought.
+var _shown_experience: int = 0
+var _shown_level: int = 1
+## Set while deeds are being given (each gift is itself a change).
+var _settling: bool = false
 
 @onready var _hud: Hud = $HUD
 @onready var _death_screen: DeathScreen = $DeathScreen
@@ -217,6 +223,7 @@ func travel(area: StringName, entry: StringName) -> void:
 		await _show_interlude(interlude)
 	_load_area(area, entry)
 	adventure.enter(area, entry)
+	HeroGrowth.arrive(adventure, area)  # only a real arrival: not continuing there, not a fall
 	await _fade_to(0.0)
 	_travelling = false
 
@@ -296,16 +303,26 @@ func _begin(state: Adventure) -> void:
 	_storage.close()
 	Engine.time_scale = 1.0
 	adventure = state
+	# Deeds an older save already proves are given before anything listens: they are written with
+	# the next real change, so loading alone never rewrites the save (and gives the same again if
+	# the game is closed first).
+	_shown_experience = adventure.experience
+	_shown_level = HeroGrowth.level(adventure)
+	_settling = true
+	HeroGrowth.settle_deeds(adventure)
+	_settling = false
 	for id in adventure.items():
 		if not ItemCatalog.knows(id):
 			push_warning("The save has an item this game does not know (%s); it is kept but unused." % id)
 	adventure.changed.connect(_queue_save)
+	adventure.changed.connect(_grow)
 	adventure.changed.connect(_apply_equipment)
 	adventure.changed.connect(_refresh_quick_slot)
 	adventure.changed.connect(_refresh_first_step_guidance)
 	_title.close()
 	_fade.modulate.a = 1.0
 	_load_area(adventure.area, adventure.entry)
+	_grow()
 	_fade_to(0.0)
 
 
@@ -344,7 +361,42 @@ func _load_area(area: StringName, entry: StringName) -> void:
 			arena.fight_won.connect(_on_boss_fight_won)
 		elif node is ItemPickup and (node as ItemPickup).keeps_storage:
 			(node as ItemPickup).storage_requested.connect(open_storage)
+		elif HeroGrowth.for_creature(_kind(node)) > 0 and node.has_signal(&"defeated"):
+			node.connect(&"defeated", _on_creature_defeated.bind(_kind(node)), CONNECT_ONE_SHOT)
 	_play_music(level.music)
+
+
+## A creature's class name (empty for anything without a named script).
+static func _kind(node: Node) -> StringName:
+	var script := node.get_script() as Script
+	return script.get_global_name() if script != null else &""
+
+
+## Experience for a creature really defeated (its own `defeated`, once per creature placed in the
+## area; leaving the area or a fall does not count, and one coming back with the area can be beaten
+## again).
+func _on_creature_defeated(kind: StringName) -> void:
+	if adventure != null:
+		adventure.add_experience(HeroGrowth.for_creature(kind))
+
+
+## After any change: gives the deeds its flags now prove (once each), and shows what was gained and
+## any level reached.
+func _grow() -> void:
+	if adventure == null or _settling:
+		return
+	_settling = true
+	HeroGrowth.settle_deeds(adventure)
+	_settling = false
+	var gained := adventure.experience - _shown_experience
+	var reached := HeroGrowth.level(adventure)
+	_shown_experience = adventure.experience
+	_hud.show_growth(reached, HeroGrowth.progress(adventure), HeroGrowth.points_free(adventure), gained)
+	if reached > _shown_level:
+		_shown_level = reached
+		_hud.show_level_up(reached, HeroGrowth.points_free(adventure))
+		if level != null:
+			level.player.celebrate()
 
 
 func _on_boss_fight_started(arena: BossArena) -> void:
@@ -461,11 +513,14 @@ func hero_profile() -> HeroLoadout.Profile:
 
 
 ## Rebuilds the hero's profile and gives it to the hero when what it depends on has changed (the
-## equipment, or a heart vessel found).
+## equipment, a heart vessel found, or attribute points invested).
 func _apply_equipment() -> void:
 	if level == null or adventure == null:
 		return
-	var source := "%s|%d" % [adventure.equipment(), base_health()]
+	var points: Array[int] = []
+	for attribute in HeroGrowth.ATTRIBUTES:
+		points.append(adventure.attribute(attribute))
+	var source := "%s|%d|%s" % [adventure.equipment(), base_health(), points]
 	if source == _profile_source:
 		return
 	_profile_source = source
