@@ -110,8 +110,6 @@ var _status: Control
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_build()
-	_root.hide()
 	set_process_input(false)
 
 
@@ -123,6 +121,8 @@ func _notification(what: int) -> void:
 ## Opens on `start` for `adventure`, whose hero has `base_health` quarters before equipment and
 ## `health` now; `use_item` (id -> bool) eats food on the hero.
 func open(adventure: Adventure, base_health: int, health: Health, use_item: Callable, start: Page = Page.EQUIPMENT) -> void:
+	if _root == null:
+		_build()  # on first use: a few hundred controls nobody needs before
 	_adventure = adventure
 	_base_health = base_health
 	_health = health
