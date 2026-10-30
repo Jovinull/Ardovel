@@ -4,7 +4,9 @@ extends CanvasLayer
 ##
 ## Equipment: the nine slots grouped by what they are for (weapons, protection, rings and the
 ## accessory); choosing a slot lists the pieces that fit it and compares each with what is worn
-## (the hero's statistics now and after the change). Inventory: everything the hero has, by
+## (the hero's statistics now and after the change). Beside the weapons the hero turns slowly as
+## they look now, or, while choosing, as they would look with the piece under the cursor (the same
+## frames the hero is drawn with in play, HeroLook). Inventory: everything the hero has, by
 ## category, in a grid that scrolls, with quantities and what is worn marked; a piece is equipped
 ## or taken off, and food is put in the quick slot (it is eaten in the world, where eating takes
 ## time and a blow interrupts it, never here with the world held still). Status: the statistics
@@ -63,6 +65,9 @@ const GRID_COLUMNS := 7
 const GRID_ROWS := 5
 const CELL := 20
 const LIST_ROWS := 4
+## The preview turns to the next side this often (seconds); down, left, up, right.
+const PREVIEW_TURN := 1.2
+const PREVIEW_SIDES: Array[int] = [0, 2, 1, 3]
 const LIGHT := Color("f2eaf1")
 const DARK := Color("3b3643")
 const DIM := Color("948a9c")
@@ -104,6 +109,10 @@ var _grid: Control
 var _inv_info: Control
 var _bag: Label
 var _status: Control
+var _preview: TextureRect
+var _preview_look: HeroLook
+var _preview_side := 0
+var _preview_time := 0.0
 @onready var _accept: AudioStreamPlayer = $Accept
 @onready var _cancel: AudioStreamPlayer = $Cancel
 @onready var _move: AudioStreamPlayer = $Move
@@ -112,6 +121,16 @@ var _status: Control
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_process_input(false)
+
+
+func _process(delta: float) -> void:
+	if not is_open() or page != Page.EQUIPMENT:
+		return
+	_preview_time += delta
+	if _preview_time >= PREVIEW_TURN:
+		_preview_time = 0.0
+		_preview_side = (_preview_side + 1) % PREVIEW_SIDES.size()
+		_show_preview(_preview_look)
 
 
 func _notification(what: int) -> void:
@@ -208,6 +227,11 @@ func sort_mode() -> Sort:
 
 func notice() -> String:
 	return _notice
+
+
+## How the preview shows the hero now.
+func preview_look() -> HeroLook:
+	return _preview_look
 
 
 # ---------------------------------------------------------------- input
@@ -438,6 +462,15 @@ func _build_equipment() -> void:
 		row.add_child(icon)
 		_label(row, "Label", Rect2(22, 4, 154, 10), DARK, 0, false)
 	_label(_list, "More", Rect2(130, 62, 50, 10), DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
+	var preview := _patch(equipment, "Preview", FRAME, Rect2(80, 25, 38, 38), 5)
+	_preview = TextureRect.new()
+	_preview.name = "Hero"
+	_preview.position = Vector2(3, 3)
+	_preview.size = Vector2(32, 32)
+	_preview.stretch_mode = TextureRect.STRETCH_SCALE
+	_preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview.add_child(_preview)
 	_summary = _patch(equipment, "Summary", BOX, Rect2(124, 102, 188, 60), 6)
 	for r in 5:
 		_label(_summary, "Line%d" % r, Rect2(8, 5 + r * 10, 174, 10), DARK, 0, false)
@@ -609,6 +642,7 @@ func _refresh_equipment() -> void:
 			lines.append(tr("MENU_WEIGHT") % _number(worn.weight, 1))
 		(_info.get_node(^"Effect") as Label).text = "\n".join(lines)
 		_summary_lines(_stat_summary(profile))
+		_show_preview(profile.look())
 		_hint.text = _hints([["MENU_HINT_CHOOSE", [&"interact"]], ["MENU_HINT_CLOSE", [&"equipment"]]])
 	else:
 		_choice = clampi(_choice, 0, maxi(_choices.size() - 1, 0))
@@ -632,10 +666,24 @@ func _refresh_equipment() -> void:
 		var choice := selected_choice()
 		var after := HeroLoadout.profile_if(_adventure, _base_health, slot, choice)
 		_summary_lines(compare_lines(profile, after))
+		_show_preview(after.look())
 		_hint.text = _hints([["MENU_HINT_EQUIP" if not choice.is_empty() else "MENU_HINT_TAKE_OFF", [&"interact"]],
 				["MENU_HINT_BACK", [&"ui_cancel"]]])
 	if not _notice.is_empty():
 		_hint.text = tr(_notice)
+
+
+## The hero standing as `look` draws them, on the side the preview has turned to.
+func _show_preview(look: HeroLook) -> void:
+	_preview_look = look
+	if look == null:
+		return
+	var frame := _preview.texture as AtlasTexture
+	if frame == null:
+		frame = AtlasTexture.new()
+		_preview.texture = frame
+	frame.atlas = look.walk
+	frame.region = Rect2(PREVIEW_SIDES[_preview_side] * 16, 0, 16, 16)
 
 
 func _summary_lines(lines: Array) -> void:
