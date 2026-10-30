@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/hero_menu/hero_menu.gd" id="1_menu"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Menu/Accept.wav" id="2_accept"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Menu/Cancel.wav" id="3_cancel"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Menu/Move1.wav" id="4_move"]
+
+[node name="HeroMenu" type="CanvasLayer"]
+layer = 24
+script = ExtResource("1_menu")
+
+[node name="Accept" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_accept")
+volume_db = -8.0
+
+[node name="Cancel" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_cancel")
+volume_db = -8.0
+
+[node name="Move" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_move")
+volume_db = -12.0
