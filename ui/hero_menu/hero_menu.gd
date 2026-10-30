@@ -37,6 +37,26 @@ const TABS: Array = [
 	["MENU_TAB_MATERIALS", [ItemCatalog.MATERIAL]],
 ]
 const SORT_KEYS: Array[String] = ["MENU_SORT_FOUND", "MENU_SORT_NAME", "MENU_SORT_CATEGORY", "MENU_SORT_WEIGHT"]
+const SLOT_NAMES: Dictionary[StringName, String] = {
+	ItemCatalog.MAIN_HAND: "SLOT_MAIN_HAND", ItemCatalog.OFF_HAND: "SLOT_OFF_HAND", ItemCatalog.HEAD: "SLOT_HEAD",
+	ItemCatalog.TORSO: "SLOT_TORSO", ItemCatalog.HANDS: "SLOT_HANDS", ItemCatalog.LEGS: "SLOT_LEGS",
+	ItemCatalog.RING_1: "SLOT_RING_1", ItemCatalog.RING_2: "SLOT_RING_2", ItemCatalog.ACCESSORY: "SLOT_ACCESSORY",
+}
+const CATEGORY_NAMES: Dictionary[StringName, String] = {
+	ItemCatalog.WEAPON: "CATEGORY_WEAPON", ItemCatalog.SHIELD: "CATEGORY_SHIELD", ItemCatalog.ARMOR: "CATEGORY_ARMOR",
+	ItemCatalog.RING: "CATEGORY_RING", ItemCatalog.TRINKET: "CATEGORY_ACCESSORY",
+	ItemCatalog.CONSUMABLE: "CATEGORY_CONSUMABLE", ItemCatalog.MATERIAL: "CATEGORY_MATERIAL",
+}
+const STAT_NAMES: Dictionary[StringName, String] = {
+	HeroStats.MAX_HEALTH: "STAT_MAX_HEALTH", HeroStats.ATTACK: "STAT_ATTACK", HeroStats.KNOCKBACK: "STAT_KNOCKBACK",
+	HeroStats.REACH: "STAT_REACH", HeroStats.SWING: "STAT_SWING", HeroStats.DEFENSE: "STAT_DEFENSE",
+	HeroStats.POISE: "STAT_POISE", HeroStats.LOAD: "STAT_LOAD", HeroStats.SPEED: "STAT_SPEED",
+	HeroStats.HEALING: "STAT_HEALING",
+}
+const BAND_NAMES: Dictionary[StringName, String] = {
+	HeroStats.LIGHT: "BAND_LIGHT", HeroStats.NORMAL: "BAND_NORMAL", HeroStats.HEAVY: "BAND_HEAVY",
+	HeroStats.OVERLOADED: "BAND_OVERLOADED",
+}
 const GRID_COLUMNS := 7
 const GRID_ROWS := 5
 const CELL := 20
@@ -439,8 +459,8 @@ func _build_inventory() -> void:
 		var cell := _cell_node(_grid, "Cell%d" % i, Vector2((i % GRID_COLUMNS) * CELL, (i / GRID_COLUMNS) * CELL), CELL)
 		_label(cell, "Count", Rect2(0, 10, CELL - 1, 10), LIGHT, HORIZONTAL_ALIGNMENT_RIGHT)
 		_pip(cell)
-	_label(inventory, "Scroll", Rect2(8, 140, 140, 10), DIM)
-	_label(inventory, "Sort", Rect2(8, 140, 140, 10), DIM, HORIZONTAL_ALIGNMENT_RIGHT)
+	_label(inventory, "Scroll", Rect2(8, 140, 40, 10), DIM)
+	_label(inventory, "Sort", Rect2(48, 140, 100, 10), DIM, HORIZONTAL_ALIGNMENT_RIGHT)
 	_bag = _label(inventory, "Bag", Rect2(8, 152, 140, 10), LIGHT)
 	_inv_info = _patch(inventory, "Info", BOX, Rect2(152, 38, 160, 124), 6)
 	_label(_inv_info, "Name", Rect2(8, 6, 144, 10), WINE, 0, false)
@@ -585,7 +605,7 @@ func _refresh_equipment() -> void:
 	_list.visible = _choosing
 	if not _choosing:
 		var worn := ItemCatalog.find(_adventure.equipped(slot))
-		(_info.get_node(^"Slot") as Label).text = tr(ItemCatalog.slot_name_key(slot))
+		(_info.get_node(^"Slot") as Label).text = tr(SLOT_NAMES[slot])
 		(_info.get_node(^"Name") as Label).text = tr(worn.name_key) if worn != null else tr("MENU_EMPTY")
 		var lines := effect_lines(worn)
 		if worn != null:
@@ -667,7 +687,7 @@ func _refresh_inventory() -> void:
 	(_inv_info.get_node(^"Name") as Label).text = tr(item.name_key) if item != null else tr("MENU_NOTHING")
 	var kind := ""
 	if item != null:
-		kind = tr(ItemCatalog.category_name_key(item.category))
+		kind = tr(CATEGORY_NAMES.get(item.category, ""))
 		if _adventure.count(id) > 1:
 			kind += "  x%d" % _adventure.count(id)
 		if item.is_equippable():
@@ -680,7 +700,7 @@ func _refresh_inventory() -> void:
 	if item != null:
 		if item.is_usable():
 			action = "MENU_HINT_USE"
-		elif item.is_equippable():
+		elif item.is_equippable() and _slot_holding(id) != ItemCatalog.MAIN_HAND:
 			action = "MENU_HINT_TAKE_OFF" if _adventure.equipped_copies(id) > 0 else "MENU_HINT_EQUIP"
 	var hints: Array = []
 	if not action.is_empty():
@@ -706,7 +726,7 @@ func _refresh_status() -> void:
 		["MENU_STATUS_LOAD", [
 			["STAT_LOAD", "%s / %s  (%d%%)" % [_number(profile.carried, 1), _number(profile.value(HeroStats.LOAD), 1),
 					roundi(profile.load_ratio() * 100.0)]],
-			["STAT_MOBILITY", "%s  %d%%" % [tr("BAND_" + String(profile.band).to_upper()), roundi(profile.speed_factor() * 100.0)]],
+			["STAT_MOBILITY", "%s  %d%%" % [tr(BAND_NAMES[profile.band]), roundi(profile.speed_factor() * 100.0)]],
 			["STAT_HEALING", "+%d%%" % roundi(profile.value(HeroStats.HEALING))],
 			["STAT_BAG", "%d / %d" % [Bag.spaces_used(_adventure), Bag.CAPACITY]]]],
 	]
@@ -740,7 +760,7 @@ func effect_lines(item: ItemDef) -> Array[String]:
 
 
 func _modifier_text(modifier: StatModifier) -> String:
-	var name := tr("STAT_" + String(modifier.stat).to_upper())
+	var name := tr(STAT_NAMES.get(modifier.stat, ""))
 	var value := modifier.value
 	var sign := "+" if value >= 0 else "-"
 	if modifier.stat == HeroStats.MAX_HEALTH and modifier.kind == StatModifier.Kind.ADD:
@@ -756,7 +776,7 @@ func _stat_summary(profile: HeroLoadout.Profile) -> Array:
 		["%s %d   %s %d%%" % [tr("STAT_ATTACK"), profile.attack.damage, tr("STAT_DEFENSE"), roundi(profile.value(HeroStats.DEFENSE))], DARK],
 		["%s %d   %s %d%%" % [tr("STAT_KNOCKBACK"), roundi(profile.attack.knockback), tr("STAT_POISE"), roundi(profile.value(HeroStats.POISE))], DARK],
 		["%s %s/%s  %s" % [tr("STAT_LOAD"), _number(profile.carried, 1), _number(profile.value(HeroStats.LOAD), 1),
-				tr("BAND_" + String(profile.band).to_upper())], DARK],
+				tr(BAND_NAMES[profile.band])], DARK],
 	]
 
 
@@ -784,7 +804,7 @@ func compare_lines(before: HeroLoadout.Profile, after: HeroLoadout.Profile) -> A
 		lines.append(["%s %s > %s (%s)" % [tr(row[0]), _shown(a, row[3]), _shown(b, row[3]), "+" if better else "-"],
 				BETTER if better else WORSE])
 	var band_line := "%s %d%% > %d%% %s" % [tr("STAT_LOAD"), roundi(before.load_ratio() * 100.0), roundi(after.load_ratio() * 100.0),
-			tr("BAND_" + String(after.band).to_upper())]
+			tr(BAND_NAMES[after.band])]
 	var heavier := after.load_ratio() > before.load_ratio() + 0.001
 	lines = lines.slice(0, 4)
 	lines.append([band_line, WORSE if heavier and after.band != before.band else DARK])

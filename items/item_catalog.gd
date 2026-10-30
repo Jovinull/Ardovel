@@ -95,12 +95,3 @@ static func find(id: StringName) -> ItemDef:
 static func fits(item: ItemDef, slot: StringName) -> bool:
 	return item != null and SLOT_KINDS.has(slot) and item.slot == SLOT_KINDS[slot]
 
-
-## Translation key of a slot's name.
-static func slot_name_key(slot: StringName) -> String:
-	return "SLOT_" + String(slot).to_upper()
-
-
-## Translation key of a category's name.
-static func category_name_key(category: StringName) -> String:
-	return "CATEGORY_" + String(category).to_upper()
