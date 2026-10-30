@@ -4,6 +4,12 @@ extends Node2D
 ## of `item` in the bag and sets `flag` (each pickup has its own, so the same item can be found in
 ## two places, and nothing is taken twice). When the bag has no room it stays where it is and says
 ## so; nothing is ever lost for want of space. A chest stays, open, once emptied.
+##
+## The chest at home (`keeps_storage`) stays the hero's to keep things in once emptied: interacting
+## then asks for it (`storage_requested`). If the bag has no room for what it held at first, that
+## stays in it, kept in the chest (Storage), instead of waiting for room.
+
+signal storage_requested
 
 ## An ItemCatalog id.
 @export var item: StringName
@@ -16,6 +22,8 @@ extends Node2D
 @export var ground: Texture2D
 ## A two-frame chest (closed, open) to keep it in, instead of lying on the ground.
 @export var chest: Texture2D
+## This chest is the one at home, where the hero keeps what they do not carry.
+@export var keeps_storage: bool = false
 
 var _adventure: Adventure
 
@@ -48,15 +56,23 @@ func is_taken() -> bool:
 
 
 func _on_interact(_actor: Node2D) -> String:
-	if _adventure == null or is_taken():
+	if _adventure == null:
 		return ""
-	if not Bag.try_add(_adventure, item, count):
-		return "PICKUP_BAG_FULL"
-	_adventure.set_flag(flag)
-	_sound.play()
+	if is_taken():
+		if keeps_storage:
+			storage_requested.emit()
+		return ""
 	var definition := ItemCatalog.find(item)
 	var name := tr(definition.name_key) if definition != null else String(item)
 	var took := tr("ITEM_FOUND") % name if count == 1 else tr("ITEM_FOUND_MANY") % [name, count]
+	if not Bag.try_add(_adventure, item, count):
+		if not keeps_storage or not ItemCatalog.knows(item) or not Storage.has_room_for(_adventure, item, count):
+			return "PICKUP_BAG_FULL"
+		_adventure.add_item(item, count)
+		_adventure.store(item, count)
+		took = tr("PICKUP_KEPT_IN_CHEST") % name
+	_adventure.set_flag(flag)
+	_sound.play()
 	_show_taken()
 	return tr(message) + "\n\n" + took if not message.is_empty() else took
 
@@ -64,7 +80,7 @@ func _on_interact(_actor: Node2D) -> String:
 func _show_taken() -> void:
 	if chest != null:
 		_sprite.frame = 1
-		_interactable.enabled = false
+		_interactable.enabled = keeps_storage
 		return
 	_interactable.enabled = false
 	visible = false

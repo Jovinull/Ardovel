@@ -30,6 +30,10 @@ class Profile:
 	var guard: GuardData
 	var guard_sheet: Texture2D
 	var dodge := Dodge.new()
+	## The shield in the off hand (null: none) and the head, torso, hands and legs pieces worn: what
+	## shows on the hero (look()).
+	var shield: ItemDef
+	var pieces: Array[ItemDef] = []
 
 	func value(stat: StringName) -> float:
 		return stats.get(stat, 0.0)
@@ -51,6 +55,10 @@ class Profile:
 	## Seconds one swing takes, start to end.
 	func swing_seconds() -> float:
 		return attack.duration()
+
+	## The hero's frames with this weapon, shield and pieces (put together on first use).
+	func look() -> HeroLook:
+		return HeroLook.of(weapon, shield, pieces)
 
 
 ## The profile of `adventure`'s hero, whose health before equipment is `base_health` quarters.
@@ -80,6 +88,11 @@ static func profile(adventure: Adventure, base_health: int) -> Profile:
 	if ItemCatalog.fits(shield, ItemCatalog.OFF_HAND) and shield.guard != null:
 		result.guard = shield.guard
 		result.guard_sheet = shield.guard_sheet
+		result.shield = shield
+	for slot in HeroLook.LAYER_ORDER:
+		var piece := ItemCatalog.find(adventure.equipped(slot))
+		if ItemCatalog.fits(piece, slot):
+			result.pieces.append(piece)
 	result.dodge.distance = HeroStats.DODGE_DISTANCE[result.band]
 	result.dodge.untouchable = HeroStats.DODGE_UNTOUCHABLE[result.band]
 	result.dodge.recovery = HeroStats.DODGE_RECOVERY[result.band]
@@ -97,11 +110,13 @@ static func profile_if(adventure: Adventure, base_health: int, slot: StringName,
 	return profile(trial, base_health)
 
 
-## Gives the hero what `profile` says: the weapon and its swing, health, defence, firmness and
-## mobility.
+## Gives the hero what `profile` says: the weapon and its swing, health, defence, firmness,
+## mobility, and how all of it looks on them.
 static func apply(profile: Profile, player: Player) -> void:
-	player.set_weapon(profile.attack, profile.weapon.attack_sheet)
-	player.set_guard(profile.guard, profile.guard_sheet)
+	var look := profile.look()
+	player.set_weapon(profile.attack, look.attack)
+	player.set_guard(profile.guard, look.guard)
+	player.set_body(look.walk, look.hurt, look.death)
 	player.set_dodge(profile.dodge)
 	player.stamina.regen_factor = HeroStats.BAND_BREATH[profile.band]
 	if player.health.max_health != profile.max_health():

@@ -57,6 +57,9 @@ var _acceleration_factor: float = 1.0
 var _attack_sheet: Texture2D
 var _guard: GuardData
 var _guard_sheet: Texture2D
+var _walk_sheet: Texture2D
+var _hurt_sheet: Texture2D
+var _death_sheet: Texture2D
 var _guard_up := 0.0
 var _dodge := HeroLoadout.Dodge.new()
 var _dodge_direction := Vector2.DOWN
@@ -89,7 +92,7 @@ func _ready() -> void:
 	_attack.phase_changed.connect(_on_attack_phase_changed)
 	_attack.finished.connect(_on_attack_finished)
 	_sword.landed.connect(_on_sword_landed)
-	# Each hero swaps the attack and guard frames to what is in hand; never the shared resource.
+	# Each hero swaps its frames to what it wears and holds; never the shared resource.
 	_sprite.sprite_frames = _sprite.sprite_frames.duplicate(true)
 	_held_item.visible = false
 	_sprite.play(&"idle_down")
@@ -399,6 +402,29 @@ func set_guard(guard: GuardData, sheet: Texture2D) -> void:
 
 func guard() -> GuardData:
 	return _guard
+
+
+## The hero's own frames as worn (HeroLook): standing and walking (also the dodge), hurt, falling.
+func set_body(walk: Texture2D, hurt: Texture2D, death: Texture2D) -> void:
+	if walk != null and walk != _walk_sheet:
+		_walk_sheet = walk
+		_set_atlas("idle_", walk)
+		_set_atlas("walk_", walk)
+	if hurt != null and hurt != _hurt_sheet:
+		_hurt_sheet = hurt
+		_set_atlas("hurt_", hurt)
+	if death != null and death != _death_sheet:
+		_death_sheet = death
+		for i in _sprite.sprite_frames.get_frame_count(&"death"):
+			var frame := _sprite.sprite_frames.get_frame_texture(&"death", i) as AtlasTexture
+			if frame != null:
+				frame.atlas = death
+
+
+## The sheets the hero is drawn with now: walk, hurt, death, attack, guard (tests, previews).
+func body_sheets() -> Dictionary[StringName, Texture2D]:
+	return {&"walk": _walk_sheet, &"hurt": _hurt_sheet, &"death": _death_sheet, &"attack": _attack_sheet,
+			&"guard": _guard_sheet}
 
 
 ## Distance, untouchable moment and recovery of a dodge (from the weight carried).

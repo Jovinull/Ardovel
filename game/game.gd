@@ -3,7 +3,7 @@ extends Node
 ## Root of a play session. Owns the adventure state, its save slot, the player's settings and
 ## the current area: shows the title (and applies the chosen language), loads areas (one at a
 ## time, swapped behind a fade), sends the hero back to the checkpoint after a fall, and
-## freezes the area while a dialogue or the equipment screen is open. Applies what the hero has
+## freezes the area while a dialogue, the equipment screen or the chest at home is open. Applies what the hero has
 ## earned to the hero (heart vessels, equipment). Also owns the brief hit-stop when the sword
 ## connects.
 
@@ -62,6 +62,7 @@ var _profile_source: String = ""
 @onready var _title: TitleScreen = $TitleScreen
 @onready var _pause: PauseScreen = $PauseScreen
 @onready var _equipment: HeroMenu = $HeroMenu
+@onready var _storage: StorageMenu = $StorageMenu
 @onready var _fade: ColorRect = %Fade
 @onready var _interlude: Label = %Interlude
 @onready var _music: AudioStreamPlayer = $Music
@@ -84,6 +85,7 @@ func _ready() -> void:
 	_pause.title_requested.connect(_return_to_title)
 	_pause.quit_requested.connect(_quit_safely)
 	_equipment.closed.connect(_set_area_frozen.bind(false))
+	_storage.closed.connect(_set_area_frozen.bind(false))
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	var connected_joypads := Input.get_connected_joypads()
 	if not connected_joypads.is_empty():
@@ -107,6 +109,7 @@ func _input(event: InputEvent) -> void:
 func _exit_tree() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
+	HeroLook.forget()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -128,7 +131,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func can_open_equipment() -> bool:
 	if level == null or adventure == null or _travelling or _title.is_open() or _pause.is_open():
 		return false
-	if _equipment.is_open() or _death_screen.is_open() or _hud.is_message_visible():
+	if _equipment.is_open() or _storage.is_open() or _death_screen.is_open() or _hud.is_message_visible():
 		return false
 	return level.process_mode != Node.PROCESS_MODE_DISABLED and level.player.state == Player.State.MOVE
 
@@ -147,6 +150,22 @@ func is_equipment_open() -> bool:
 
 func hero_menu() -> HeroMenu:
 	return _equipment
+
+
+## Opens the chest at home (asked for by the chest), on the same terms as the hero's menu.
+func open_storage() -> void:
+	if not can_open_equipment():
+		return
+	_set_area_frozen(true)
+	_storage.open(adventure)
+
+
+func is_storage_open() -> bool:
+	return _storage.is_open()
+
+
+func storage_menu() -> StorageMenu:
+	return _storage
 
 
 func open_title() -> void:
@@ -274,6 +293,7 @@ func _begin(state: Adventure) -> void:
 	_set_paused(false)
 	_pause.close()
 	_equipment.close()
+	_storage.close()
 	Engine.time_scale = 1.0
 	adventure = state
 	for id in adventure.items():
@@ -322,6 +342,8 @@ func _load_area(area: StringName, entry: StringName) -> void:
 			var arena := node as BossArena
 			arena.fight_started.connect(_on_boss_fight_started.bind(arena))
 			arena.fight_won.connect(_on_boss_fight_won)
+		elif node is ItemPickup and (node as ItemPickup).keeps_storage:
+			(node as ItemPickup).storage_requested.connect(open_storage)
 	_play_music(level.music)
 
 
@@ -349,6 +371,7 @@ func _return_to_title() -> void:
 	_set_paused(false)
 	_pause.close()
 	_equipment.close()
+	_storage.close()
 	_death_screen.close()
 	_hud.hide_boss()
 	_music.stop()
@@ -408,6 +431,7 @@ func _update_input_prompts() -> void:
 	_title.set_input_mode(_gamepad_active, _joypad_name)
 	_pause.set_input_mode(_gamepad_active, _joypad_name)
 	_equipment.set_input_mode(_gamepad_active, _joypad_name)
+	_storage.set_input_mode(_gamepad_active, _joypad_name)
 
 
 func _refresh_first_step_guidance() -> void:

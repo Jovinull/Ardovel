@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" path="res://assets/ardovel/items/weapons/woodcutter_hatchet.png" id="3_icon"]
 [ext_resource type="Script" path="res://combat/attack_data.gd" id="4_attack"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/items/weapons/woodcutter_hatchet_attack.png" id="5_sheet"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/weapons/woodcutter_hatchet_attack_layers.png" id="9_layers"]
 
 [sub_resource type="Resource" id="Resource_attack"]
 script = ExtResource("4_attack")
@@ -31,3 +32,4 @@ stack_limit = 1
 slot = &"main_hand"
 attack = SubResource("Resource_attack")
 attack_sheet = ExtResource("5_sheet")
+attack_layers = ExtResource("9_layers")
