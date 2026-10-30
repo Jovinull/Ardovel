@@ -2,13 +2,15 @@ class_name Adventure
 extends RefCounted
 ## Everything one adventure remembers, as plain data: where the hero stands, the shrine they
 ## return to after a fall, their health, the flags the world has earned, the items they have (how
-## many of each), what they have equipped and what they keep in the chest at home. Flags are the
+## many of each), what they have equipped, what they keep in the chest at home, and how they have
+## grown (experience, attribute points invested, one-time rewards given). Flags are the
 ## story's progress: the shrine, the objectives and small permanent changes are each one named
 ## flag. Items are kept by their stable ids (ItemCatalog); nothing derived from them (the hero's
 ## statistics) is saved. The rules for what fits in the bag, in the chest and what goes in which
 ## slot live with the catalog (Bag, Storage, Equipment): this is only the record. What is in the
 ## chest is apart from what the hero has (`count` never includes it), so it can be neither worn
-## nor used until taken back.
+## nor used until taken back. Levels and statistics are never saved: HeroGrowth and HeroLoadout
+## derive them from this record.
 ##
 ## Two places are kept apart. The resume point (`area`, `entry`) follows the hero: it is the
 ## entry they last arrived through, or the shrine they last touched, and it is where Continue
@@ -19,7 +21,7 @@ extends RefCounted
 ## Emitted whenever something worth saving changes.
 signal changed
 
-const FORMAT_VERSION := 5
+const FORMAT_VERSION := 6
 ## Health value meaning "full", whatever the hero's maximum is.
 const FULL_HEALTH := -1
 ## The sword every hero carries from the start (format 3 saves gain it on upgrade).
@@ -50,6 +52,12 @@ var quick_item: StringName = &""
 ## The chest at home: ids in the order first put there, and how many of each.
 var _stored_items: Array[StringName] = []
 var _stored: Dictionary[StringName, int] = {}
+## Experience earned in all (never lost).
+var experience: int = 0
+## Attribute -> points invested (HeroGrowth.ATTRIBUTES).
+var _attributes: Dictionary[StringName, int] = {}
+## One-time rewards already given (HeroGrowth's deed and arrival ids).
+var _rewards: Dictionary[StringName, bool] = {}
 
 
 func _init(start_area: StringName = &"village", start_entry: StringName = &"start") -> void:
@@ -107,6 +115,55 @@ func remove_item(id: StringName, amount: int = 1) -> bool:
 	if _counts[id] == 0:
 		_counts.erase(id)
 		_items.erase(id)
+	changed.emit()
+	return true
+
+
+## Adds `amount` of experience (a creature defeated). False for nothing or less.
+func add_experience(amount: int) -> bool:
+	if amount <= 0:
+		return false
+	experience += amount
+	changed.emit()
+	return true
+
+
+func has_reward(id: StringName) -> bool:
+	return _rewards.has(id)
+
+
+## Rewards given, sorted.
+func rewards() -> Array[StringName]:
+	var ids: Array[StringName] = _rewards.keys()
+	ids.sort()
+	return ids
+
+
+## Records the one-time reward `id` and its `amount` of experience together (one change). False
+## if it was already given or the amount is negative.
+func give_reward(id: StringName, amount: int) -> bool:
+	if id.is_empty() or amount < 0 or _rewards.has(id):
+		return false
+	_rewards[id] = true
+	experience += amount
+	changed.emit()
+	return true
+
+
+## Points invested in `attribute`.
+func attribute(id: StringName) -> int:
+	return _attributes.get(id, 0)
+
+
+## Replaces the points invested (HeroGrowth.invest says what is allowed). Negative counts are refused.
+func set_attributes(points: Dictionary[StringName, int]) -> bool:
+	for id in points:
+		if points[id] < 0:
+			return false
+	_attributes.clear()
+	for id in points:
+		if points[id] > 0:
+			_attributes[id] = points[id]
 	changed.emit()
 	return true
 
@@ -238,6 +295,12 @@ func to_dict() -> Dictionary:
 	var storage: Array[Dictionary] = []
 	for id in _stored_items:
 		storage.append({"id": String(id), "count": _stored[id]})
+	var attributes := {}
+	for id in _attributes:
+		attributes[String(id)] = _attributes[id]
+	var given: Array[String] = []
+	for id in rewards():
+		given.append(String(id))
 	return {
 		"version": FORMAT_VERSION,
 		"area": String(area),
@@ -250,6 +313,9 @@ func to_dict() -> Dictionary:
 		"equipment": equipment,
 		"quick_item": String(quick_item),
 		"storage": storage,
+		"experience": experience,
+		"attributes": attributes,
+		"rewards": given,
 	}
 
 
@@ -269,6 +335,8 @@ static func from_dict(data: Variant) -> Adventure:
 			return null
 	if _is_whole(d.get("version")) and int(d["version"]) == 4:
 		d = _upgraded_from_v4(d)
+	if _is_whole(d.get("version")) and int(d["version"]) == 5:
+		d = _upgraded_from_v5(d)
 	if not _is_whole(d.get("version")) or int(d["version"]) != FORMAT_VERSION:
 		return null
 	if not _is_name(d.get("area")) or not _is_name(d.get("entry")):
@@ -280,7 +348,9 @@ static func from_dict(data: Variant) -> Adventure:
 	if not _is_whole(d.get("health")) or int(d["health"]) < FULL_HEALTH:
 		return null
 	if not d.get("flags") is Array or not d.get("inventory") is Array or not d.get("equipment") is Dictionary \
-			or not d.get("storage") is Array:
+			or not d.get("storage") is Array or not d.get("attributes") is Dictionary or not d.get("rewards") is Array:
+		return null
+	if not _is_whole(d.get("experience")) or int(d["experience"]) < 0:
 		return null
 	var adventure := Adventure.new(StringName(d["area"]), StringName(d["entry"]))
 	adventure._items.clear()
@@ -308,6 +378,17 @@ static func from_dict(data: Variant) -> Adventure:
 		if not adventure._stored.has(id):
 			adventure._stored_items.append(id)
 		adventure._stored[id] = adventure.stored(id) + int(stack["count"])
+	adventure.experience = int(d["experience"])
+	for id: Variant in d["attributes"]:
+		var points: Variant = d["attributes"][id]
+		if not _is_name(id) or not _is_whole(points) or int(points) < 0:
+			return null
+		if int(points) > 0:
+			adventure._attributes[StringName(id)] = int(points)
+	for id: Variant in d["rewards"]:
+		if not _is_name(id):
+			return null
+		adventure._rewards[StringName(id)] = true
 	var equipment: Dictionary = d["equipment"]
 	var slots: Array = equipment.keys()
 	slots.sort()
@@ -384,6 +465,18 @@ static func _upgraded_from_v4(v4: Dictionary) -> Dictionary:
 	v5["version"] = 5
 	v5["storage"] = []
 	return v5
+
+
+## Version 5 had no growth: an adventure from then starts at no experience, no points and no
+## reward given. Its deeds are given once, by their flags, the first time it is played
+## (HeroGrowth.settle_deeds); creatures beaten then are not counted (nothing proves them).
+static func _upgraded_from_v5(v5: Dictionary) -> Dictionary:
+	var v6 := v5.duplicate()
+	v6["version"] = 6
+	v6["experience"] = 0
+	v6["attributes"] = {}
+	v6["rewards"] = []
+	return v6
 
 
 ## {"id": a name, "count": a whole number from 1}.

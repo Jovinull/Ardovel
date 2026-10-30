@@ -1,7 +1,7 @@
 extends GutTest
 ## The chest at home as rules and record: what goes in and out (whole pieces, stacks, part of a
 ## stack), its capacity and the bag's, worn pieces and the main hand, unknown items, moves that
-## happen whole or not at all (nothing doubled, nothing lost), and the save format (version 5: the
+## happen whole or not at all (nothing doubled, nothing lost), and the save format (since version 5: the
 ## chest's contents, upgrades from every older version with an empty chest).
 
 const SWORD := &"wayfarer_sword"
@@ -186,7 +186,7 @@ func test_format_5_round_trip() -> void:
 	Storage.store(adventure, BREAD, 4)
 	Storage.store(adventure, HELM, 1)
 	var data := adventure.to_dict()
-	assert_eq(data["version"], 5)
+	assert_eq(data["version"], Adventure.FORMAT_VERSION)
 	assert_eq(data["storage"], [{"id": "corn_bread", "count": 4}, {"id": "quarry_helm", "count": 1}])
 	var back := _round_trip(adventure)
 	assert_eq(back.stored_items(), adventure.stored_items())
@@ -212,7 +212,7 @@ func test_a_version_4_save_gets_an_empty_chest_and_keeps_the_rest() -> void:
 	for flag: String in before["flags"]:
 		assert_true(adventure.has_flag(StringName(flag)), flag)
 	var data := adventure.to_dict()
-	assert_eq(data["version"], 5)
+	assert_eq(data["version"], Adventure.FORMAT_VERSION)
 	assert_eq(data["storage"], [])
 	var stacks: Array = data["inventory"]
 	assert_eq(stacks.size(), (before["inventory"] as Array).size())
@@ -221,7 +221,7 @@ func test_a_version_4_save_gets_an_empty_chest_and_keeps_the_rest() -> void:
 		assert_eq(int(stacks[i]["count"]), int(before["inventory"][i]["count"]))
 
 
-func test_every_older_version_upgrades_to_5_with_an_empty_chest() -> void:
+func test_every_older_version_upgrades_with_an_empty_chest() -> void:
 	for file_name in ["v1_back_in_village.json", "v2_stall_worked.json", "v3_gloves_worn.json", "v3_unknown_item.json",
 			"v4_quarry_kit.json"]:
 		var adventure := Adventure.from_dict(JSON.parse_string(FileAccess.get_file_as_string(FIXTURES.path_join(file_name))))

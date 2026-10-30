@@ -1,7 +1,8 @@
 class_name HeroLoadout
 extends RefCounted
-## Where the saved equipment meets the hero: the statistics of what is worn on top of the hero's
-## own values (a Profile), handing them to the hero, and using a consumable. The equipment menu
+## Where the saved equipment and growth meet the hero: the statistics of the attribute points
+## invested and what is worn on top of the hero's own values (a Profile), handing them to the hero,
+## and using a consumable. The equipment menu
 ## reads the same Profiles to show and compare, so nothing is computed in two places.
 
 
@@ -56,13 +57,18 @@ class Profile:
 	func swing_seconds() -> float:
 		return attack.duration()
 
+	## Quarters one blow takes before defence: the weapon's damage times the hero's power.
+	func blow() -> float:
+		return attack.damage * attack.power
+
 	## The hero's frames with this weapon, shield and pieces (put together on first use).
 	func look() -> HeroLook:
 		return HeroLook.of(weapon, shield, pieces)
 
 
-## The profile of `adventure`'s hero, whose health before equipment is `base_health` quarters.
-static func profile(adventure: Adventure, base_health: int) -> Profile:
+## The profile of `adventure`'s hero, whose health before equipment is `base_health` quarters, with
+## `added` attribute points (attribute -> points) on top of those invested (a preview).
+static func profile(adventure: Adventure, base_health: int, added: Dictionary = {}) -> Profile:
 	var worn := Equipment.worn(adventure)
 	var result := Profile.new()
 	result.weapon = Equipment.weapon(adventure)
@@ -71,9 +77,13 @@ static func profile(adventure: Adventure, base_health: int) -> Profile:
 		HeroStats.MAX_HEALTH: float(base_health), HeroStats.ATTACK: float(sword.damage),
 		HeroStats.KNOCKBACK: sword.knockback, HeroStats.REACH: sword.reach, HeroStats.SWING: 100.0,
 		HeroStats.DEFENSE: 0.0, HeroStats.POISE: 0.0, HeroStats.LOAD: HeroStats.BASE_LOAD,
-		HeroStats.SPEED: 0.0, HeroStats.HEALING: 0.0,
+		HeroStats.SPEED: 0.0, HeroStats.HEALING: 0.0, HeroStats.POWER: 100.0, HeroStats.BREATH: HeroStats.BASE_BREATH,
+		HeroStats.BREATH_REGEN: 100.0,
 	}
-	result.stats = HeroStats.derive(base, worn)
+	var points := {}
+	for attribute in HeroGrowth.ATTRIBUTES:
+		points[attribute] = adventure.attribute(attribute) + int(added.get(attribute, 0))
+	result.stats = HeroStats.derive(base, worn, HeroGrowth.modifiers(adventure, points))
 	result.carried = HeroStats.weight(worn)
 	result.band = HeroStats.band(result.carried, result.stats[HeroStats.LOAD])
 	var attack := sword.duplicate() as AttackData
@@ -81,6 +91,7 @@ static func profile(adventure: Adventure, base_health: int) -> Profile:
 	attack.damage = roundi(result.stats[HeroStats.ATTACK])
 	attack.knockback = result.stats[HeroStats.KNOCKBACK]
 	attack.reach = result.stats[HeroStats.REACH]
+	attack.power = result.stats[HeroStats.POWER] / 100.0
 	attack.windup = sword.windup * swing
 	attack.recovery = sword.recovery * swing
 	result.attack = attack
@@ -111,14 +122,17 @@ static func profile_if(adventure: Adventure, base_health: int, slot: StringName,
 
 
 ## Gives the hero what `profile` says: the weapon and its swing, health, defence, firmness,
-## mobility, and how all of it looks on them.
+## breath, mobility, and how all of it looks on them. Nothing is refilled: a higher maximum leaves
+## health and breath where they were.
 static func apply(profile: Profile, player: Player) -> void:
 	var look := profile.look()
 	player.set_weapon(profile.attack, look.attack)
 	player.set_guard(profile.guard, look.guard)
 	player.set_body(look.walk, look.hurt, look.death)
 	player.set_dodge(profile.dodge)
-	player.stamina.regen_factor = HeroStats.BAND_BREATH[profile.band]
+	player.stamina.regen_factor = HeroStats.BAND_BREATH[profile.band] * profile.value(HeroStats.BREATH_REGEN) / 100.0
+	if not is_equal_approx(player.stamina.maximum, profile.value(HeroStats.BREATH)):
+		player.stamina.set_maximum(profile.value(HeroStats.BREATH))
 	if player.health.max_health != profile.max_health():
 		player.health.set_maximum(profile.max_health())
 	player.health.defense_percent = profile.value(HeroStats.DEFENSE)
