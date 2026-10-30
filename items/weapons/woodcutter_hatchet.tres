@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://items/item_def.gd" id="1_item"]
+[ext_resource type="Script" path="res://items/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/weapons/woodcutter_hatchet.png" id="3_icon"]
+[ext_resource type="Script" path="res://combat/attack_data.gd" id="4_attack"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/weapons/woodcutter_hatchet_attack.png" id="5_sheet"]
+
+[sub_resource type="Resource" id="Resource_attack"]
+script = ExtResource("4_attack")
+windup = 0.09
+active = 0.1
+recovery = 0.15
+damage = 1
+knockback = 200.0
+reach = 11.0
+
+[resource]
+script = ExtResource("1_item")
+id = &"woodcutter_hatchet"
+category = &"weapon"
+name_key = "ITEM_WOODCUTTER_HATCHET"
+description_key = "ITEM_WOODCUTTER_HATCHET_DESC"
+icon = ExtResource("3_icon")
+weight = 3.5
+stack_limit = 1
+slot = &"main_hand"
+attack = SubResource("Resource_attack")
+attack_sheet = ExtResource("5_sheet")

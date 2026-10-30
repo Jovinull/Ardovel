@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://items/item_def.gd" id="1_item"]
+[ext_resource type="Script" path="res://items/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/materials/root_fiber.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_item")
+id = &"root_fiber"
+category = &"material"
+name_key = "ITEM_ROOT_FIBER"
+description_key = "ITEM_ROOT_FIBER_DESC"
+icon = ExtResource("3_icon")
+weight = 0.0
+stack_limit = 20
+heal = 0

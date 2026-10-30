@@ -1,21 +1,23 @@
-[gd_resource type="Resource" script_class="ItemDef" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="ItemDef" format=3]
 
 [ext_resource type="Script" path="res://items/item_def.gd" id="1_item"]
 [ext_resource type="Script" path="res://items/stat_modifier.gd" id="2_mod"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/items/crew_gloves.png" id="3_icon"]
 
-[sub_resource type="Resource" id="Resource_knockback"]
+[sub_resource type="Resource" id="Resource_mod0"]
 script = ExtResource("2_mod")
-stat = &"sword_knockback"
+stat = &"knockback"
 kind = 1
 value = 50.0
 
 [resource]
 script = ExtResource("1_item")
 id = &"crew_gloves"
+category = &"accessory"
 name_key = "ITEM_CREW_GLOVES"
 description_key = "ITEM_CREW_GLOVES_DESC"
-effect_key = "ITEM_CREW_GLOVES_EFFECT"
 icon = ExtResource("3_icon")
 slot = &"accessory"
-modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_knockback")])
+weight = 1.0
+stack_limit = 1
+modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_mod0")])

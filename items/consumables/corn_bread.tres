@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://items/item_def.gd" id="1_item"]
+[ext_resource type="Script" path="res://items/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/items/consumables/corn_bread.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_item")
+id = &"corn_bread"
+category = &"consumable"
+name_key = "ITEM_CORN_BREAD"
+description_key = "ITEM_CORN_BREAD_DESC"
+icon = ExtResource("3_icon")
+weight = 0.0
+stack_limit = 5
+heal = 4
