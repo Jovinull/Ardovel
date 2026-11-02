@@ -24,6 +24,8 @@ const TIME_EPSILON := 1e-6
 @export var hitbox_size: Vector2 = Vector2(20, 14)
 ## Seconds a walking creature struck is kept from acting.
 @export var stagger: float = 0.25
+## Whether the blow gets through a creature bracing against blows (a technique's heavy blow).
+@export var breaking: bool = false
 ## Seconds the world freezes when it connects.
 @export var hit_stop: float = 0.06
 ## How long before the end of the recovery a new swing may already start (quick weapons chain).

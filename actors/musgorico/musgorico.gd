@@ -204,7 +204,7 @@ func _on_hit_received(hit: Hit) -> void:
 		return
 	velocity = hit.knockback_velocity(global_position)
 	var now := _clock
-	if now < _steady_until:
+	if now < _steady_until and not hit.breaking:
 		return  # bristling: the blow lands, but it keeps doing what it was doing
 	var stagger := maxf(hurt_time, hit.stagger)
 	_staggered = _staggered * clampf(1.0 - (now - _last_stagger) / STAGGER_WINDOW, 0.0, 1.0) + stagger

@@ -236,7 +236,7 @@ func test_format_6_round_trip() -> void:
 	HeroGrowth.invest(adventure, {HeroGrowth.VIGOR: 1, HeroGrowth.BREATH: 2})
 	adventure.give_reward(&"bridge_tied", 35)
 	var data := adventure.to_dict()
-	assert_eq(data["version"], 6)
+	assert_eq(data["version"], Adventure.FORMAT_VERSION)
 	assert_false(data.has("level"), "the level is derived, not saved")
 	assert_false(data.has("max_health"), "nor any statistic")
 	assert_eq(data["attributes"], {"vigor": 1, "breath": 2})

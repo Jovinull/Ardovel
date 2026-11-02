@@ -3,7 +3,8 @@ extends RefCounted
 ## Everything one adventure remembers, as plain data: where the hero stands, the shrine they
 ## return to after a fall, their health, the flags the world has earned, the items they have (how
 ## many of each), what they have equipped, what they keep in the chest at home, and how they have
-## grown (experience, attribute points invested, one-time rewards given). Flags are the
+## grown (experience, attribute points invested, one-time rewards given, skills learned and the
+## ones selected). Flags are the
 ## story's progress: the shrine, the objectives and small permanent changes are each one named
 ## flag. Items are kept by their stable ids (ItemCatalog); nothing derived from them (the hero's
 ## statistics) is saved. The rules for what fits in the bag, in the chest and what goes in which
@@ -21,7 +22,7 @@ extends RefCounted
 ## Emitted whenever something worth saving changes.
 signal changed
 
-const FORMAT_VERSION := 6
+const FORMAT_VERSION := 7
 ## Health value meaning "full", whatever the hero's maximum is.
 const FULL_HEALTH := -1
 ## The sword every hero carries from the start (format 3 saves gain it on upgrade).
@@ -58,6 +59,11 @@ var experience: int = 0
 var _attributes: Dictionary[StringName, int] = {}
 ## One-time rewards already given (HeroGrowth's deed and arrival ids).
 var _rewards: Dictionary[StringName, bool] = {}
+## Skills learned, in the order learned (ids; an unknown one from a newer game is kept).
+var _skills: Array[StringName] = []
+## The two active skill slots (empty: nothing there) and the passive skill selected.
+var _skill_slots: Array[StringName] = [&"", &""]
+var passive_skill: StringName = &""
 
 
 func _init(start_area: StringName = &"village", start_entry: StringName = &"start") -> void:
@@ -146,6 +152,52 @@ func give_reward(id: StringName, amount: int) -> bool:
 		return false
 	_rewards[id] = true
 	experience += amount
+	changed.emit()
+	return true
+
+
+func skills() -> Array[StringName]:
+	return _skills.duplicate()
+
+
+func has_skill(id: StringName) -> bool:
+	return _skills.has(id)
+
+
+## Records `id` as learned (one change). Which skills may be learned is Skills' to say.
+func learn_skill(id: StringName) -> bool:
+	if id.is_empty() or _skills.has(id):
+		return false
+	_skills.append(id)
+	changed.emit()
+	return true
+
+
+func skill_slots() -> Array[StringName]:
+	return _skill_slots.duplicate()
+
+
+## Replaces both active slots (each a learned skill or empty). False and nothing changed otherwise.
+func set_skill_slots(slots: Array[StringName]) -> bool:
+	if slots.size() != _skill_slots.size():
+		return false
+	for id in slots:
+		if not id.is_empty() and not _skills.has(id):
+			return false
+	if slots == _skill_slots:
+		return true
+	_skill_slots = slots.duplicate()
+	changed.emit()
+	return true
+
+
+## Selects the passive skill (a learned one, or empty for none).
+func set_passive_skill(id: StringName) -> bool:
+	if not id.is_empty() and not _skills.has(id):
+		return false
+	if passive_skill == id:
+		return true
+	passive_skill = id
 	changed.emit()
 	return true
 
@@ -301,6 +353,12 @@ func to_dict() -> Dictionary:
 	var given: Array[String] = []
 	for id in rewards():
 		given.append(String(id))
+	var learned: Array[String] = []
+	for id in _skills:
+		learned.append(String(id))
+	var slots: Array[String] = []
+	for id in _skill_slots:
+		slots.append(String(id))
 	return {
 		"version": FORMAT_VERSION,
 		"area": String(area),
@@ -316,6 +374,9 @@ func to_dict() -> Dictionary:
 		"experience": experience,
 		"attributes": attributes,
 		"rewards": given,
+		"skills": learned,
+		"skill_slots": slots,
+		"passive_skill": String(passive_skill),
 	}
 
 
@@ -337,6 +398,8 @@ static func from_dict(data: Variant) -> Adventure:
 		d = _upgraded_from_v4(d)
 	if _is_whole(d.get("version")) and int(d["version"]) == 5:
 		d = _upgraded_from_v5(d)
+	if _is_whole(d.get("version")) and int(d["version"]) == 6:
+		d = _upgraded_from_v6(d)
 	if not _is_whole(d.get("version")) or int(d["version"]) != FORMAT_VERSION:
 		return null
 	if not _is_name(d.get("area")) or not _is_name(d.get("entry")):
@@ -351,6 +414,8 @@ static func from_dict(data: Variant) -> Adventure:
 			or not d.get("storage") is Array or not d.get("attributes") is Dictionary or not d.get("rewards") is Array:
 		return null
 	if not _is_whole(d.get("experience")) or int(d["experience"]) < 0:
+		return null
+	if not d.get("skills") is Array or not d.get("skill_slots") is Array or not d.get("passive_skill") is String:
 		return null
 	var adventure := Adventure.new(StringName(d["area"]), StringName(d["entry"]))
 	adventure._items.clear()
@@ -389,6 +454,27 @@ static func from_dict(data: Variant) -> Adventure:
 		if not _is_name(id):
 			return null
 		adventure._rewards[StringName(id)] = true
+	for id: Variant in d["skills"]:
+		if not _is_name(id):
+			return null
+		if not adventure._skills.has(StringName(id)):
+			adventure._skills.append(StringName(id))
+	var skill_slots: Array = d["skill_slots"]
+	if skill_slots.size() != adventure._skill_slots.size():
+		return null
+	for i in skill_slots.size():
+		if not skill_slots[i] is String:
+			return null
+		var slotted := StringName(skill_slots[i])
+		if slotted.is_empty() or adventure._skills.has(slotted):
+			adventure._skill_slots[i] = slotted
+		else:
+			push_warning("Save puts %s in a skill slot without having learned it; the slot is left empty." % slotted)
+	var passive := StringName(d["passive_skill"])
+	if passive.is_empty() or adventure._skills.has(passive):
+		adventure.passive_skill = passive
+	else:
+		push_warning("Save selects %s without having learned it; no passive skill is selected." % passive)
 	var equipment: Dictionary = d["equipment"]
 	var slots: Array = equipment.keys()
 	slots.sort()
@@ -477,6 +563,17 @@ static func _upgraded_from_v5(v5: Dictionary) -> Dictionary:
 	v6["attributes"] = {}
 	v6["rewards"] = []
 	return v6
+
+
+## Version 6 had no skills: an adventure from then has learned none. The skill points its level
+## gives are free at once (they are derived from the level, never saved).
+static func _upgraded_from_v6(v6: Dictionary) -> Dictionary:
+	var v7 := v6.duplicate()
+	v7["version"] = 7
+	v7["skills"] = []
+	v7["skill_slots"] = ["", ""]
+	v7["passive_skill"] = ""
+	return v7
 
 
 ## {"id": a name, "count": a whole number from 1}.

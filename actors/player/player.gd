@@ -18,15 +18,18 @@ signal hit_landed
 ## The hero finished eating from the quick slot (the game takes the item and heals).
 signal quick_use_finished
 
-enum State { MOVE, ATTACK, HURT, DEAD, GUARD, DODGE, USE }
+enum State { MOVE, ATTACK, HURT, DEAD, GUARD, DODGE, USE, TECHNIQUE }
 
 const LEVEL_GLINT: Texture2D = preload("res://assets/ardovel/fx/level_up.png")
 const LEVEL_GLINT_FRAMES := 5
 const LEVEL_GLINT_TIME := 0.7
 const HIT_SPARK := preload("res://fx/hit_spark.tscn")
+## The keys of the two technique slots.
+const TECHNIQUE_ACTIONS: Array[StringName] = [&"technique_1", &"technique_2"]
+## Postura Firme: what a blow taken with the shield held still costs in breath, and its push.
+const FIRM_BREATH := 0.6
+const FIRM_PUSH := 0.5
 const AFTERIMAGE_EVERY := 0.05
-## Breath one dodge costs.
-const DODGE_BREATH := 25.0
 ## Seconds the hero is held after a blocked hit, and after the guard breaks.
 const BLOCK_RECOIL := 0.18
 const GUARD_BREAK_TIME := 0.55
@@ -58,6 +61,11 @@ var _attack_buffered: bool = false
 var _speed_factor: float = 1.0
 var _acceleration_factor: float = 1.0
 var _attack_sheet: Texture2D
+## The weapon's swing as worn (MeleeAttack runs a technique's blow in its place for a moment).
+var _weapon_swing: AttackData
+var _technique_sheet: Texture2D
+## Postura Firme: a shield held without moving takes blows more cheaply.
+var firm_stance := false
 var _guard: GuardData
 var _guard_sheet: Texture2D
 var _walk_sheet: Texture2D
@@ -86,6 +94,7 @@ var _use_left := 0.0
 @onready var _dodge_sound: AudioStreamPlayer2D = $DodgeSound
 @onready var _eat_sound: AudioStreamPlayer2D = $EatSound
 @onready var _held_item: Sprite2D = $HeldItem
+@onready var _techniques: TechniqueRunner = $Techniques
 
 
 func _ready() -> void:
@@ -113,6 +122,8 @@ func _physics_process(delta: float) -> void:
 			_process_dodge(delta)
 		State.USE:
 			_process_use(delta)
+		State.TECHNIQUE:
+			_techniques.step(delta)
 		State.HURT:
 			_hurt_left -= delta
 			_brake(delta)
@@ -145,6 +156,8 @@ func _process_move(delta: float) -> void:
 		_start_guard()
 		return
 	if Input.is_action_just_pressed(&"quick_item") and _start_use():
+		return
+	if _technique_pressed(input):
 		return
 	if Input.is_action_just_pressed(&"interact"):
 		interactor.interact(self)
@@ -210,15 +223,26 @@ func _start_attack(input: Vector2) -> void:
 func _on_attack_phase_changed(phase: AttackData.Phase) -> void:
 	if phase == AttackData.Phase.IDLE:
 		return
-	# Attack sheet columns: wind-up, strike, follow-through.
+	# Attack sheet columns: wind-up, strike, follow-through. A technique drawn with the weapon's
+	# second motion has its own sheet.
+	var prefix := "attack_"
+	if state == State.TECHNIQUE and _techniques.current() != null \
+			and _techniques.current().technique.frames == TechniqueData.Frames.SECOND \
+			and _sprite.sprite_frames.has_animation(&"technique_down"):
+		prefix = "technique_"
 	_sprite.stop()
-	_sprite.animation = StringName("attack_" + Facing.name_of(_attack.direction))
+	_sprite.animation = StringName(prefix + Facing.name_of(_attack.direction))
 	_sprite.frame = phase - AttackData.Phase.WINDUP
 	if phase == AttackData.Phase.ACTIVE:
 		_swing_sound.play()
 
 
 func _on_attack_finished() -> void:
+	if state == State.TECHNIQUE:
+		_techniques.finish()
+		state = State.MOVE
+		_attack_buffered = false  # a key pressed during a technique never fires after it
+		return
 	if state != State.ATTACK:
 		return
 	state = State.MOVE
@@ -233,6 +257,53 @@ func _on_sword_landed(target: Hurtbox) -> void:
 	hit_landed.emit()
 
 
+# ---------------------------------------------------------------- techniques
+
+## A technique key pressed: starts what is in that slot (TechniqueRunner says whether it can).
+func _technique_pressed(input: Vector2) -> bool:
+	for slot in TECHNIQUE_ACTIONS.size():
+		if Input.is_action_just_pressed(TECHNIQUE_ACTIONS[slot]):
+			var toward := PlayerMotion.next_facing(input, facing)
+			if not _techniques.try_start(slot, toward):
+				return false
+			facing = toward
+			_attack_buffered = false
+			state = State.TECHNIQUE
+			return true
+	return false
+
+
+func techniques() -> TechniqueRunner:
+	return _techniques
+
+
+## The weapon's swing as worn, whatever is running now.
+func weapon_swing() -> AttackData:
+	return _weapon_swing if _weapon_swing != null else _attack.data
+
+
+## The techniques in the two slots (null where empty), the weapon in hand (its id), and the frames
+## of the weapon's second motion (null if it has none).
+func set_skills(skills: Array[SkillDef], weapon: StringName, sheet: Texture2D) -> void:
+	_techniques.set_skills(skills, weapon)
+	if sheet == null or sheet == _technique_sheet:
+		return
+	_technique_sheet = sheet
+	var frames := _sprite.sprite_frames
+	for direction in ["down", "up", "left", "right"]:
+		var animation := StringName("technique_" + direction)
+		if frames.has_animation(animation):
+			continue
+		frames.add_animation(animation)
+		frames.set_animation_loop(animation, false)
+		for i in frames.get_frame_count(StringName("attack_" + direction)):
+			var source := frames.get_frame_texture(StringName("attack_" + direction), i) as AtlasTexture
+			var frame := AtlasTexture.new()
+			frame.region = source.region
+			frames.add_frame(animation, frame)
+	_set_atlas("technique_", sheet)
+
+
 # ---------------------------------------------------------------- guard
 
 func _start_guard() -> void:
@@ -243,6 +314,9 @@ func _start_guard() -> void:
 
 
 func _process_guard(delta: float) -> void:
+	# An answer pressed as the shield comes down still answers (letting go and striking are one motion).
+	if _technique_pressed(Vector2.ZERO):
+		return
 	if _guard == null or not Input.is_action_pressed(&"block"):
 		state = State.MOVE
 		return
@@ -281,7 +355,7 @@ func covers(from: Vector2) -> bool:
 ## A quick step: along the direction held, or back from where the hero faces. Untouchable for its
 ## first moment (shorter when heavily loaded), then a short recovery.
 func _start_dodge(input: Vector2) -> bool:
-	if not stamina.spend(DODGE_BREATH):
+	if not stamina.spend(_dodge.breath):
 		return false
 	_dodge_direction = input.normalized() if input != Vector2.ZERO else -facing
 	if input != Vector2.ZERO:
@@ -374,7 +448,9 @@ func is_eating() -> bool:
 ## The weapon in hand: its swing (derived from what is worn) and the attack frames drawn with it.
 ## A swing under way keeps the damage and knockback it started with.
 func set_weapon(attack: AttackData, sheet: Texture2D) -> void:
-	_attack.data = attack
+	_weapon_swing = attack
+	if state != State.TECHNIQUE:
+		_attack.data = attack
 	if sheet == null or sheet == _attack_sheet:
 		return
 	_attack_sheet = sheet
@@ -499,10 +575,13 @@ func _screen_hit(hit: Hit) -> Hit:
 		return null
 	if not is_guarding() or not hit.blockable or not covers(hit.source_position):
 		return hit
-	if stamina.spend(hit.damage * _guard.breath_per_quarter):
+	# Postura Firme: holding the shield without moving takes a blow for less breath, and less push.
+	var firm := firm_stance and _move_input() == Vector2.ZERO
+	var breath := hit.damage * _guard.breath_per_quarter * (FIRM_BREATH if firm else 1.0)
+	if stamina.spend(breath):
 		hit.blocked = true
 		hit.share = 1.0 - _guard.absorb
-		hit.knockback *= 1.0 - _guard.stability
+		hit.knockback *= (1.0 - _guard.stability) * (FIRM_PUSH if firm else 1.0)
 	else:
 		hit.guard_broken = true
 		stamina.drain()
@@ -513,6 +592,7 @@ func _on_hit_received(hit: Hit) -> void:
 	if state == State.DEAD:
 		return
 	if hit.blocked:
+		_techniques.open_response()
 		_block_sound.play()
 		health.grant_invulnerability(BLOCK_IMMUNITY)
 		velocity = hit.knockback_velocity(global_position) * (1.0 - clampf(poise_percent, 0.0, 100.0) / 100.0)
@@ -528,6 +608,7 @@ func _on_hit_received(hit: Hit) -> void:
 
 
 func _stagger(hit: Hit, seconds: float) -> void:
+	_techniques.cancel()
 	_attack.cancel()
 	_attack_buffered = false
 	state = State.HURT
@@ -541,6 +622,7 @@ func _stagger(hit: Hit, seconds: float) -> void:
 
 
 func _on_died() -> void:
+	_techniques.cancel()
 	state = State.DEAD
 	velocity = Vector2.ZERO
 	_attack.cancel()

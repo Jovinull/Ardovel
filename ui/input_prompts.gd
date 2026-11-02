@@ -61,8 +61,11 @@ static func controls_text(gamepad: bool, joypad_name: String) -> String:
 			_primary_action_label(&"block", gamepad, joypad_name),
 			_primary_action_label(&"quick_item", gamepad, joypad_name),
 		]),
-		format_template(_tr("CONTROL_EQUIPMENT_GAMEPAD" if gamepad else "CONTROL_EQUIPMENT_KEYBOARD"),
-			[action_label(&"equipment", gamepad, joypad_name)]),
+		format_template(_tr("CONTROL_EQUIPMENT_GAMEPAD" if gamepad else "CONTROL_EQUIPMENT_KEYBOARD"), [
+			action_label(&"equipment", gamepad, joypad_name),
+			_primary_action_label(&"technique_1", gamepad, joypad_name),
+			_primary_action_label(&"technique_2", gamepad, joypad_name),
+		]),
 		format_template(_tr(menu_key), [
 			navigation,
 			pause_label(gamepad, joypad_name),
@@ -150,6 +153,11 @@ static func _event_label(event: InputEvent, joypad_name: String) -> String:
 			return _tr("CONTROL_LEFT_STICK")
 		if motion.axis in [JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y]:
 			return _tr("CONTROL_RIGHT_STICK")
+		# the triggers, named like the shoulder buttons above them
+		if motion.axis == JOY_AXIS_TRIGGER_LEFT:
+			return "L2"
+		if motion.axis == JOY_AXIS_TRIGGER_RIGHT:
+			return "R2"
 	return ""
 
 

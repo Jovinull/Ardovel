@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://skills/skill_def.gd" id="1_skill"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/skills/trained_steps.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_skill")
+id = &"trained_steps"
+kind = 1
+name_key = "SKILL_TRAINED_STEPS"
+description_key = "SKILL_TRAINED_STEPS_DESC"
+effect_key = "SKILL_TRAINED_STEPS_EFFECT"
+icon = ExtResource("2_icon")
+level = 2
+cost = 1

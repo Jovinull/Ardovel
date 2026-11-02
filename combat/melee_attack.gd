@@ -45,6 +45,7 @@ func start(toward: Vector2) -> bool:
 	hitbox.power = data.power
 	hitbox.knockback = data.knockback
 	hitbox.stagger = data.stagger
+	hitbox.breaking = data.breaking
 	var shape := hitbox.get_node_or_null(^"Shape") as CollisionShape2D
 	if shape != null and shape.shape is RectangleShape2D:
 		(shape.shape as RectangleShape2D).size = data.hitbox_size

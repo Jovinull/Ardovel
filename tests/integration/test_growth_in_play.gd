@@ -366,7 +366,7 @@ func test_a_save_from_7_2_is_credited_once_and_keeps_everything() -> void:
 	assert_true(_hud().is_points_mark_visible(), "points wait to be spent")
 	assert_eq(game.save_now(), OK)
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(game.save_slot.path))
-	assert_eq(int(data["version"]), 6)
+	assert_eq(int(data["version"]), Adventure.FORMAT_VERSION)
 	assert_eq(int(data["experience"]), expected)
 	await _restart()
 	assert_true(game.continue_saved())

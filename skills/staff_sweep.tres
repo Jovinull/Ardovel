@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://skills/skill_def.gd" id="1_skill"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/skills/staff_sweep.png" id="2_icon"]
+[ext_resource type="Script" path="res://skills/technique_data.gd" id="3_technique"]
+
+[sub_resource type="Resource" id="Resource_technique"]
+script = ExtResource("3_technique")
+motion = 2
+frames = 1
+windup = 0.12
+active = 0.2
+recovery = 0.24
+damage_scale = 1.0
+knockback_scale = 1.4
+stagger = 0.3
+breaking = false
+hitbox_size = Vector2(10, 18)
+reach = 18.0
+sweep = 160.0
+hit_stop = 0.05
+
+[resource]
+script = ExtResource("1_skill")
+id = &"staff_sweep"
+kind = 0
+name_key = "SKILL_STAFF_SWEEP"
+description_key = "SKILL_STAFF_SWEEP_DESC"
+effect_key = "SKILL_STAFF_SWEEP_EFFECT"
+icon = ExtResource("2_icon")
+level = 4
+cost = 1
+weapons = Array[StringName]([&"traveller_staff"])
+breath = 30.0
+technique = SubResource("Resource_technique")

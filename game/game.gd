@@ -513,19 +513,21 @@ func hero_profile() -> HeroLoadout.Profile:
 
 
 ## Rebuilds the hero's profile and gives it to the hero when what it depends on has changed (the
-## equipment, a heart vessel found, or attribute points invested).
+## equipment, a heart vessel found, attribute points invested, or the skills selected).
 func _apply_equipment() -> void:
 	if level == null or adventure == null:
 		return
 	var points: Array[int] = []
 	for attribute in HeroGrowth.ATTRIBUTES:
 		points.append(adventure.attribute(attribute))
-	var source := "%s|%d|%s" % [adventure.equipment(), base_health(), points]
+	var source := "%s|%d|%s|%s|%s" % [adventure.equipment(), base_health(), points, adventure.skill_slots(),
+			adventure.passive_skill]
 	if source == _profile_source:
 		return
 	_profile_source = source
 	_profile = HeroLoadout.profile(adventure, base_health())
 	HeroLoadout.apply(_profile, level.player)
+	_hud.refresh_techniques()
 
 
 ## Uses one `id` from the bag on the hero (a consumable). False if nothing happened.

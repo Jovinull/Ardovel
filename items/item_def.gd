@@ -33,6 +33,10 @@ extends Resource
 ## Weapons: what of attack_sheet is in front of the hero (left half) and the fist gripping it (right
 ## half), so what is worn goes between the hero and the weapon (HeroLook).
 @export var attack_layers: Texture2D
+## Weapons with a second motion (a technique's): the hero's 120x160 sheet making it, and what of
+## it is in front of the hero and the fist (as attack_layers).
+@export var technique_sheet: Texture2D
+@export var technique_layers: Texture2D
 ## Shields: what of guard_sheet is in front of the hero (HeroLook).
 @export var guard_front: Texture2D
 ## Consumables: quarters of a heart given back when used (before healing bonuses).

@@ -61,6 +61,10 @@ const BAND_ACCELERATION: Dictionary[StringName, float] = {LIGHT: 1.0, NORMAL: 1.
 ## The dodge in each band: distance (px), untouchable moment and recovery (s). The step itself always
 ## takes DODGE_TIME; heavier loads go less far, stay touchable sooner and recover later.
 const DODGE_TIME := 0.18
+## Breath one dodge costs (Passos Treinados lowers it).
+const DODGE_BREATH := 25.0
+## Passos Treinados: what a dodge costs in breath with it.
+const TRAINED_DODGE_BREATH := 0.7
 const DODGE_DISTANCE: Dictionary[StringName, float] = {LIGHT: 44.0, NORMAL: 40.0, HEAVY: 32.0, OVERLOADED: 24.0}
 const DODGE_UNTOUCHABLE: Dictionary[StringName, float] = {LIGHT: 0.14, NORMAL: 0.12, HEAVY: 0.10, OVERLOADED: 0.07}
 const DODGE_RECOVERY: Dictionary[StringName, float] = {LIGHT: 0.10, NORMAL: 0.14, HEAVY: 0.20, OVERLOADED: 0.30}
