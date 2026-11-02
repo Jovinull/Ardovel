@@ -62,6 +62,7 @@ const ITEMS: Dictionary[StringName, String] = {
 	&"quill_ring": "res://items/rings/quill_ring.tres",
 	&"whitestone_ring": "res://items/rings/whitestone_ring.tres",
 	&"carter_ring": "res://items/rings/carter_ring.tres",
+	&"gnawer_ring": "res://items/rings/gnawer_ring.tres",
 	&"crew_gloves": "res://items/crew_gloves.tres",
 	&"herb_pouch": "res://items/accessories/herb_pouch.tres",
 	&"traveller_charm": "res://items/accessories/traveller_charm.tres",

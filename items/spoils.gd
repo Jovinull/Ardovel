@@ -5,11 +5,13 @@ extends RefCounted
 ## bag leaves it there), and lasts only while the area is loaded (it is not saved: leaving, a fall
 ## or closing the game loses only what was never picked up). Creatures come back when their area
 ## is entered again, so drops can be gathered again the same way; the warden never comes back.
-## Musgoricos leave nothing: moss gives no seed and no coin.
+## Musgoricos leave nothing: moss gives no seed and no coin. Tatuiras leave chips of the white stone
+## crusted on their backs; the vein's eels leave nothing.
 
 ## Creature class -> the item, the chance of leaving any, and the chance that it is two instead of one.
 const DROPS: Dictionary[StringName, Dictionary] = {
 	&"Cardosa": {"item": &"cardosa_seed", "chance": 0.5, "pair": 0.25},
+	&"Tatuira": {"item": &"white_stone_chip", "chance": 0.5, "pair": 0.25},
 }
 
 
