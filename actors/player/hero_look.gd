@@ -40,6 +40,8 @@ var walk: Texture2D
 var hurt: Texture2D
 var death: Texture2D
 var attack: Texture2D
+## The weapon's second motion as worn (null for a weapon without one).
+var technique: Texture2D
 ## Null without a shield.
 var guard: Texture2D
 ## Ids of what makes this look (weapon, shield, pieces).
@@ -85,11 +87,13 @@ static func _ordered(pieces: Array[ItemDef]) -> Array[ItemDef]:
 func _compose(weapon: ItemDef, shield: ItemDef, worn: Array[ItemDef]) -> void:
 	var base_attack: Texture2D = weapon.attack_sheet if weapon != null else null
 	var base_guard: Texture2D = shield.guard_sheet if shield != null else null
+	var base_technique: Texture2D = weapon.technique_sheet if weapon != null else null
 	if worn.is_empty():
 		walk = WALK
 		hurt = HURT
 		death = DEATH
 		attack = base_attack
+		technique = base_technique
 		guard = base_guard
 		return
 	var sheets: Array[Image] = []
@@ -99,16 +103,9 @@ func _compose(weapon: ItemDef, shield: ItemDef, worn: Array[ItemDef]) -> void:
 	walk = ImageTexture.create_from_image(walk_image)
 	hurt = ImageTexture.create_from_image(_layered(HURT, sheets, HURT_AT))
 	death = ImageTexture.create_from_image(_layered(DEATH, sheets, DEATH_AT))
-	if base_attack != null:
-		var image := _layered(base_attack, sheets, ATTACK_AT)
-		if weapon.attack_layers != null:
-			var layers := _image(weapon.attack_layers)
-			var size := ATTACK_AT.size
-			image.blend_rect(layers, Rect2i(Vector2i.ZERO, size), Vector2i.ZERO)
-			var glove := _glove(worn, sheets)
-			if not glove.is_empty():
-				_cover_fist(image, _image(base_attack), layers.get_region(Rect2i(Vector2i(size.x, 0), size)), glove)
-		attack = ImageTexture.create_from_image(image)
+	var glove := _glove(worn, sheets)
+	attack = _swing(base_attack, weapon.attack_layers if weapon != null else null, sheets, glove)
+	technique = _swing(base_technique, weapon.technique_layers if weapon != null else null, sheets, glove)
 	if base_guard != null:
 		var image := _image(base_guard)
 		for i in 4:
@@ -118,6 +115,21 @@ func _compose(weapon: ItemDef, shield: ItemDef, worn: Array[ItemDef]) -> void:
 			var front := _image(shield.guard_front)
 			image.blend_rect(front, Rect2i(Vector2i.ZERO, front.get_size()), Vector2i.ZERO)
 		guard = ImageTexture.create_from_image(image)
+
+
+## A swing sheet (`base`) as worn: the pieces over the hero, the weapon's front (`layers`, left half)
+## on top again, and gloves over the fist (right half). Null without a sheet.
+static func _swing(base: Texture2D, layers_texture: Texture2D, sheets: Array[Image], glove: Array[Color]) -> Texture2D:
+	if base == null:
+		return null
+	var image := _layered(base, sheets, ATTACK_AT)
+	if layers_texture != null:
+		var layers := _image(layers_texture)
+		var size := ATTACK_AT.size
+		image.blend_rect(layers, Rect2i(Vector2i.ZERO, size), Vector2i.ZERO)
+		if not glove.is_empty():
+			_cover_fist(image, _image(base), layers.get_region(Rect2i(Vector2i(size.x, 0), size)), glove)
+	return ImageTexture.create_from_image(image)
 
 
 ## `texture` with the region `at` of every worn sheet over it.

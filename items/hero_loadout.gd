@@ -13,6 +13,7 @@ class Dodge:
 	var duration: float = HeroStats.DODGE_TIME
 	var untouchable: float = 0.12
 	var recovery: float = 0.14
+	var breath: float = HeroStats.DODGE_BREATH
 
 
 ## Everything derived from one adventure's equipment.
@@ -35,6 +36,9 @@ class Profile:
 	## shows on the hero (look()).
 	var shield: ItemDef
 	var pieces: Array[ItemDef] = []
+	## The techniques in the two slots (null where empty) and the passive skill selected (or null).
+	var skills: Array[SkillDef] = []
+	var passive: SkillDef
 
 	func value(stat: StringName) -> float:
 		return stats.get(stat, 0.0)
@@ -60,6 +64,9 @@ class Profile:
 	## Quarters one blow takes before defence: the weapon's damage times the hero's power.
 	func blow() -> float:
 		return attack.damage * attack.power
+
+	func has_passive(id: StringName) -> bool:
+		return passive != null and passive.id == id
 
 	## The hero's frames with this weapon, shield and pieces (put together on first use).
 	func look() -> HeroLook:
@@ -107,6 +114,10 @@ static func profile(adventure: Adventure, base_health: int, added: Dictionary = 
 	result.dodge.distance = HeroStats.DODGE_DISTANCE[result.band]
 	result.dodge.untouchable = HeroStats.DODGE_UNTOUCHABLE[result.band]
 	result.dodge.recovery = HeroStats.DODGE_RECOVERY[result.band]
+	result.skills = Skills.equipped(adventure)
+	result.passive = Skills.passive(adventure)
+	if result.has_passive(SkillCatalog.TRAINED_STEPS):
+		result.dodge.breath *= HeroStats.TRAINED_DODGE_BREATH
 	return result
 
 
@@ -129,6 +140,8 @@ static func apply(profile: Profile, player: Player) -> void:
 	player.set_weapon(profile.attack, look.attack)
 	player.set_guard(profile.guard, look.guard)
 	player.set_body(look.walk, look.hurt, look.death)
+	player.set_skills(profile.skills, profile.weapon.id, look.technique)
+	player.firm_stance = profile.has_passive(SkillCatalog.FIRM_STANCE)
 	player.set_dodge(profile.dodge)
 	player.stamina.regen_factor = HeroStats.BAND_BREATH[profile.band] * profile.value(HeroStats.BREATH_REGEN) / 100.0
 	if not is_equal_approx(player.stamina.maximum, profile.value(HeroStats.BREATH)):

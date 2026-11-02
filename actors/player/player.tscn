@@ -17,6 +17,7 @@
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact4.wav" id="15_break"]
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Whoosh & Slash/Whoosh.wav" id="16_dodge"]
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Bonus/Bonus.wav" id="17_eat"]
+[ext_resource type="Script" path="res://actors/player/technique_runner.gd" id="40_techniques"]
 
 [sub_resource type="RectangleShape2D" id="body"]
 size = Vector2(10, 6)
@@ -128,3 +129,6 @@ volume_db = -8.0
 [node name="EatSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("17_eat")
 volume_db = -8.0
+
+[node name="Techniques" type="Node" parent="."]
+script = ExtResource("40_techniques")
