@@ -1553,6 +1553,7 @@ entrance_seal = NodePath("../Entities/Grate")
 trigger = NodePath("Trigger")
 music = ExtResource("71_mp6uj")
 boss_name = "BOSS_OLD_GNAWER"
+camera_rect = Rect2(64, 512, 320, 192)
 
 [node name="Trigger" type="Area2D" parent="BossArena" unique_id=55168175]
 collision_layer = 0

@@ -437,6 +437,8 @@ func test_the_fight_starts_with_the_grate_shut_and_her_shell_takes_a_third() -> 
 	assert_true(arena.is_fighting())
 	assert_false((_node("Entities/Grate") as VeinDoor).is_open(), "the way back shuts")
 	assert_true((game.get_node(^"HUD") as Hud).is_boss_bar_visible())
+	assert_true(arena.is_framing(), "the camera keeps the whole hall in view")
+	assert_eq(_player().camera.limit_top, 512)
 	var hurt := boss.get_node(^"Hurtbox") as Hurtbox
 	var full := boss.health.current
 	boss.state = OldGnawer.State.WALK
@@ -518,6 +520,7 @@ func test_her_defeat_is_kept_rewarded_once_and_the_drain_runs() -> void:
 	assert_true(await _wait_until(func() -> bool: return game.adventure.has_flag(&"vein_gnawer_defeated"), 6.0))
 	assert_eq(game.adventure.experience - before, HeroGrowth.DEEDS[&"vein_gnawer"][1])
 	assert_true((_node("Entities/Grate") as VeinDoor).is_open())
+	assert_false((_node("BossArena") as BossArena).is_framing(), "the camera follows again")
 	var reward: ItemPickup = _node("Entities/Reward_GnawerRing")
 	assert_true(reward.is_present(), "her ring lies in the den")
 	await _use_at(reward.global_position + Vector2(0, 12))
