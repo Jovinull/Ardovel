@@ -11,6 +11,8 @@ var source_position: Vector2
 var blockable: bool = true
 ## Seconds the blow keeps a walking creature from acting (heavier weapons hold longer).
 var stagger: float = 0.0
+## Whether it gets through a creature bracing against blows (it still counts toward its limit).
+var breaking: bool = false
 ## Fraction of `damage` that reaches the receiver's armour (a shield stops the rest).
 var share: float = 1.0
 ## Set when a shield took it.
