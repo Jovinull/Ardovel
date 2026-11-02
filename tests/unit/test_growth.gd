@@ -118,14 +118,20 @@ func test_deeds_are_given_by_their_flags_once() -> void:
 
 func test_every_deed_has_a_flag_the_story_sets_and_fair_experience() -> void:
 	var total := 0
+	var before_the_vein := 0
 	for id in HeroGrowth.DEEDS:
 		var deed: Array = HeroGrowth.DEEDS[id]
 		assert_true(deed[0] is StringName and not String(deed[0]).is_empty(), String(id))
 		assert_between(int(deed[1]), 10, 60, String(id))
 		total += deed[1]
+		if not String(id).begins_with("vein_"):
+			before_the_vein += deed[1]
 	for area in HeroGrowth.ARRIVALS:
 		total += HeroGrowth.ARRIVALS[area]
-	assert_eq(HeroGrowth.level_for(total), 7, "every deed and arrival: level 7, without fighting at all")
+		if area != &"hollow_vein":
+			before_the_vein += HeroGrowth.ARRIVALS[area]
+	assert_eq(HeroGrowth.level_for(before_the_vein), 7, "every deed and arrival up to Pedrabranca: level 7, without fighting")
+	assert_eq(HeroGrowth.level_for(total), 8, "and the Hollow Vein's: level 8, without fighting")
 
 
 func test_first_arrivals_count_once_and_home_not_at_all() -> void:

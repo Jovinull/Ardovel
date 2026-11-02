@@ -535,3 +535,35 @@ MENU_MONEY,Cobres %s,Coppers %s
 CIDA_STALL,"A banca da Cida. Pão, mel, chapéu de palha. O preço está riscado a carvão numa tábua, e ela anota tudo num caderninho.","Cida's stall. Bread, honey, straw hats. The prices are scratched in charcoal on a board, and she writes everything down in a little notebook."
 CIDA_STALL_EMPTY,"A banca da Cida, vazia. Só a tábua de preços, sem nada escrito.","Cida's stall, empty. Only the price board, with nothing written on it."
 MENU_SELLS_FOR,"Mercadores pagam %s cobres por um.","Merchants pay %s coppers for one."
+BOSS_OLD_GNAWER,Velha Roedeira,The Old Gnawer
+MONEY_RECEIVED,Você recebeu %s cobres.,You received %s coppers.
+ITEM_GNAWER_RING,Anel de Muda,Moult Ring
+ITEM_GNAWER_RING_DESC,Um aro cortado de uma placa que a Velha Roedeira largou. Quem escapa de um golpe devolve mais forte.,"A band cut from a plate the Old Gnawer shed. Slip a blow, and the next one you strike lands harder."
+RUFINA_VEIN_WATER,"A frente nova? Amanhece com um palmo d'água no pé. A pedra racha molhada, e eu preciso tirar bloco antes da seca.\n\nEmbaixo dela fica o filão velho, a mina dos avós. Fechado desde a Cheia. O Joaquim acha que o desaguadouro entupiu.\n\nEu não mando ninguém meu lá embaixo. Se você quer descer, as tábuas da boca velha são suas pra tirar.","The new face? Every morning there's a hand of water at its foot. The stone cracks wet, and I need blocks out before the dry season.\n\nUnder it lies the old vein, our grandparents' mine. Shut since the Flood. Joaquim thinks the drain is blocked.\n\nI'm not sending any of mine down there. If you want to go, the boards on the old adit are yours to take off."
+RUFINA_VEIN_WAIT,"A frente continua alagando. A boca velha fica ao pé da pedreira, do lado do almoxarifado.","The face still floods. The old adit is at the foot of the quarry, by the storeroom."
+RUFINA_VEIN_PAY,"A frente amanheceu seca. Dá pra ouvir a água correndo lá embaixo, pela primeira vez desde que eu era menina.\n\nA turma paga o que deve. Não discute.","The face woke up dry. You can hear water running down there, first time since I was a girl.\n\nThe crew pays what it owes. Don't argue."
+RUFINA_VEIN_PAID,Bloco saindo seco. Se o conselho fosse rápido assim...,Blocks coming out dry. If only the council were this quick...
+STORE_VEIN,"O filão velho? Meu avô cuidava das comportas. Uma alavanca manda a água pra um lado ou pro outro.\n\nOnde a água corre, o balde enche e o contrapeso desce: a grade sobe, a plataforma sobe. Água é peso, ele dizia.","The old vein? My grandfather kept the sluices. A lever sends the water one way or the other.\n\nWhere the water runs, the bucket fills and the counterweight drops: a grate goes up, a platform goes up. Water is weight, he used to say."
+STORE_VEIN_AFTER,"Então as comportas ainda viram. E a gaiola, ainda sobe? Meu avô ia gostar de saber.","So the sluices still turn. And the cage, does it still ride up? My grandfather would have liked to know."
+TEODORO_VEIN,"Atrás das tábuas da boca velha tem bicho roendo pedra. Eu escutei. Tatuzinho do tamanho de um gato, o povo diz.\n\nSe ficar na reta deles, eles se enrolam e vêm rolando. Sai da reta.","Something gnaws stone behind the old adit's boards. I've heard it. Pill bugs as big as a cat, people say.\n\nStand in line with them and they curl up and come rolling. Get out of the line."
+TEODORO_VEIN_AFTER,A frente secou. A Rufina até riu hoje. Quase.,The face dried. Rufina even laughed today. Almost.
+VEIN_ADIT_SEALED,"Tábuas pregadas, com a cruz de giz da turma. Não é seu pra abrir.","Boards nailed up, with the crew's chalk cross. Not yours to open."
+VEIN_ADIT_OPENED,Você arranca as tábuas. Um ar frio e úmido sobe da galeria.,"You pull the boards off. Cold, damp air rises from the gallery."
+VEIN_BOARD,"Um quadro velho da mina: FILÃO. TURNO DA MANHÃ. ÁGUA NO BALDE, GRADE EM CIMA.\n\nEmbaixo, num giz mais novo: FECHADO DESDE A CHEIA.","An old board of the mine: VEIN. MORNING SHIFT. WATER IN THE BUCKET, GRATE UP.\n\nBelow, in newer chalk: SHUT SINCE THE FLOOD."
+VEIN_SIGN,Uma seta pintada pelos mineiros. Embaixo dela: DESAGUADOURO.,An arrow painted by the miners. Under it: DRAIN.
+VEIN_TALLY,"O quadro do feitor: riscos de jornas, semana a semana. Os riscos param no meio de uma semana.\n\nNa margem: 'a água subiu de noite'.",The overseer's tally: shifts marked week by week. The marks stop in the middle of a week.\n\nIn the margin: 'the water rose in the night'.
+VEIN_PAY_BOX,A caixa das jornas. Ninguém voltou para pagar a última semana.,The shift pay box. Nobody came back to pay out the last week.
+VEIN_TOOLS,"Ferramentas largadas no meio do trabalho, de bronze esverdeado.","Tools dropped mid-work, of greened bronze."
+VEIN_CART_PUSHED,Você chuta o calço. A vagoneta range e desce pelos trilhos.,You kick the chock out. The cart creaks and runs off down the rails.
+VEIN_LAMP_LIT,"Você acende a lamparina dos mineiros e descansa um pouco à luz dela.\n\nSe cair aqui embaixo, é aqui que você volta a si.","You light the miners' lamp and rest a while in its light.\n\nIf you fall down here, this is where you'll come to."
+VEIN_LAMP_REST,Você descansa à luz da lamparina.,You rest by the lamp's light.
+VEIN_MASTER_STUCK,A comporta-mestra não gira. Entulho roído entope a boca do desaguadouro.,The master sluice won't turn. Gnawed rubble plugs the drain's mouth.
+VEIN_MASTER_TURNED,"A roda gira, rangendo. A água represada corre pelo desaguadouro, e o poço começa a baixar.\n\nLá em cima, a frente nova vai amanhecer seca.","The wheel turns, creaking. The pent-up water runs off down the drain, and the pool starts to sink.\n\nUp above, the new face will wake up dry."
+VEIN_MASTER_OPEN,A água corre livre pelo desaguadouro.,The water runs free down the drain.
+VEIN_CAGE_HOOKED,Você engata a corrente da gaiola no gancho. Agora ela sobe até a boca da galeria e desce de volta.,You hook the cage's chain back on. Now it rides up to the gallery's mouth and back down.
+VEIN_CAGE_SLACK,"A corrente pende solta no poço. A gaiola está lá embaixo, desengatada.","The chain hangs slack down the shaft. The cage is down below, unhooked."
+VEIN_LADDER_UP,"Lá embaixo, uma escada recolhida contra a pedra. Daqui não se alcança.","Down below, a ladder pulled up against the stone. Out of reach from here."
+VEIN_LADDER_LOWERED,Você encosta a escada na pedra cortada. Agora dá pra subir e descer por aqui.,You set the ladder against the cut stone. Now you can climb up and down here.
+VEIN_LIFT_DRY,"O balde do contrapeso está vazio. Sem água nele, a plataforma não sobe.","The counterweight bucket is empty. Without water in it, the platform won't rise."
+VEIN_LATCH_FREED,A trava solta. O contrapeso range lá em cima...,The latch gives. The counterweight creaks overhead...
+VEIN_RING_FOUND,"No entulho do covil, um anel de placa que ela largou na muda.","In the den's rubble, a ring of plate she shed in her moult."

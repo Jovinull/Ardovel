@@ -17,6 +17,10 @@ class Dodge:
 
 
 ## Everything derived from one adventure's equipment.
+## The ring of the Old Gnawer's shed plate (milestone 7.6).
+const MOULT_RING := &"gnawer_ring"
+
+
 class Profile:
 	extends RefCounted
 	## HeroStats id -> value.
@@ -39,6 +43,8 @@ class Profile:
 	## The techniques in the two slots (null where empty) and the passive skill selected (or null).
 	var skills: Array[SkillDef] = []
 	var passive: SkillDef
+	## The moult ring is worn: a dodge that slips a blow charges the next swing.
+	var moult := false
 
 	func value(stat: StringName) -> float:
 		return stats.get(stat, 0.0)
@@ -114,6 +120,7 @@ static func profile(adventure: Adventure, base_health: int, added: Dictionary = 
 	result.dodge.distance = HeroStats.DODGE_DISTANCE[result.band]
 	result.dodge.untouchable = HeroStats.DODGE_UNTOUCHABLE[result.band]
 	result.dodge.recovery = HeroStats.DODGE_RECOVERY[result.band]
+	result.moult = MOULT_RING in [adventure.equipped(ItemCatalog.RING_1), adventure.equipped(ItemCatalog.RING_2)]
 	result.skills = Skills.equipped(adventure)
 	result.passive = Skills.passive(adventure)
 	if result.has_passive(SkillCatalog.TRAINED_STEPS):
@@ -142,6 +149,7 @@ static func apply(profile: Profile, player: Player) -> void:
 	player.set_body(look.walk, look.hurt, look.death)
 	player.set_skills(profile.skills, profile.weapon.id, look.technique)
 	player.firm_stance = profile.has_passive(SkillCatalog.FIRM_STANCE)
+	player.moult_ring = profile.moult
 	player.set_dodge(profile.dodge)
 	player.stamina.regen_factor = HeroStats.BAND_BREATH[profile.band] * profile.value(HeroStats.BREATH_REGEN) / 100.0
 	if not is_equal_approx(player.stamina.maximum, profile.value(HeroStats.BREATH)):

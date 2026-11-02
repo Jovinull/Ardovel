@@ -31,7 +31,7 @@ const PER_POINT: Dictionary[StringName, Dictionary] = {
 }
 
 ## Experience for defeating each kind of creature (by class name). The warden is a one-time deed.
-const CREATURES: Dictionary[StringName, int] = {&"Musgorico": 4, &"Cardosa": 3}
+const CREATURES: Dictionary[StringName, int] = {&"Musgorico": 4, &"Cardosa": 3, &"Tatuira": 5, &"Mucum": 6}
 
 ## One-time deeds: reward id -> [flag that proves it, experience]. Ids are written in saves.
 const DEEDS: Dictionary[StringName, Array] = {
@@ -48,11 +48,14 @@ const DEEDS: Dictionary[StringName, Array] = {
 	&"stone_shifted": [&"spring_stone_shifted", 40],
 	&"map_drawn": [&"blank_map_drawn", 30],
 	&"notice_down": [&"town_notice_down", 50],
+	&"vein_cage": [&"vein_cage_fixed", 20],
+	&"vein_drain": [&"vein_drain_open", 40],
+	&"vein_gnawer": [&"vein_gnawer_defeated", 60],
 }
 ## Arriving in an area for the first time: area id -> experience (the village is home).
 const ARRIVALS: Dictionary[StringName, int] = {
 	&"forest": 5, &"ruin": 10, &"west": 10, &"far_bank": 10, &"road_slope": 10, &"road_west": 10,
-	&"waystop": 10, &"pedrabranca": 15,
+	&"waystop": 10, &"pedrabranca": 15, &"hollow_vein": 15,
 }
 const ARRIVAL_PREFIX := "arrived_"
 

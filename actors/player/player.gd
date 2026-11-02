@@ -35,6 +35,9 @@ const BLOCK_RECOIL := 0.18
 const GUARD_BREAK_TIME := 0.55
 ## A blocked hit leaves this long before another can land.
 const BLOCK_IMMUNITY := 0.3
+## The moult ring: seconds a slipped blow keeps the next swing charged, and what the charge adds.
+const MOULT_TIME := 1.2
+const MOULT_POWER := 1.6
 
 @export var max_speed: float = 72.0
 ## px/s²: reaches full speed in about 0.06 s, which keeps the controls snappy but not twitchy.
@@ -66,6 +69,10 @@ var _weapon_swing: AttackData
 var _technique_sheet: Texture2D
 ## Postura Firme: a shield held without moving takes blows more cheaply.
 var firm_stance := false
+## The moult ring is worn (HeroLoadout): a dodge's untouchable moment that lets a real blow pass
+## charges the next swing (stronger, and it breaks a creature's bracing).
+var moult_ring := false
+var _moult_left := 0.0
 var _guard: GuardData
 var _guard_sheet: Texture2D
 var _walk_sheet: Texture2D
@@ -111,6 +118,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_moult_left = maxf(_moult_left - delta, 0.0)
 	match state:
 		State.MOVE:
 			_process_move(delta)
@@ -218,6 +226,10 @@ func _start_attack(input: Vector2) -> void:
 	if _attack.start(facing):
 		state = State.ATTACK
 		velocity = Vector2.ZERO
+		if _moult_left > 0.0:
+			_moult_left = 0.0
+			_sword.power *= MOULT_POWER
+			_sword.breaking = true
 
 
 func _on_attack_phase_changed(phase: AttackData.Phase) -> void:
@@ -515,6 +527,20 @@ func celebrate() -> void:
 	tween.tween_callback(glint.queue_free)
 
 
+## A quick glint at the hero's shoulder (the moult ring charged): the level glint, played fast.
+func _shine() -> void:
+	var glint := Sprite2D.new()
+	glint.name = "MoultGlint"
+	glint.texture = LEVEL_GLINT
+	glint.hframes = LEVEL_GLINT_FRAMES
+	glint.position = Vector2(6, -10)
+	glint.z_index = 1
+	add_child(glint)
+	var tween := glint.create_tween()
+	tween.tween_property(glint, ^"frame", LEVEL_GLINT_FRAMES - 1, LEVEL_GLINT_TIME * 0.5)
+	tween.tween_callback(glint.queue_free)
+
+
 ## The sheets the hero is drawn with now: walk, hurt, death, attack, guard (tests, previews).
 func body_sheets() -> Dictionary[StringName, Texture2D]:
 	return {&"walk": _walk_sheet, &"hurt": _hurt_sheet, &"death": _death_sheet, &"attack": _attack_sheet,
@@ -572,6 +598,8 @@ func bump(source_position: Vector2, strength: float) -> void:
 ## takes a blockable blow, paying breath, or breaks when the breath runs out.
 func _screen_hit(hit: Hit) -> Hit:
 	if is_untouchable():
+		if moult_ring and hit.damage > 0:
+			_charge_moult()
 		return null
 	if not is_guarding() or not hit.blockable or not covers(hit.source_position):
 		return hit
@@ -586,6 +614,17 @@ func _screen_hit(hit: Hit) -> Hit:
 		hit.guard_broken = true
 		stamina.drain()
 	return hit
+
+
+## Whether the moult ring's charge is waiting for the next swing.
+func is_moult_charged() -> bool:
+	return _moult_left > 0.0
+
+
+func _charge_moult() -> void:
+	if _moult_left <= 0.0:
+		_shine()
+	_moult_left = MOULT_TIME
 
 
 func _on_hit_received(hit: Hit) -> void:

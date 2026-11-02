@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/old_gnawer/old_gnawer.gd" id="1_5uffi"]
+
+[node name="OldGnawer" type="CharacterBody2D" unique_id=1334366415]
+collision_layer = 4
+script = ExtResource("1_5uffi")

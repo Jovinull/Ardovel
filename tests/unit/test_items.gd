@@ -30,7 +30,7 @@ func _profile(adventure: Adventure) -> HeroLoadout.Profile:
 	return HeroLoadout.profile(adventure, BASE_HEALTH)
 
 
-func test_the_catalog_holds_33_pieces_of_equipment_and_8_stackables() -> void:
+func test_the_catalog_holds_34_pieces_of_equipment_and_8_stackables() -> void:
 	var equipment := 0
 	var stackables := 0
 	for id: StringName in ItemCatalog.ITEMS:
@@ -53,7 +53,7 @@ func test_the_catalog_holds_33_pieces_of_equipment_and_8_stackables() -> void:
 			stackables += 1
 			assert_gt(item.stack_limit, 1, "%s stacks" % id)
 			assert_eq(item.weight, 0.0)
-	assert_eq(equipment, 33)
+	assert_eq(equipment, 34)  # 7.6 added the Moult Ring
 	assert_eq(stackables, 8)
 
 
@@ -67,7 +67,7 @@ func test_every_slot_has_items_and_every_weapon_its_own_swing_and_frames() -> vo
 			assert_not_null(item.attack_sheet, "%s has attack frames" % id)
 			assert_eq(item.attack_sheet.get_size(), Vector2(120, 160))
 	assert_eq(per_kind, {&"main_hand": 6, &"off_hand": 4, &"head": 4, &"torso": 4, &"hands": 4, &"legs": 4,
-			&"ring": 4, &"accessory": 3, &"": 8})
+			&"ring": 5, &"accessory": 3, &"": 8})
 
 
 func test_the_ids_written_in_saves_stay_put() -> void:

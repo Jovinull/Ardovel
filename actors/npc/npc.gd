@@ -56,7 +56,7 @@ func current_line() -> DialogueLine:
 	for line in lines:
 		if not line.applies(_adventure):
 			continue
-		if line.gives.is_empty():
+		if line.gives.is_empty() and line.gives_money <= 0:
 			if said == null:
 				said = line
 		elif gift == null:
@@ -117,13 +117,27 @@ func _on_interact(actor: Node2D) -> String:
 		return ""
 	face(actor.global_position - global_position)
 	var text := line.text
-	if _adventure != null and not line.gives.is_empty():
+	if _adventure != null and line.gives_money > 0:
+		text = _pay(line)
+	elif _adventure != null and not line.gives.is_empty():
 		text = _give(line)
 	elif _adventure != null:
 		_adventure.set_flag(line.sets)
 	if will_trade:
 		trade_requested.emit(merchant)
 	return text
+
+
+## The line with its payment: the coppers handed over (and the line's flag set) if the purse holds them.
+func _pay(line: DialogueLine) -> String:
+	if not _adventure.earn(line.gives_money):
+		return tr(line.text) + "
+
+" + tr("PICKUP_PURSE_FULL")
+	_adventure.set_flag(line.sets)
+	return tr(line.text) + "
+
+" + tr("MONEY_RECEIVED") % line.gives_money
 
 
 ## The line with its gift: handed over (and the line's flag set) if it fits in the bag.

@@ -17,6 +17,9 @@ extends Resource
 ## A gift handed over with the line (an ItemCatalog id; empty: none), and how many.
 @export var gives: StringName
 @export var gives_count: int = 1
+## Coppers handed over with the line (a payment; 0: none). Paid once, with the line's flag; if the
+## purse cannot hold them the line waits, like a gift for a full bag.
+@export var gives_money: int = 0
 
 
 ## The first of `lines` that applies, or null: lists put the most specific line first.
