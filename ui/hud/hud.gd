@@ -8,6 +8,10 @@ extends CanvasLayer
 ## moment when experience comes in; the level and a small gold mark stay while attribute points
 ## wait to be spent; a level reached shows a short notice at the top and a sound, and the play goes
 ## on underneath (nothing waits for it).
+##
+## The two techniques equipped sit left of the quick slot, each with its key: dim while the weapon
+## or shield in hand does not suit it, a red flash when asked for without the breath for it, a
+## bright one when it starts, and a gold edge on the guard's response while a block can be answered.
 
 signal dialogue_started
 signal dialogue_finished
@@ -30,6 +34,12 @@ const LEVEL_SOUND := preload("res://assets/ninja_adventure/Audio/Sounds/Bonus/Bo
 const GOLD := Color("f1c471")
 const DARK := Color("141b1b")
 const XP_WIDTH := 44.0
+const SLOT_BOX := preload("res://assets/ninja_adventure/Ui/Dialog/FacesetBox.png")
+## The two technique slots start here (left of the quick slot and its key).
+const TECHNIQUE_X := 226.0
+const DIM_SLOT := Color(1, 1, 1, 0.4)
+const NO_BREATH := Color(1.0, 0.35, 0.35)
+const SLOT_FLASH_TIME := 0.35
 ## Seconds the experience bar stays after experience comes in, and the level notice.
 const XP_HOLD_TIME := 2.4
 const LEVEL_HOLD_TIME := 2.8
@@ -61,6 +71,8 @@ var _growth_tween: Tween
 var _level_tween: Tween
 var _shown_level := 1
 var _free_points := 0
+var _techniques: TechniqueRunner
+var _technique_slots: Array[Control] = []
 
 @onready var _hearts: HBoxContainer = %Hearts
 @onready var _message_box: Control = %MessageBox
@@ -90,6 +102,7 @@ func _ready() -> void:
 		_heart_frames.append(frame)
 	_close_box()
 	_build_growth()
+	_build_techniques()
 
 
 func _notification(what: int) -> void:
@@ -100,7 +113,115 @@ func _notification(what: int) -> void:
 			_lay_out_growth()
 
 
+func _build_techniques() -> void:
+	var frame := get_node(^"Frame") as Control
+	for i in TechniqueRunner.SLOTS:
+		var slot := Control.new()
+		slot.name = "Technique%d" % (i + 1)
+		slot.position = Vector2(TECHNIQUE_X + i * 24, 4)
+		slot.size = Vector2(22, 22)
+		slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.visible = false
+		frame.add_child(slot)
+		var box := NinePatchRect.new()
+		box.name = "Box"
+		box.texture = SLOT_BOX
+		box.size = Vector2(22, 22)
+		for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+			box.set_patch_margin(side, 5)
+		box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(box)
+		var glow := NinePatchRect.new()
+		glow.name = "Ready"
+		glow.texture = CHOICE_BOX
+		glow.size = Vector2(22, 22)
+		for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+			glow.set_patch_margin(side, 4)
+		glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		glow.visible = false
+		slot.add_child(glow)
+		var icon := TextureRect.new()
+		icon.name = "Icon"
+		icon.position = Vector2(3, 3)
+		icon.size = Vector2(16, 16)
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(icon)
+		var key := _hud_label(slot, "Key", Rect2(0, 22, 22, 10), Color("f2eaf1"))
+		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_technique_slots.append(slot)
+
+
+## Shows the techniques the hero has in the two slots now (call after the equipment changes).
+func refresh_techniques() -> void:
+	# between areas the old hero is on its way out: wait for the new one (bind_player)
+	if _techniques == null or not is_instance_valid(_techniques) or _technique_slots.is_empty():
+		return
+	for i in _technique_slots.size():
+		var slot := _technique_slots[i]
+		var skill := _techniques.skill(i)
+		slot.visible = skill != null
+		if skill == null:
+			continue
+		(slot.get_node(^"Icon") as TextureRect).texture = skill.icon
+		slot.modulate = Color.WHITE if _techniques.fits(i) else DIM_SLOT
+		var labels := InputPrompts.action_label(Player.TECHNIQUE_ACTIONS[i], _gamepad_active, _joypad_name).split(" / ", false)
+		(slot.get_node(^"Key") as Label).text = labels[0] if not labels.is_empty() else ""
+	_on_response_changed(_techniques.is_response_open())
+
+
+func _on_technique_started(slot: int) -> void:
+	_flash_slot(slot, Color(1.6, 1.6, 1.6))
+
+
+func _on_technique_refused(slot: int, reason: StringName) -> void:
+	if reason == &"breath" or reason == &"window":
+		_flash_slot(slot, NO_BREATH if reason == &"breath" else DIM_SLOT)
+
+
+func _flash_slot(slot: int, colour: Color) -> void:
+	if slot < 0 or slot >= _technique_slots.size() or not _technique_slots[slot].visible:
+		return
+	var node := _technique_slots[slot]
+	var rest := Color.WHITE if _techniques.fits(slot) else DIM_SLOT
+	node.modulate = colour
+	var tween := node.create_tween()
+	tween.tween_property(node, ^"modulate", rest, SLOT_FLASH_TIME)
+
+
+func _on_response_changed(open: bool) -> void:
+	for i in _technique_slots.size():
+		var skill := _techniques.skill(i) if _techniques != null else null
+		var answers := skill != null and skill.technique != null \
+				and skill.technique.motion == TechniqueData.Motion.COUNTER
+		(_technique_slots[i].get_node(^"Ready") as CanvasItem).visible = open and answers
+
+
+func is_technique_shown(slot: int) -> bool:
+	return slot < _technique_slots.size() and _technique_slots[slot].visible
+
+
+func is_technique_dimmed(slot: int) -> bool:
+	return is_technique_shown(slot) and _technique_slots[slot].modulate.is_equal_approx(DIM_SLOT)
+
+
+func is_technique_ready_marked(slot: int) -> bool:
+	return is_technique_shown(slot) and (_technique_slots[slot].get_node(^"Ready") as CanvasItem).visible
+
+
+func technique_key(slot: int) -> String:
+	return (_technique_slots[slot].get_node(^"Key") as Label).text if slot < _technique_slots.size() else ""
+
+
+func technique_tint(slot: int) -> Color:
+	return _technique_slots[slot].modulate
+
+
 func bind_player(player: Player) -> void:
+	_techniques = player.techniques()
+	_techniques.started.connect(_on_technique_started)
+	_techniques.refused.connect(_on_technique_refused)
+	_techniques.response_changed.connect(_on_response_changed)
+	refresh_techniques()
 	player.health.changed.connect(show_health)
 	player.stamina.changed.connect(show_breath)
 	show_breath(player.stamina.current, player.stamina.maximum)
@@ -418,6 +539,7 @@ func set_input_mode(gamepad: bool, joypad_name: String) -> void:
 	_gamepad_active = gamepad
 	_joypad_name = joypad_name
 	_update_guidance()
+	refresh_techniques()
 
 
 func is_guidance_visible() -> bool:

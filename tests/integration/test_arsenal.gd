@@ -278,9 +278,11 @@ func test_the_menu_pages_with_real_keys_and_closes_without_the_pause() -> void:
 	await _press(&"menu_next")
 	assert_eq(_menu().page, HeroMenu.Page.STATUS)
 	await _press(&"menu_next")
+	assert_eq(_menu().page, HeroMenu.Page.SKILLS)
+	await _press(&"menu_next")
 	assert_eq(_menu().page, HeroMenu.Page.EQUIPMENT, "round again")
 	await _press(&"menu_prev")
-	assert_eq(_menu().page, HeroMenu.Page.STATUS)
+	assert_eq(_menu().page, HeroMenu.Page.SKILLS)
 	await _press(&"attack")
 	assert_true(_menu().is_open(), "the sword key does nothing here")
 	for closing: StringName in [&"pause", &"ui_cancel", &"equipment"]:

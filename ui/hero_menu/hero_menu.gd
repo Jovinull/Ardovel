@@ -20,16 +20,22 @@ extends CanvasLayer
 ## points be spent: the interact key starts, up and down choose an attribute, left and right add or
 ## take back a point, and the values beside show what they would become; the interact key confirms
 ## (only then are points spent), the back key leaves without spending anything.
+##
+## Techniques shows the six skills (techniques above, passive skills below), what each asks and
+## does, the technique points free and what is in the two technique slots and the passive slot. The
+## interact key on a skill not learned asks to learn it (a second press spends the points; the back
+## key keeps them); on a learned technique it picks a slot (left and right) and puts it there, or
+## takes it out of the slot it is in; on a learned passive skill it selects it or puts it away.
 
 signal closed
 
-enum Page { EQUIPMENT, INVENTORY, STATUS }
+enum Page { EQUIPMENT, INVENTORY, STATUS, SKILLS }
 enum Sort { FOUND, NAME, CATEGORY, WEIGHT }
 
 const BOX := preload("res://assets/ninja_adventure/Ui/Dialog/DialogueBoxSimple.png")
 const FRAME := preload("res://assets/ninja_adventure/Ui/Dialog/FacesetBox.png")
 const CHOICE := preload("res://assets/ninja_adventure/Ui/Dialog/ChoiceBox.png")
-const PAGE_KEYS: Array[String] = ["MENU_PAGE_EQUIPMENT", "MENU_PAGE_INVENTORY", "MENU_PAGE_STATUS"]
+const PAGE_KEYS: Array[String] = ["MENU_PAGE_EQUIPMENT", "MENU_PAGE_INVENTORY", "MENU_PAGE_STATUS", "MENU_PAGE_SKILLS"]
 ## Equipment page: the slot groups, top to bottom.
 const GROUPS: Array = [
 	["MENU_GROUP_WEAPONS", [ItemCatalog.MAIN_HAND, ItemCatalog.OFF_HAND]],
@@ -81,6 +87,15 @@ const ATTRIBUTE_EFFECT_KEYS: Dictionary[StringName, String] = {
 	HeroGrowth.VIGOR: "ATTR_VIGOR_EFFECT", HeroGrowth.STRENGTH: "ATTR_STRENGTH_EFFECT",
 	HeroGrowth.ENDURANCE: "ATTR_ENDURANCE_EFFECT", HeroGrowth.BREATH: "ATTR_BREATH_EFFECT",
 }
+## Techniques: the cells (techniques in the first row, passive skills in the second).
+const SKILL_ROWS: Array = [
+	[SkillCatalog.PIERCING_STEP, SkillCatalog.BREAKING_BLOW, SkillCatalog.STAFF_SWEEP, SkillCatalog.GUARD_RESPONSE],
+	[SkillCatalog.TRAINED_STEPS, SkillCatalog.FIRM_STANCE],
+]
+const SKILL_REFUSALS: Dictionary[Skills.Refusal, String] = {
+	Skills.Refusal.LEVEL: "SKILLS_STATE_LEVEL", Skills.Refusal.POINTS: "SKILLS_STATE_POINTS",
+	Skills.Refusal.LEARNED: "SKILLS_STATE_LEARNED",
+}
 ## The preview turns to the next side this often (seconds); down, left, up, right.
 const PREVIEW_TURN := 1.2
 const PREVIEW_SIDES: Array[int] = [0, 2, 1, 3]
@@ -129,6 +144,13 @@ var _status: Control
 var _distributing := false
 var _attribute := 0
 var _plan: Dictionary[StringName, int] = {}
+## Techniques: the cell under the cursor, a learning waiting for its confirmation, a slot being chosen.
+var _skill_row := 0
+var _skill_index := 0
+var _confirming_learn := false
+var _choosing_slot := false
+var _slot_choice := 0
+var _skills_page: Control
 var _preview: TextureRect
 var _preview_look: HeroLook
 var _preview_side := 0
@@ -178,6 +200,8 @@ func close() -> void:
 	if not is_open():
 		return
 	_stop_distributing()  # nothing is spent unless confirmed
+	_confirming_learn = false
+	_choosing_slot = false
 	_root.hide()
 	set_process_input(false)
 	closed.emit()
@@ -198,6 +222,23 @@ func is_distributing() -> bool:
 ## The attribute under the cursor while spending points.
 func selected_attribute() -> StringName:
 	return HeroGrowth.ATTRIBUTES[_attribute]
+
+
+## The skill under the cursor on the Techniques page.
+func selected_skill() -> StringName:
+	return SKILL_ROWS[_skill_row][_skill_index]
+
+
+func is_confirming_learn() -> bool:
+	return _confirming_learn
+
+
+func is_choosing_slot() -> bool:
+	return _choosing_slot
+
+
+func slot_choice() -> int:
+	return _slot_choice
 
 
 ## Points added so far while spending (attribute -> points), not yet invested.
@@ -287,15 +328,21 @@ func _input(event: InputEvent) -> void:
 			_stop_distributing()
 			_cancel.play()
 			_refresh()
+		elif _confirming_learn or _choosing_slot:
+			_confirming_learn = false
+			_choosing_slot = false
+			_notice = ""
+			_cancel.play()
+			_refresh()
 		else:
 			close()
 			_cancel.play()
-	elif event.is_action_pressed(&"menu_prev") and not _distributing:
+	elif event.is_action_pressed(&"menu_prev") and not _held():
 		_turn_page(-1)
-	elif event.is_action_pressed(&"menu_next") and not _distributing:
+	elif event.is_action_pressed(&"menu_next") and not _held():
 		_turn_page(1)
-	elif (event.is_action_pressed(&"menu_prev") or event.is_action_pressed(&"menu_next")) and _distributing:
-		pass  # the page stays while points are being spent
+	elif (event.is_action_pressed(&"menu_prev") or event.is_action_pressed(&"menu_next")) and _held():
+		pass  # the page stays while points are being spent, a learning confirmed or a slot chosen
 	elif event.is_action_pressed(&"category_prev") and page == Page.INVENTORY:
 		_set_tab(_tab - 1)
 	elif event.is_action_pressed(&"category_next") and page == Page.INVENTORY:
@@ -328,6 +375,8 @@ func _turn_page(by: int) -> void:
 	page = posmod(page + by, Page.size()) as Page
 	_choosing = false
 	_stop_distributing()
+	_confirming_learn = false
+	_choosing_slot = false
 	_notice = ""
 	_move.play()
 	_refresh()
@@ -367,6 +416,18 @@ func _step(direction: Vector2i) -> void:
 				_scroll = row
 			elif row >= _scroll + GRID_ROWS:
 				_scroll = row - GRID_ROWS + 1
+		Page.SKILLS:
+			if _confirming_learn:
+				return
+			if _choosing_slot:
+				if direction.x == 0:
+					return
+				_slot_choice = posmod(_slot_choice + direction.x, Skills.ACTIVE_SLOTS)
+			elif direction.y != 0:
+				_skill_row = posmod(_skill_row + direction.y, SKILL_ROWS.size())
+				_skill_index = mini(_skill_index, (SKILL_ROWS[_skill_row] as Array).size() - 1)
+			else:
+				_skill_index = posmod(_skill_index + direction.x, (SKILL_ROWS[_skill_row] as Array).size())
 		Page.STATUS:
 			if not _distributing:
 				return
@@ -395,7 +456,60 @@ func _confirm() -> void:
 			_use_selected()
 		Page.STATUS:
 			_confirm_status()
+		Page.SKILLS:
+			_confirm_skill()
 	_refresh()
+
+
+## Whether something on the page must be finished or cancelled before turning it.
+func _held() -> bool:
+	return _distributing or _confirming_learn or _choosing_slot
+
+
+## Techniques: the interact key learns (after a confirmation), equips or puts away.
+func _confirm_skill() -> void:
+	var id := selected_skill()
+	var skill := SkillCatalog.find(id)
+	if _confirming_learn:
+		_confirming_learn = false
+		if Skills.learn(_adventure, id):
+			_notice = "SKILLS_LEARNED"
+			_accept.play()
+		else:
+			_cancel.play()
+		return
+	if _choosing_slot:
+		_choosing_slot = false
+		if _adventure.skill_slots()[_slot_choice] == id:
+			Skills.unequip(_adventure, _slot_choice)
+			_notice = "SKILLS_REMOVED"
+		else:
+			Skills.equip(_adventure, id, _slot_choice)
+			_notice = "SKILLS_EQUIPPED"
+		_accept.play()
+		return
+	if not _adventure.has_skill(id):
+		var why := Skills.why_not_learn(_adventure, id)
+		if why != Skills.Refusal.NONE:
+			_notice = SKILL_REFUSALS.get(why, "")
+			_cancel.play()
+			return
+		_confirming_learn = true
+		_accept.play()
+		return
+	if skill.is_active():
+		_choosing_slot = true
+		var slots := _adventure.skill_slots()
+		_slot_choice = maxi(slots.find(id), 0) if slots.has(id) else maxi(slots.find(&""), 0)
+		_accept.play()
+		return
+	if _adventure.passive_skill == id:
+		Skills.unequip(_adventure, -1)
+		_notice = "SKILLS_PUT_AWAY"
+	else:
+		Skills.equip(_adventure, id, -1)
+		_notice = "SKILLS_SELECTED"
+	_accept.play()
 
 
 ## Status: the interact key starts spending free points, then confirms them.
@@ -531,7 +645,7 @@ func _build() -> void:
 	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(dim)
 	_tab_row = _control(_root, "Pages", Rect2(0, 0, 320, 20))
-	for i in 3:
+	for i in PAGE_KEYS.size():
 		var tab := _control(_tab_row, "Page%d" % i, Rect2())
 		_patch(tab, "Chosen", CHOICE, Rect2(), 4)
 		_label(tab, "Label", Rect2(), DIM)
@@ -540,6 +654,7 @@ func _build() -> void:
 	_build_equipment()
 	_build_inventory()
 	_build_status()
+	_build_skills()
 
 
 func _build_equipment() -> void:
@@ -642,6 +757,35 @@ func _build_status() -> void:
 		_label(values, "Name%d" % r, Rect2(x, y, 84, 10), DARK, 0, false)
 		_label(values, "Value%d" % r, Rect2(x, y, 84, 10), DARK, HORIZONTAL_ALIGNMENT_RIGHT, false)
 
+func _build_skills() -> void:
+	_skills_page = _control(_root, "Skills", Rect2(0, 0, 320, 180))
+	_pages.append(_skills_page)
+	_label(_skills_page, "Points", Rect2(10, 22, 110, 10), TEAL)
+	_label(_skills_page, "Actives", Rect2(10, 34, 110, 10), GOLD)
+	_label(_skills_page, "Passives", Rect2(10, 70, 110, 10), GOLD)
+	for r in SKILL_ROWS.size():
+		for i in (SKILL_ROWS[r] as Array).size():
+			var cell := _cell_node(_skills_page, "Skill%d_%d" % [r, i], Vector2(10 + i * 26, 45 + r * 36), 22)
+			_pip(cell)
+	var slots := _patch(_skills_page, "Slots", BOX, Rect2(8, 108, 112, 54), 6)
+	_label(slots, "Title", Rect2(8, 4, 96, 10), TEAL, 0, false)
+	for i in Skills.ACTIVE_SLOTS + 1:
+		var row := _control(slots, "Slot%d" % i, Rect2(4, 14 + i * 12, 104, 12))
+		_patch(row, "Chosen", CHOICE, Rect2(0, 0, 104, 12), 3)
+		_label(row, "Key", Rect2(3, 1, 16, 10), DIM, 0, false)
+		_label(row, "Name", Rect2(20, 1, 82, 10), DARK, 0, false)
+		if i == Skills.ACTIVE_SLOTS:
+			_passive_mark(row)
+	var info := _patch(_skills_page, "Info", BOX, Rect2(124, 22, 188, 140), 6)
+	_label(info, "Name", Rect2(8, 6, 172, 10), WINE, 0, false)
+	_label(info, "Kind", Rect2(8, 16, 172, 10), TEAL, 0, false)
+	_label(info, "Needs", Rect2(8, 26, 172, 10), DARK, 0, false)
+	_label(info, "Weapons", Rect2(8, 36, 172, 20), DIM, 0, false, true)
+	_label(info, "State", Rect2(8, 56, 172, 10), TEAL, 0, false)
+	_label(info, "Description", Rect2(8, 67, 172, 30), DARK, 0, false, true)
+	_label(info, "Effect", Rect2(8, 99, 172, 30), TEAL, 0, false, true)
+
+
 func _control(parent: Node, node_name: String, rect: Rect2) -> Control:
 	var control := Control.new()
 	control.name = node_name
@@ -682,6 +826,24 @@ func _label(parent: Node, node_name: String, rect: Rect2, colour: Color, align: 
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(label)
 	return label
+
+
+## The passive slot's mark: a small gold diamond where a technique slot shows its key.
+func _passive_mark(row: Control) -> void:
+	for line: Array in [[3, 0, 1], [2, 1, 3], [1, 2, 5], [2, 3, 3], [3, 4, 1]]:
+		var edge := ColorRect.new()
+		edge.color = Color("141b1b")
+		edge.position = Vector2(4 + line[0] - 1, 3 + line[1])
+		edge.size = Vector2(line[2] + 2, 1)
+		edge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(edge)
+	for line: Array in [[3, 0, 1], [2, 1, 3], [1, 2, 5], [2, 3, 3], [3, 4, 1]]:
+		var light := ColorRect.new()
+		light.color = GOLD
+		light.position = Vector2(4 + line[0], 3 + line[1])
+		light.size = Vector2(line[2], 1)
+		light.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(light)
 
 
 ## A small gold mark in a cell's corner: this one is worn.
@@ -729,11 +891,13 @@ func _refresh() -> void:
 			_refresh_inventory()
 		Page.STATUS:
 			_refresh_status()
+		Page.SKILLS:
+			_refresh_skills()
 
 
 func _refresh_page_tabs() -> void:
 	var x := 8.0
-	for i in 3:
+	for i in PAGE_KEYS.size():
 		var tab := _tab_row.get_node("Page%d" % i) as Control
 		var label := tab.get_node(^"Label") as Label
 		label.text = tr(PAGE_KEYS[i])
@@ -948,6 +1112,94 @@ func _refresh_status() -> void:
 		_hint.text = _hints([["MENU_HINT_PAGES", [&"menu_prev", &"menu_next"]], ["MENU_HINT_CLOSE", [&"equipment"]]])
 	if not _notice.is_empty():
 		_hint.text = tr(_notice)
+
+
+func _refresh_skills() -> void:
+	(_skills_page.get_node(^"Points") as Label).text = tr("SKILLS_POINTS") % Skills.points_free(_adventure)
+	(_skills_page.get_node(^"Actives") as Label).text = tr("SKILLS_ACTIVE")
+	(_skills_page.get_node(^"Passives") as Label).text = tr("SKILLS_PASSIVE")
+	var slots := _adventure.skill_slots()
+	for r in SKILL_ROWS.size():
+		for i in (SKILL_ROWS[r] as Array).size():
+			var id: StringName = SKILL_ROWS[r][i]
+			var cell := _skills_page.get_node("Skill%d_%d" % [r, i]) as Control
+			var skill := SkillCatalog.find(id)
+			(cell.get_node(^"Icon") as TextureRect).texture = skill.icon
+			(cell.get_node(^"Icon") as CanvasItem).modulate = Color.WHITE if _adventure.has_skill(id) else Color(1, 1, 1, 0.35)
+			(cell.get_node(^"Chosen") as CanvasItem).visible = r == _skill_row and i == _skill_index
+			(cell.get_node(^"Worn") as CanvasItem).visible = slots.has(id) or _adventure.passive_skill == id
+	var box := _skills_page.get_node(^"Slots") as Control
+	(box.get_node(^"Title") as Label).text = tr("SKILLS_SLOTS")
+	var ids: Array[StringName] = slots.duplicate()
+	ids.append(_adventure.passive_skill)
+	for i in ids.size():
+		var row := box.get_node("Slot%d" % i) as Control
+		var skill := SkillCatalog.find(ids[i])
+		(row.get_node(^"Chosen") as CanvasItem).visible = _choosing_slot and i == _slot_choice
+		var key := row.get_node(^"Key") as Label
+		key.text = _key(Player.TECHNIQUE_ACTIONS[i]) if i < Skills.ACTIVE_SLOTS else ""
+		var name := row.get_node(^"Name") as Label
+		name.text = tr(skill.name_key) if skill != null else tr("SKILLS_SLOT_EMPTY")
+		_colour(name, DARK if skill != null else DIM, false)
+	var id := selected_skill()
+	var skill := SkillCatalog.find(id)
+	var info := _skills_page.get_node(^"Info") as Control
+	(info.get_node(^"Name") as Label).text = tr(skill.name_key)
+	(info.get_node(^"Kind") as Label).text = tr("SKILLS_KIND_ACTIVE") % roundi(skill.breath) if skill.is_active() \
+			else tr("SKILLS_KIND_PASSIVE")
+	var needs := info.get_node(^"Needs") as Label
+	needs.text = (tr("SKILLS_NEEDS_ONE") % skill.level) if skill.cost == 1 else (tr("SKILLS_NEEDS") % [skill.level, skill.cost])
+	var level_short := HeroGrowth.level(_adventure) < skill.level
+	_colour(needs, WORSE if level_short and not _adventure.has_skill(id) else DARK, false)
+	var weapons: PackedStringArray = []
+	for weapon in skill.weapons:
+		weapons.append(_name(weapon))
+	var used_with := ", ".join(weapons) if not weapons.is_empty() else tr("SKILLS_ANY_WEAPON")
+	if skill.needs_shield:
+		used_with = tr("SKILLS_WITH_SHIELD") % used_with
+	(info.get_node(^"Weapons") as Label).text = used_with if skill.is_active() or skill.needs_shield else ""
+	(info.get_node(^"State") as Label).text = _skill_state(id, skill)
+	(info.get_node(^"Description") as Label).text = tr(skill.description_key)
+	(info.get_node(^"Effect") as Label).text = tr(skill.effect_key)
+	if _confirming_learn:
+		_hint.text = tr("SKILLS_ASK") % [tr(skill.name_key), skill.cost] + "   " + _hints([["MENU_HINT_CONFIRM", [&"interact"]],
+				["MENU_HINT_BACK", [&"ui_cancel"]]])
+	elif _choosing_slot:
+		_hint.text = _hints([["SKILLS_HINT_PUT" if _adventure.skill_slots()[_slot_choice] != id else "SKILLS_HINT_REMOVE",
+				[&"interact"]], ["SKILLS_HINT_SLOT", [&"move_left", &"move_right"]], ["MENU_HINT_BACK", [&"ui_cancel"]]])
+	else:
+		var action := "SKILLS_HINT_LEARN"
+		if _adventure.has_skill(id):
+			action = "SKILLS_HINT_EQUIP" if skill.is_active() else ("SKILLS_HINT_PUT_AWAY" if _adventure.passive_skill == id else "SKILLS_HINT_SELECT")
+		_hint.text = _hints([[action, [&"interact"]], ["MENU_HINT_PAGES", [&"menu_prev", &"menu_next"]],
+				["MENU_HINT_CLOSE", [&"equipment"]]])
+	if not _notice.is_empty():
+		match _notice:
+			"SKILLS_LEARNED", "SKILLS_EQUIPPED", "SKILLS_SELECTED":
+				_hint.text = tr(_notice) % tr(skill.name_key)
+			"SKILLS_STATE_LEVEL":
+				_hint.text = tr(_notice) % skill.level
+			_:
+				_hint.text = tr(_notice)
+
+
+## Where a skill stands: learned and where it is, or what keeps it from being learned.
+func _skill_state(id: StringName, skill: SkillDef) -> String:
+	if _adventure.has_skill(id):
+		var slot := _adventure.skill_slots().find(id)
+		if slot >= 0:
+			return tr("SKILLS_STATE_SLOT") % _key(Player.TECHNIQUE_ACTIONS[slot])
+		if _adventure.passive_skill == id:
+			return tr("SKILLS_STATE_SELECTED")
+		return tr("SKILLS_STATE_LEARNED")
+	match Skills.why_not_learn(_adventure, id):
+		Skills.Refusal.NONE:
+			return tr("SKILLS_STATE_CAN")
+		Skills.Refusal.LEVEL:
+			return tr("SKILLS_STATE_LEVEL") % skill.level
+		Skills.Refusal.POINTS:
+			return tr("SKILLS_STATE_POINTS")
+	return ""
 
 
 ## Quarters one blow takes, as the menu shows it: a whole number, or with up to two decimals.
