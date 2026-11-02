@@ -492,6 +492,8 @@ position = Vector2(276, 188)
 item = &"crew_machete"
 count = 1
 flag = &"found_slope_crew_machete"
+allowed_by = &"town_crew_gear_given"
+refused = "CREW_GEAR_REFUSED"
 
 [node name="Found_CrewVest" parent="Entities" instance=ExtResource("31_gloves")]
 position = Vector2(376, 168)
@@ -500,15 +502,22 @@ count = 1
 flag = &"found_slope_crew_vest"
 message = "PICKUP_CREW_CHEST"
 chest = ExtResource("pk_chest")
+allowed_by = &"town_crew_gear_given"
+refused = "CREW_GEAR_REFUSED"
 
 [node name="Found_CrewBoots" parent="Entities" instance=ExtResource("31_gloves")]
 position = Vector2(262, 162)
 item = &"crew_boots"
 count = 1
 flag = &"found_slope_crew_boots"
+allowed_by = &"town_crew_gear_given"
+refused = "CREW_GEAR_REFUSED"
 
 [node name="Found_CrewBoardShield" parent="Entities" instance=ExtResource("31_gloves")]
 position = Vector2(296, 108)
 item = &"crew_board_shield"
 count = 1
 flag = &"found_slope_crew_board_shield"
+allowed_by = &"town_crew_gear_given"
+refused = "CREW_GEAR_REFUSED"
+

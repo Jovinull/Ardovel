@@ -28,6 +28,9 @@
 [ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Magic & Skill/Magic1.wav" id="31_glint_sound"]
 [ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/honey_hollow.png" id="m75_honey_hollow"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/resin_stump.png" id="m75_resin_stump"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/purse.png" id="m75_purse"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_77kt1"]
 size = Vector2(672, 16)
@@ -454,20 +457,25 @@ item = &"moss_wraps"
 count = 1
 flag = &"found_forest_moss_wraps"
 
-[node name="Found_RootRing" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(186, 318)
-item = &"root_ring"
-count = 1
-flag = &"found_forest_root_ring"
-
 [node name="Found_WildHoney" parent="Entities" instance=ExtResource("pk_pickup")]
 position = Vector2(530, 192)
 item = &"wild_honey"
 count = 3
 flag = &"found_forest_wild_honey"
+ground = ExtResource("m75_honey_hollow")
+message = "RESOURCE_HONEY"
 
 [node name="Found_PineResin" parent="Entities" instance=ExtResource("pk_pickup")]
 position = Vector2(496, 164)
 item = &"pine_resin"
 count = 4
 flag = &"found_forest_pine_resin"
+ground = ExtResource("m75_resin_stump")
+message = "RESOURCE_RESIN"
+
+[node name="Found_Purse" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(186, 318)
+money = 12
+flag = &"found_forest_purse"
+message = "PURSE_LOST"
+ground = ExtResource("m75_purse")

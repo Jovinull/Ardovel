@@ -57,6 +57,8 @@
 [ext_resource type="Script" path="res://world/void_walls.gd" id="54_voidw"]
 [ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/fiber_roots.png" id="m75_fiber_roots"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/purse.png" id="m75_purse"]
 
 [sub_resource type="Resource" id="Resource_48sup"]
 script = ExtResource("16_wgxo5")
@@ -562,9 +564,27 @@ position = Vector2(360, 540)
 item = &"root_fiber"
 count = 3
 flag = &"found_ruin_root_fiber"
+ground = ExtResource("m75_fiber_roots")
+message = "RESOURCE_FIBER"
 
 [node name="Found_OldBronze" parent="Entities" instance=ExtResource("pk_pickup")]
 position = Vector2(380, 72)
 item = &"old_bronze"
 count = 2
 flag = &"found_ruin_old_bronze"
+
+[node name="Found_Purse" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(416, 112)
+money = 20
+flag = &"found_ruin_purse"
+message = "PURSE_RUIN"
+ground = ExtResource("m75_purse")
+
+[node name="Reward_RootRing" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(160, 40)
+item = &"root_ring"
+flag = &"claimed_warden_root_ring"
+legacy_flags = Array[StringName]([&"found_forest_root_ring"])
+appears_with = &"ruin_warden_defeated"
+message = "WARDEN_CHEST"
+chest = ExtResource("pk_chest")

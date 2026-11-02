@@ -38,6 +38,10 @@
 [ext_resource type="Script" path="res://world/area_exit.gd" id="36_4ukx0"]
 [ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
+[ext_resource type="Script" path="res://actors/npc/npc.gd" id="m75_npc"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Monk/SpriteSheet.png" id="m75_carter_sheet"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Monk/Faceset.png" id="m75_carter_face"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/salt_cart.png" id="m75_cart"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7bw8j"]
 size = Vector2(30, 14)
@@ -139,6 +143,42 @@ size = Vector2(104, 124)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ag8wt"]
 size = Vector2(280, 124)
+
+[sub_resource type="Resource" id="Resource_witch_gift"]
+script = ExtResource("31_43wn1")
+requires = &"blank_map_drawn"
+unless = &"gift_witch_charm"
+also_unless = &"found_halt_traveller_charm"
+text = "WITCH_GIFT_CHARM"
+sets = &"gift_witch_charm"
+gives = &"traveller_charm"
+
+[sub_resource type="Resource" id="Resource_carter_ring"]
+script = ExtResource("31_43wn1")
+requires = &"blank_map_drawn"
+unless = &"gift_carter_ring"
+also_unless = &"found_bank_carter_ring"
+text = "CARTER_RING"
+sets = &"gift_carter_ring"
+gives = &"carter_ring"
+
+[sub_resource type="Resource" id="Resource_carter_road"]
+script = ExtResource("31_43wn1")
+requires = &"town_notice_down"
+text = "CARTER_ROAD"
+
+[sub_resource type="Resource" id="Resource_carter_meet"]
+script = ExtResource("31_43wn1")
+unless = &"halt_carter_met"
+text = "CARTER_MEET"
+sets = &"halt_carter_met"
+
+[sub_resource type="Resource" id="Resource_carter_idle"]
+script = ExtResource("31_43wn1")
+text = "CARTER_IDLE"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_saltcart"]
+size = Vector2(26, 8)
 
 [node name="Waystop" type="Node2D" unique_id=634150702 node_paths=PackedStringArray("player", "ground")]
 script = ExtResource("1_lye6b")
@@ -402,7 +442,7 @@ board_note = NodePath("../Board/WitchNote")
 display_name = "NPC_WITCH"
 sheet = ExtResource("29_6tiak")
 faceset = ExtResource("30_8cacw")
-lines = Array[ExtResource("31_43wn1")]([SubResource("Resource_yh487"), SubResource("Resource_k28y5"), SubResource("Resource_3yd0a"), SubResource("Resource_q7f1u")])
+lines = Array[ExtResource("31_43wn1")]([SubResource("Resource_witch_gift"), SubResource("Resource_yh487"), SubResource("Resource_k28y5"), SubResource("Resource_3yd0a"), SubResource("Resource_q7f1u")])
 
 [node name="Breu" type="Node2D" parent="Entities/Witch" unique_id=1201151184 node_paths=PackedStringArray("perch")]
 z_index = 5
@@ -489,12 +529,6 @@ item = &"traveller_staff"
 count = 1
 flag = &"found_halt_traveller_staff"
 
-[node name="Found_TravellerShield" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(300, 216)
-item = &"traveller_shield"
-count = 1
-flag = &"found_halt_traveller_shield"
-
 [node name="Found_TravellerCoat" parent="Entities" instance=ExtResource("pk_pickup")]
 position = Vector2(160, 208)
 item = &"traveller_coat"
@@ -503,14 +537,32 @@ flag = &"found_halt_traveller_coat"
 message = "PICKUP_WAYSTOP_CHEST"
 chest = ExtResource("pk_chest")
 
-[node name="Found_TravellerCharm" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(60, 120)
-item = &"traveller_charm"
-count = 1
-flag = &"found_halt_traveller_charm"
+[node name="SaltCart" type="StaticBody2D" parent="Entities"]
+position = Vector2(378, 182)
 
-[node name="Found_HerbTea" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(312, 198)
-item = &"herb_tea"
-count = 1
-flag = &"found_halt_herb_tea"
+[node name="Sprite" type="Sprite2D" parent="Entities/SaltCart"]
+texture = ExtResource("m75_cart")
+offset = Vector2(0, -12)
+
+[node name="Collision" type="CollisionShape2D" parent="Entities/SaltCart"]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_saltcart")
+
+[node name="Carter" parent="Entities" instance=ExtResource("26_vsj12")]
+position = Vector2(346, 186)
+collision_mask = 0
+script = ExtResource("m75_npc")
+display_name = "NPC_CARTER"
+sheet = ExtResource("m75_carter_sheet")
+faceset = ExtResource("m75_carter_face")
+facing = Vector2(0, 1)
+lines = Array[ExtResource("31_43wn1")]([SubResource("Resource_carter_ring"), SubResource("Resource_carter_road"), SubResource("Resource_carter_meet"), SubResource("Resource_carter_idle")])
+merchant = &"salt_carter"
+
+[node name="Left_TravellerCharm" parent="Entities" instance=ExtResource("pk_pickup")]
+position = Vector2(320, 134)
+item = &"traveller_charm"
+flag = &"found_halt_board_charm"
+legacy_flags = Array[StringName]([&"found_halt_traveller_charm", &"gift_witch_charm"])
+appears_with = &"blank_witch_gone"
+message = "WITCH_CHARM_LEFT"

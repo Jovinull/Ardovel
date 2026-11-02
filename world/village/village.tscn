@@ -44,6 +44,7 @@
 [ext_resource type="PackedScene" path="res://world/props/village/hen_pen.tscn" id="45_hen_pen"]
 [ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
+[ext_resource type="PackedScene" path="res://world/props/trade_counter.tscn" id="m75_counter"]
 
 [sub_resource type="Resource" id="Resource_cida_hens_after"]
 script = ExtResource("17_aj1lm")
@@ -303,6 +304,24 @@ size = Vector2(16, 384)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_45l1j"]
 size = Vector2(16, 384)
 
+[sub_resource type="Resource" id="Resource_anselmo_gift"]
+script = ExtResource("17_aj1lm")
+requires = &"elder_thanked"
+unless = &"gift_anselmo_hatchet"
+also_unless = &"found_village_woodcutter_hatchet"
+text = "ANSELMO_GIFT_HATCHET"
+sets = &"gift_anselmo_hatchet"
+gives = &"woodcutter_hatchet"
+
+[sub_resource type="Resource" id="Resource_cida_gift"]
+script = ExtResource("17_aj1lm")
+requires = &"village_hens_settled"
+unless = &"gift_cida_buckler"
+also_unless = &"found_village_barrel_lid_buckler"
+text = "CIDA_GIFT_BUCKLER"
+sets = &"gift_cida_buckler"
+gives = &"barrel_lid_buckler"
+
 [node name="Village" type="Node2D" unique_id=351481419 node_paths=PackedStringArray("player", "ground")]
 script = ExtResource("1_aq6ad")
 area_id = &"village"
@@ -358,7 +377,7 @@ script = ExtResource("42_anselmo_helper")
 display_name = "NPC_ANSELMO"
 sheet = ExtResource("15_nhykk")
 faceset = ExtResource("16_mywwm")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_anselmo_hens_after_wood"), SubResource("Resource_anselmo_hens_after"), SubResource("Resource_anselmo_coop_ready"), SubResource("Resource_anselmo_coop_work"), SubResource("Resource_anselmo_hens_offer_wood"), SubResource("Resource_anselmo_hens_offer"), SubResource("Resource_anselmo_iara"), SubResource("Resource_anselmo_west"), SubResource("Resource_cyctb"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g"), SubResource("Resource_anselmo_work"), SubResource("Resource_anselmo_path"), SubResource("Resource_cwave"), SubResource("Resource_1bb0f")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_anselmo_gift"), SubResource("Resource_anselmo_hens_after_wood"), SubResource("Resource_anselmo_hens_after"), SubResource("Resource_anselmo_coop_ready"), SubResource("Resource_anselmo_coop_work"), SubResource("Resource_anselmo_hens_offer_wood"), SubResource("Resource_anselmo_hens_offer"), SubResource("Resource_anselmo_iara"), SubResource("Resource_anselmo_west"), SubResource("Resource_cyctb"), SubResource("Resource_cfoqg"), SubResource("Resource_fu32g"), SubResource("Resource_anselmo_work"), SubResource("Resource_anselmo_path"), SubResource("Resource_cwave"), SubResource("Resource_1bb0f")])
 
 [node name="Lia" parent="Entities" unique_id=1122240069 instance=ExtResource("13_ktrsl")]
 position = Vector2(276, 202)
@@ -375,7 +394,7 @@ script = ExtResource("40_cida_worker")
 display_name = "NPC_CIDA"
 sheet = ExtResource("20_jram5")
 faceset = ExtResource("21_bnvwc")
-lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cida_hens_after"), SubResource("Resource_cida_pen_wood_roof"), SubResource("Resource_cida_pen_wood"), SubResource("Resource_cida_hens_call"), SubResource("Resource_cida_hens_wait_wood"), SubResource("Resource_cida_hens_wait"), SubResource("Resource_cida_hens_loose"), SubResource("Resource_cida_iara"), SubResource("Resource_cida_worked"), SubResource("Resource_cida_path_after"), SubResource("Resource_cida_path_open"), SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
+lines = Array[ExtResource("17_aj1lm")]([SubResource("Resource_cida_gift"), SubResource("Resource_cida_hens_after"), SubResource("Resource_cida_pen_wood_roof"), SubResource("Resource_cida_pen_wood"), SubResource("Resource_cida_hens_call"), SubResource("Resource_cida_hens_wait_wood"), SubResource("Resource_cida_hens_wait"), SubResource("Resource_cida_hens_loose"), SubResource("Resource_cida_iara"), SubResource("Resource_cida_worked"), SubResource("Resource_cida_path_after"), SubResource("Resource_cida_path_open"), SubResource("Resource_aq6ad"), SubResource("Resource_wa0am"), SubResource("Resource_y3b4i")])
 
 [node name="PineGrove1" parent="Entities" unique_id=1507130039 instance=ExtResource("22_6sduw")]
 position = Vector2(24, 40)
@@ -599,32 +618,9 @@ flag = &"found_village_corn_bread"
 message = "PICKUP_SHOP_CHEST"
 chest = ExtResource("pk_chest")
 
-[node name="Found_StrawHat" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(428, 322)
-item = &"straw_hat"
-count = 1
-flag = &"found_village_straw_hat"
-
-[node name="Found_WorkMitts" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(352, 230)
-item = &"work_mitts"
-count = 1
-flag = &"found_village_work_mitts"
-
-[node name="Found_RopeSandals" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(392, 184)
-item = &"rope_sandals"
-count = 1
-flag = &"found_village_rope_sandals"
-
-[node name="Found_BarrelLidBuckler" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(296, 314)
-item = &"barrel_lid_buckler"
-count = 1
-flag = &"found_village_barrel_lid_buckler"
-
-[node name="Found_WoodcutterHatchet" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(88, 200)
-item = &"woodcutter_hatchet"
-count = 1
-flag = &"found_village_woodcutter_hatchet"
+[node name="CidaStall" parent="Entities" instance=ExtResource("m75_counter")]
+position = Vector2(420, 300)
+merchant = &"cida_stall"
+opens_with = &"forest_shrine_awakened"
+text = "CIDA_STALL"
+closed_text = "CIDA_STALL_EMPTY"

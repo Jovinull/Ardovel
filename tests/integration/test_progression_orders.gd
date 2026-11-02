@@ -31,7 +31,9 @@ func _lia() -> LiaObserver:
 
 
 func _line(npc_name: String) -> String:
-	return (game.level.get_node("Entities/" + npc_name) as Npc).current_line().text
+	var npc := game.level.get_node("Entities/" + npc_name) as Npc
+	_assume_gifts(npc)
+	return npc.current_line().text
 
 
 func _hud() -> Hud:

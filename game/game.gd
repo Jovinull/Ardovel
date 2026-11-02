@@ -3,9 +3,10 @@ extends Node
 ## Root of a play session. Owns the adventure state, its save slot, the player's settings and
 ## the current area: shows the title (and applies the chosen language), loads areas (one at a
 ## time, swapped behind a fade), sends the hero back to the checkpoint after a fall, and
-## freezes the area while a dialogue, the equipment screen or the chest at home is open. Applies what
-## the hero has earned to the hero (heart vessels, equipment, and growth: experience for creatures
-## defeated, deeds done and areas first reached, see HeroGrowth). Also owns the brief hit-stop when
+## freezes the area while a dialogue, the equipment screen, the chest at home or a merchant's goods
+## are open. Applies what the hero has earned to the hero (heart vessels, equipment, and growth:
+## experience for creatures defeated, deeds done and areas first reached, see HeroGrowth), and
+## leaves what defeated creatures drop where they fell (Spoils). Also owns the brief hit-stop when
 ## the sword connects.
 
 ## Stable area ids (as written in saves and passages) and their scenes.
@@ -29,6 +30,7 @@ const HEART_VESSEL_HEALTH := 4
 const SWORD_HIT_STOP := 0.06
 ## Set the first time the equipment screen is opened (until then, a hint says how).
 const EQUIPMENT_SEEN_FLAG := &"equipment_seen"
+const PICKUP := preload("res://world/props/item_pickup.tscn")
 const MUSIC_VOLUME_DB := -8.0
 const MUSIC_SILENT_DB := -40.0
 
@@ -62,6 +64,8 @@ var _shown_experience: int = 0
 var _shown_level: int = 1
 ## Set while deeds are being given (each gift is itself a change).
 var _settling: bool = false
+## Decides creatures' drops (tests seed it).
+var spoils_rng := RandomNumberGenerator.new()
 
 @onready var _hud: Hud = $HUD
 @onready var _death_screen: DeathScreen = $DeathScreen
@@ -69,6 +73,7 @@ var _settling: bool = false
 @onready var _pause: PauseScreen = $PauseScreen
 @onready var _equipment: HeroMenu = $HeroMenu
 @onready var _storage: StorageMenu = $StorageMenu
+@onready var _trade: TradeMenu = $TradeMenu
 @onready var _fade: ColorRect = %Fade
 @onready var _interlude: Label = %Interlude
 @onready var _music: AudioStreamPlayer = $Music
@@ -92,6 +97,8 @@ func _ready() -> void:
 	_pause.quit_requested.connect(_quit_safely)
 	_equipment.closed.connect(_set_area_frozen.bind(false))
 	_storage.closed.connect(_set_area_frozen.bind(false))
+	_trade.closed.connect(_set_area_frozen.bind(false))
+	spoils_rng.randomize()
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	var connected_joypads := Input.get_connected_joypads()
 	if not connected_joypads.is_empty():
@@ -137,7 +144,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func can_open_equipment() -> bool:
 	if level == null or adventure == null or _travelling or _title.is_open() or _pause.is_open():
 		return false
-	if _equipment.is_open() or _storage.is_open() or _death_screen.is_open() or _hud.is_message_visible():
+	if _equipment.is_open() or _storage.is_open() or _trade.is_open() or _death_screen.is_open() \
+			or _hud.is_message_visible():
 		return false
 	return level.process_mode != Node.PROCESS_MODE_DISABLED and level.player.state == Player.State.MOVE
 
@@ -172,6 +180,32 @@ func is_storage_open() -> bool:
 
 func storage_menu() -> StorageMenu:
 	return _storage
+
+
+## Opens `merchant`'s goods, on the same terms as the hero's menu.
+func open_trade(merchant: StringName) -> void:
+	if not can_open_equipment() or not Commerce.knows(merchant):
+		return
+	_set_area_frozen(true)
+	_trade.open(adventure, merchant, base_health(), _equipment)
+
+
+func is_trade_open() -> bool:
+	return _trade.is_open()
+
+
+func trade_menu() -> TradeMenu:
+	return _trade
+
+
+## A merchant asked to trade as they spoke: their goods open once what they said is read (at once
+## if they said nothing).
+func _on_trade_requested(merchant: StringName) -> void:
+	await get_tree().process_frame
+	if _hud.is_message_visible():
+		await _hud.dialogue_finished
+		await get_tree().process_frame  # the area unfreezes first
+	open_trade(merchant)
 
 
 func open_title() -> void:
@@ -301,6 +335,7 @@ func _begin(state: Adventure) -> void:
 	_pause.close()
 	_equipment.close()
 	_storage.close()
+	_trade.close()
 	Engine.time_scale = 1.0
 	adventure = state
 	# Deeds an older save already proves are given before anything listens: they are written with
@@ -361,8 +396,10 @@ func _load_area(area: StringName, entry: StringName) -> void:
 			arena.fight_won.connect(_on_boss_fight_won)
 		elif node is ItemPickup and (node as ItemPickup).keeps_storage:
 			(node as ItemPickup).storage_requested.connect(open_storage)
+		elif node.has_signal(&"trade_requested"):
+			node.connect(&"trade_requested", _on_trade_requested)
 		elif HeroGrowth.for_creature(_kind(node)) > 0 and node.has_signal(&"defeated"):
-			node.connect(&"defeated", _on_creature_defeated.bind(_kind(node)), CONNECT_ONE_SHOT)
+			node.connect(&"defeated", _on_creature_defeated.bind(_kind(node), node), CONNECT_ONE_SHOT)
 	_play_music(level.music)
 
 
@@ -374,10 +411,28 @@ static func _kind(node: Node) -> StringName:
 
 ## Experience for a creature really defeated (its own `defeated`, once per creature placed in the
 ## area; leaving the area or a fall does not count, and one coming back with the area can be beaten
-## again).
-func _on_creature_defeated(kind: StringName) -> void:
-	if adventure != null:
-		adventure.add_experience(HeroGrowth.for_creature(kind))
+## again), and one roll for what it leaves where it fell.
+func _on_creature_defeated(kind: StringName, creature: Node) -> void:
+	if adventure == null:
+		return
+	adventure.add_experience(HeroGrowth.for_creature(kind))
+	var drop := Spoils.roll(kind, spoils_rng)
+	if not drop.is_empty() and creature is Node2D and level != null:
+		_drop.call_deferred(creature.get_parent(), (creature as Node2D).global_position, drop["item"], drop["count"])
+
+
+## Lays a creature's drop on the ground (not saved: it lasts while the area is loaded).
+func _drop(parent: Node, at: Vector2, item: StringName, count: int) -> void:
+	if level == null or not is_instance_valid(parent) or not level.is_ancestor_of(parent):
+		return
+	var pickup: ItemPickup = PICKUP.instantiate()
+	pickup.item = item
+	pickup.count = count
+	pickup.name = "Drop"
+	parent.add_child(pickup, true)
+	pickup.global_position = at
+	pickup.bind_adventure(adventure)
+	pickup.pop()
 
 
 ## After any change: gives the deeds its flags now prove (once each), and shows what was gained and
@@ -424,6 +479,7 @@ func _return_to_title() -> void:
 	_pause.close()
 	_equipment.close()
 	_storage.close()
+	_trade.close()
 	_death_screen.close()
 	_hud.hide_boss()
 	_music.stop()
@@ -484,6 +540,7 @@ func _update_input_prompts() -> void:
 	_pause.set_input_mode(_gamepad_active, _joypad_name)
 	_equipment.set_input_mode(_gamepad_active, _joypad_name)
 	_storage.set_input_mode(_gamepad_active, _joypad_name)
+	_trade.set_input_mode(_gamepad_active, _joypad_name)
 
 
 func _refresh_first_step_guidance() -> void:

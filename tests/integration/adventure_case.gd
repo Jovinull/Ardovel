@@ -7,6 +7,10 @@ const GameScene := preload("res://game/game.tscn")
 const WaitFor := preload("res://tests/support/wait_for.gd")
 
 var game: Game
+## Story tests check what villagers say about the story. The gifts milestone 7.5 added take the
+## place of an everyday line once (tested in test_trade_and_spoils); here they are taken as already
+## handed over on an earlier visit, unless a test script turns this off.
+var gifts_already_given := true
 
 
 func before_each() -> void:
@@ -72,9 +76,19 @@ func _awaken_shrine() -> Shrine:
 	return shrine
 
 
+## Marks `npc`'s gifts as given (see gifts_already_given).
+func _assume_gifts(npc: Node) -> void:
+	if not gifts_already_given or not npc is Npc or game.adventure == null:
+		return
+	for line in (npc as Npc).lines:
+		if not line.gives.is_empty():
+			game.adventure.set_flag(line.sets)
+
+
 ## Talks to a villager until the dialogue closes; returns the key of what they said.
 func _talk(npc_name: String) -> String:
 	var npc: Npc = game.level.get_node("Entities/" + npc_name)
+	_assume_gifts(npc)
 	var said := [""]
 	var listen := func(_target: Interactable, message: String) -> void: said[0] = message
 	_player().interactor.interacted.connect(listen)

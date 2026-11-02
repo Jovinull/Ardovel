@@ -15,10 +15,14 @@ func _scenes(dir: String) -> Array[String]:
 	return found
 
 
-## Tries every combination of the flags `npc`'s lines depend on: some line must always apply.
+## Tries every combination of the flags `npc`'s lines depend on: some line must always apply. A
+## gift's flags are left out (a gift is never the only thing to say, and each one would double the
+## combinations).
 func _assert_always_has_something_to_say(npc: Npc) -> void:
 	var flags: Array[StringName] = []
 	for line in npc.lines:
+		if not line.gives.is_empty():
+			continue
 		for flag: StringName in [line.requires, line.also_requires, line.unless]:
 			if not flag.is_empty() and not flags.has(flag):
 				flags.append(flag)

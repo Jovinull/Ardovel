@@ -36,6 +36,10 @@
 [ext_resource type="Script" path="res://world/area_exit.gd" id="34_fiaml"]
 [ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/stone_rubble.png" id="m75_stone_rubble"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager2/SpriteSheet.png" id="m75_keeper_sheet"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager2/Faceset.png" id="m75_keeper_face"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/crew_rack.png" id="m75_rack"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ksvog"]
 size = Vector2(56, 14)
@@ -248,6 +252,42 @@ size = Vector2(80, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5x28l"]
 size = Vector2(48, 64)
+
+[sub_resource type="Resource" id="Resource_teodoro_gift"]
+script = ExtResource("26_wqlxu")
+requires = &"town_teodoro_told"
+unless = &"gift_teodoro_ring"
+also_unless = &"found_town_whitestone_ring"
+text = "TEODORO_GIFT_RING"
+sets = &"gift_teodoro_ring"
+gives = &"whitestone_ring"
+
+[sub_resource type="Resource" id="Resource_rufina_gear"]
+script = ExtResource("26_wqlxu")
+requires = &"town_notice_down"
+unless = &"town_crew_gear_given"
+text = "RUFINA_CREW_GEAR"
+sets = &"town_crew_gear_given"
+
+[sub_resource type="Resource" id="Resource_keeper_notice"]
+script = ExtResource("26_wqlxu")
+requires = &"town_notice_down"
+unless = &"town_store_notice_heard"
+text = "STORE_NOTICE"
+sets = &"town_store_notice_heard"
+
+[sub_resource type="Resource" id="Resource_keeper_meet"]
+script = ExtResource("26_wqlxu")
+unless = &"town_store_met"
+text = "STORE_MEET"
+sets = &"town_store_met"
+
+[sub_resource type="Resource" id="Resource_keeper_idle"]
+script = ExtResource("26_wqlxu")
+text = "STORE_IDLE"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crewrack"]
+size = Vector2(22, 6)
 
 [node name="Pedrabranca" type="Node2D" unique_id=1841904956 node_paths=PackedStringArray("player", "ground")]
 script = ExtResource("1_rqvmu")
@@ -1163,7 +1203,7 @@ script = ExtResource("23_nwjoy")
 display_name = "NPC_RUFINA"
 sheet = ExtResource("24_vwymy")
 faceset = ExtResource("25_ugqcg")
-lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_g7xry"), SubResource("Resource_0xjns"), SubResource("Resource_l0tav"), SubResource("Resource_8qipe")])
+lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_rufina_gear"), SubResource("Resource_g7xry"), SubResource("Resource_0xjns"), SubResource("Resource_l0tav"), SubResource("Resource_8qipe")])
 
 [node name="Iara" type="StaticBody2D" parent="Entities" unique_id=1049673887 instance=ExtResource("22_fsrnn")]
 position = Vector2(392, 236)
@@ -1183,7 +1223,7 @@ display_name = "NPC_TEODORO"
 sheet = ExtResource("31_lkwnp")
 faceset = ExtResource("32_ul6py")
 facing = Vector2(-1, 0)
-lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_7yjlt"), SubResource("Resource_gbe6y"), SubResource("Resource_6n6wf")])
+lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_teodoro_gift"), SubResource("Resource_7yjlt"), SubResource("Resource_gbe6y"), SubResource("Resource_6n6wf")])
 
 [node name="Entries" type="Node2D" parent="." unique_id=1780463334]
 
@@ -1261,20 +1301,8 @@ position = Vector2(380, 22)
 item = &"quarry_maul"
 count = 1
 flag = &"found_town_quarry_maul"
-
-[node name="Found_WhitestoneRing" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(130, 22)
-item = &"whitestone_ring"
-count = 1
-flag = &"found_town_whitestone_ring"
-
-[node name="Found_QuarryHelm" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(320, 272)
-item = &"quarry_helm"
-count = 1
-flag = &"found_town_quarry_helm"
-message = "PICKUP_QUARRY_CHEST"
-chest = ExtResource("pk_chest")
+allowed_by = &"town_crew_gear_given"
+refused = "CREW_GEAR_REFUSED"
 
 [node name="Found_QuarryBreastplate" parent="Entities" instance=ExtResource("pk_pickup")]
 position = Vector2(196, 262)
@@ -1283,23 +1311,35 @@ count = 1
 flag = &"found_town_quarry_breastplate"
 message = "PICKUP_QUARRY_CHEST"
 chest = ExtResource("pk_chest")
-
-[node name="Found_QuarryGreaves" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(296, 258)
-item = &"quarry_greaves"
-count = 1
-flag = &"found_town_quarry_greaves"
-message = "PICKUP_QUARRY_CHEST"
-chest = ExtResource("pk_chest")
-
-[node name="Found_QuarryGauntlets" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(160, 200)
-item = &"quarry_gauntlets"
-count = 1
-flag = &"found_town_quarry_gauntlets"
+allowed_by = &"town_crew_gear_given"
+refused = "CREW_GEAR_REFUSED"
 
 [node name="Found_WhiteStoneChip" parent="Entities" instance=ExtResource("pk_pickup")]
 position = Vector2(320, 80)
 item = &"white_stone_chip"
 count = 5
 flag = &"found_town_white_stone_chip"
+ground = ExtResource("m75_stone_rubble")
+message = "RESOURCE_CHIPS"
+
+[node name="CrewRack" type="StaticBody2D" parent="Entities"]
+position = Vector2(186, 198)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/CrewRack"]
+texture = ExtResource("m75_rack")
+offset = Vector2(0, -12)
+
+[node name="Collision" type="CollisionShape2D" parent="Entities/CrewRack"]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_crewrack")
+
+[node name="Storekeeper" parent="Entities" instance=ExtResource("22_fsrnn")]
+position = Vector2(176, 214)
+collision_mask = 0
+script = ExtResource("30_cey4l")
+display_name = "NPC_STOREKEEPER"
+sheet = ExtResource("m75_keeper_sheet")
+faceset = ExtResource("m75_keeper_face")
+facing = Vector2(0, 1)
+lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_keeper_notice"), SubResource("Resource_keeper_meet"), SubResource("Resource_keeper_idle")])
+merchant = &"crew_storeroom"

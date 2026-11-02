@@ -476,3 +476,62 @@ SKILL_TRAINED_STEPS_EFFECT,"A esquiva gasta 30% menos fôlego. A carga pesa como
 SKILL_FIRM_STANCE,"Postura Firme","Firm Stance"
 SKILL_FIRM_STANCE_DESC,"Plantado no chão, escudo erguido: o golpe bate e o corpo não cede.","Planted on the ground, shield raised: the blow lands and the body does not give."
 SKILL_FIRM_STANCE_EFFECT,"Com o escudo erguido e parado, bloquear gasta 40% menos fôlego e empurra a metade.","Shield up and standing still: blocking takes 40% less breath and pushes half as far."
+NPC_CARTER,"Bento, carreteiro","Bento, the carter"
+NPC_STOREKEEPER,"Joaquim, almoxarife","Joaquim, storekeeper"
+MONEY_FOUND,Você achou %s cobres.,You found %s coppers.
+PICKUP_PURSE_FULL,A bolsa de cobres não comporta tanto. Fica aqui por enquanto.,Your purse can't hold that much. It stays here for now.
+PURSE_LOST,"Uma bolsinha de couro, esquecida há tempo.","A small leather purse, forgotten long ago."
+PURSE_RUIN,"Moedas de cobre num nicho da parede, verdes de tempo. Ainda valem.","Copper coins in a niche in the wall, green with age. Still good."
+GIFT_RECEIVED,Você recebeu: %s.,You received: %s.
+GIFT_RECEIVED_MANY,Você recebeu: %s x%s.,You received: %s x%s.
+GIFT_BAG_FULL,(A bolsa está cheia: %s fica guardado até você voltar com espaço.),(Your bag is full: %s is kept for you until you come back with room.)
+CREW_GEAR_REFUSED,Tem o selo do mutirão marcado a fogo. É da turma de Pedrabranca; não é seu para levar.,"It bears the crew's seal, burnt into it. It belongs to Pedrabranca's crew; it isn't yours to take."
+WARDEN_CHEST,"Onde o guardião caiu, as raízes se abriram sobre um cofre antigo.","Where the warden fell, the roots have parted over an old coffer."
+WITCH_CHARM_LEFT,"Preso no quadro, debaixo do mapa novo, um nó de fita com um bilhete: PRA QUEM CONTOU A ESTRADA.","Pinned to the board, under the new map, a ribbon knot with a note: FOR WHOEVER TOLD ME THE ROAD."
+RESOURCE_HONEY,"Um tronco oco, caído. Lá dentro, favo velho que as abelhas largaram.","A hollow fallen log. Inside, old comb the bees have left."
+RESOURCE_RESIN,Um toco de pinheiro chorando resina.,A pine stump weeping resin.
+RESOURCE_FIBER,"Raízes claras soltas da terra, fáceis de desfiar.","Pale roots pulled loose from the earth, easy to strip into fibre."
+RESOURCE_CHIPS,Lascas brancas que sobraram do corte.,White chips left over from the cutting.
+ANSELMO_GIFT_HATCHET,"Leve a minha machadinha. Rachei lenha com ela trinta invernos; agora quem anda pela mata é você.\n\nO cabo é velho, mas o fio eu mantive.","Take my hatchet. I split wood with it for thirty winters; now you're the one walking the woods.\n\nThe handle is old, but I kept the edge."
+CIDA_GIFT_BUCKLER,"Isto era a tampa do barril de milho. O Anselmo pregou uma alça e chamou de escudo.\n\nLeva. Se as galinhas fugirem de novo, pelo menos você volta inteiro.","This was the lid of the corn barrel. Anselmo nailed a handle on it and called it a shield.\n\nTake it. If the hens run off again, at least you'll come back in one piece."
+WITCH_GIFT_CHARM,"Toma, pelo mapa. É um amuleto de estrada: um nó de fita que eu amarro antes de cada trecho novo.\n\nDizem que deixa o braço mais leve. Eu digo que dá coragem, que é quase a mesma coisa.","Here, for the map. It's a road charm: a ribbon knot I tie before every new stretch.\n\nThey say it makes your arm lighter. I say it gives you nerve, which is nearly the same."
+CARTER_MEET,"Ô de casa! Bento, carreteiro. Levo sal de Pedrabranca pros sítios do lado de lá da Laje... levava.\n\nO aviso do quadro diz FECHADA, e carroça não discute com aviso. Fico por aqui e volto.\n\nEnquanto isso, vendo o que trago: chá pra estrada, pão, e umas peças de viajante.","Hello there! Bento, carter. I take salt from Pedrabranca to the farms past the Laje... I used to.\n\nThe notice on the board says CLOSED, and a cart doesn't argue with a notice. I stop here and turn back.\n\nMeanwhile I sell what I carry: tea for the road, bread, and some travelling gear."
+CARTER_RING,"Aberta a pé, diz o papel novo. Carroça ainda não passa, mas é o primeiro aviso bom em duas primaveras.\n\nTome, pelo recado. Anel de carreteiro: quem usa aguenta mais peso. Eu já não carrego nada nas costas; quem carrega é a carroça.","Open on foot, says the new sheet. A cart still can't get through, but it's the first good notice in two springs.\n\nHere, for the news. A carter's ring: whoever wears it can bear more weight. I carry nothing on my back any more; the cart does that."
+CARTER_ROAD,"Disseram que tiraram o aviso do portão de Pedrabranca. Se o conselho mandar consertar o trecho, o primeiro a passar sou eu.","They say the notice is off Pedrabranca's gate. If the council has the stretch mended, I'll be the first through."
+CARTER_IDLE,"O sal não estraga. Eu é que estrago, parado aqui.\n\nVai querer alguma coisa?","Salt doesn't spoil. I do, standing here.\n\nAnything you need?"
+STORE_MEET,"Almoxarifado da turma. Capacete, luva, caneleira: o que sobra da frente de corte eu vendo, e o cobre volta pra turma.\n\nNão é dado, não. Mas é justo.","The crew's storeroom. Helms, gloves, greaves: what the cutting face can spare I sell, and the coppers go back to the crew.\n\nIt isn't free. But it's fair."
+STORE_NOTICE,"A Rufina tirou o aviso. Liberou as caneleiras pra quem é de fora, também. Diz que quem sobe a Laje a pé merece perna protegida.",Rufina took the notice down. She's let me sell the greaves to outsiders too. Says whoever walks up past the Laje deserves their legs covered.
+STORE_IDLE,Quer ver o que tem? Lasca branca e bronze velho eu também compro: a turma usa.,Want to see what there is? I buy white chips and old bronze too: the crew uses them.
+TEODORO_GIFT_RING,"Pegue. Anel de pedra branca, da primeira laje que eu cortei. Todo mundo da turma tem um.\n\nVocê subiu a Laje a pé. Isso conta como turma.","Take it. A white-stone ring, from the first slab I ever cut. Everyone in the crew has one.\n\nYou walked up past the Laje. That counts as crew."
+RUFINA_CREW_GEAR,"Mais uma coisa. O que a turma largou na encosta, o facão, as botas, a tábua, o colete no baú: pode levar.\n\nE a marreta de reserva lá em cima, e o peitoral no baú da pedreira. Melhor em uso do que enferrujando no mato.","One more thing. What the crew left on the slope, the machete, the boots, the board, the vest in the chest: take them.\n\nAnd the spare maul up top, and the breastplate in the quarry chest. Better used than rusting in the brush."
+TRADE_PURSE,%s,%s
+TRADE_GOODS,À venda,For sale
+TRADE_OFFERS,Vender  %s/%s,Sell  %s/%s
+TRADE_NOTHING,nada hoje,nothing today
+TRADE_NOTHING_TO_SELL,nada a vender,nothing to sell
+TRADE_SOLD_OUT,Acabou: não tem mais disso.,Sold out: there is no more of that.
+TRADE_NO_MONEY,Faltam cobres.,Not enough coppers.
+TRADE_BAG_FULL,A bolsa não tem espaço para isso.,Your bag has no room for that.
+TRADE_NOT_WANTED,Isso não interessa aqui.,They don't want that here.
+TRADE_KEEPSAKE,Isso não se vende: é único.,That isn't for sale: it is one of a kind.
+TRADE_WORN,Está no corpo. Tire a peça no menu antes de vendê-la.,It is being worn. Take it off in the menu before selling it.
+TRADE_PURSE_FULL,A bolsa de cobres não comporta tanto.,Your purse can't hold that much.
+TRADE_BOUGHT,Comprado: %s x%s por %s cobres.,Bought: %s x%s for %s coppers.
+TRADE_SOLD,Vendido: %s x%s por %s cobres.,Sold: %s x%s for %s coppers.
+TRADE_AMOUNT,Quantos? %s de %s: %s cobres,How many? %s of %s: %s coppers
+TRADE_CONFIRM_BUY,Comprar %s x%s por %s cobres?,Buy %s x%s for %s coppers?
+TRADE_CONFIRM_SELL,Vender %s x%s por %s cobres?,Sell %s x%s for %s coppers?
+TRADE_PURSE_AFTER,Fica com %s cobres.,You'll have %s coppers.
+TRADE_HINT_YES,%s confirmar,%s confirm
+TRADE_HINT_BUY,%s comprar,%s buy
+TRADE_HINT_SELL,%s vender,%s sell
+TRADE_HINT_SIDE,%s/%s comprar ou vender,%s/%s buy or sell
+TRADE_PRICE,%s cobres,%s coppers
+TRADE_PAYS,paga %s,pays %s
+TRADE_YOU_HAVE,tem %s,have %s
+TRADE_LEFT,resta %s,%s left
+TRADE_SOLD_OUT_MARK,esgotado,sold out
+MENU_MONEY,Cobres %s,Coppers %s
+CIDA_STALL,"A banca da Cida. Pão, mel, chapéu de palha. O preço está riscado a carvão numa tábua, e ela anota tudo num caderninho.","Cida's stall. Bread, honey, straw hats. The prices are scratched in charcoal on a board, and she writes everything down in a little notebook."
+CIDA_STALL_EMPTY,"A banca da Cida, vazia. Só a tábua de preços, sem nada escrito.","Cida's stall, empty. Only the price board, with nothing written on it."
+MENU_SELLS_FOR,"Mercadores pagam %s cobres por um.","Merchants pay %s coppers for one."
