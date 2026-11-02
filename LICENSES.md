@@ -42,6 +42,8 @@ was written for this project.
 | `FX/Magic/Spirit/SpriteSheetBlue.png` | the warden's light flying to the ruin's heart |
 | `Audio/Sounds/...` (`Slash`, `Hit1`, `Impact`, `Impact2`, `Impact3`, `Impact4`, `Spirit`, `Launch`, `Magic1`, `Bonus`, `PowerUp1`, `Grass`, `Grass2`, `Explosion`, `Explosion2`, `Whoosh`, `Bounce`, `Water2`), `Audio/Sounds/Menu/Accept.wav`, `Cancel.wav`, `Move1.wav` | sound effects; the hero menu's choose, back and move sounds |
 | `Audio/Musics/33 - Calm Village.ogg`, `11 - Clearing.ogg`, `30 - Ruins.ogg`, `17 - Fight.ogg`, `23 - Road.ogg` | village, forest, ruin, warden fight, far bank and road (halt, Pedrabranca) music |
+| `Audio/Sounds/...` (`Hit2`, `Impact5`, `Water1`, `Water5`, `Bubble`, `Explosion3`, `Explosion4`, `Whoosh2`, `Strange`) | the Hollow Vein (7.6): blows on shells, sluices and buckets, eels, the Old Gnawer's tremor, crash, roll and cry |
+| `Audio/Musics/2 - The Cave.ogg`, `34 - Fight.ogg` (the pack's `34  - Fight.ogg`, one space dropped from its name) | the Hollow Vein's music and the Old Gnawer's fight |
 
 ## Ardovel original art — `assets/ardovel/`
 
@@ -89,6 +91,21 @@ production tools are kept outside this repository.
 | `village/coop.png` | **modified copy** of the wooden hut of Ninja Adventure's `TilesetHouse.png` (CC0, region 3,120 to 45,159): two frames, one with two roof boards missing (a dark slot with its batten) and one with new, lighter boards in their place (the original file is unchanged) |
 | `village/coop_gate.png`, `village/egg_basket.png`, `village/grain.png` | hand drawn yard gate (nailed shut, open, new), basket of eggs and scattered grain, in the pack's idiom for wooden frames |
 | `ui/fonts/ardovel_8.png`, `ardovel_8.fnt` | font derived from `Ui/Font/font8x8.png` (CC0): original glyphs kept except the lowercase i (its broken foot redrawn), Portuguese accented glyphs added with capital accents raised one row, proportional spacing |
+
+### The Hollow Vein (milestone 7.6)
+
+| File | Contents |
+| --- | --- |
+| `vein/vein_tiles.png` | the galleries' ground: wet and cut-stone floors, rock faces and tops with rims, the cut white-stone cliff, steps |
+| `vein/channel_*.png`, `vein/pool_*.png` | channels and the pool, running (two frames) and dry |
+| `vein/sluice.png`, `board_h.png`, `board_v.png`, `bucket.png`, `gate_h.png`, `gate_v.png`, `lift.png`, `cart.png`, `rails.png`, `trestle.png`, `cage.png`, `shaft.png`, `ladder.png`, `footbridge.png` | the old machines: sluices and their planks, counterweight buckets, grates, the lift, the cart and rails, the cage and its shaft, the ladder, a footbridge |
+| `vein/lamp.png`, `tally.png`, `sign.png`, `pay_box.png`, `tool_rack.png`, `cot.png`, `prop.png`, `spring.png`, `sinkhole.png`, `fall.png` | the miners' lamp, boards and painted arrows, the pay box, tools, cots, shoring props, the spring, the sinkhole, falling water |
+| `vein/master_sluice.png`, `den.png`, `weight.png`, `latch.png` | the drain chamber: the master sluice, the gnawer's den, the hoist's counterweight and its latch |
+| `town/adit.png` | the old adit in Pedrabranca's quarry face, boarded and open |
+| `monsters/tatuira.png`, `tatuira_acts.png` | the tatuira (stone-gnawing pill bug): walk, curl, roll, on its back, cracked |
+| `monsters/mucum.png` | the muçum (blind cave eel): ripples, rising, biting, stranded, dead |
+| `monsters/old_gnawer.png`, `old_gnawer_bare.png`, `gnawer_fx.png` | the Old Gnawer (48×40, crusted and bare) and her effects: shadows, a falling stone, the mound, cracks, dust |
+| `items/rings/gnawer_ring.png` | the Moult Ring |
 
 ## Third-party tools
 
