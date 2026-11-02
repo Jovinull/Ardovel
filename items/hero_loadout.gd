@@ -120,7 +120,7 @@ static func profile(adventure: Adventure, base_health: int, added: Dictionary = 
 	result.dodge.distance = HeroStats.DODGE_DISTANCE[result.band]
 	result.dodge.untouchable = HeroStats.DODGE_UNTOUCHABLE[result.band]
 	result.dodge.recovery = HeroStats.DODGE_RECOVERY[result.band]
-	result.moult = adventure.equipped(ItemCatalog.RING_1) == MOULT_RING 			or adventure.equipped(ItemCatalog.RING_2) == MOULT_RING
+	result.moult = MOULT_RING in [adventure.equipped(ItemCatalog.RING_1), adventure.equipped(ItemCatalog.RING_2)]
 	result.skills = Skills.equipped(adventure)
 	result.passive = Skills.passive(adventure)
 	if result.has_passive(SkillCatalog.TRAINED_STEPS):
