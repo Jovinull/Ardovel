@@ -20,6 +20,7 @@ const AREAS: Dictionary[StringName, String] = {
 	&"road_west": "res://world/spring/road_west.tscn",
 	&"waystop": "res://world/blank/waystop.tscn",
 	&"pedrabranca": "res://world/town/pedrabranca.tscn",
+	&"hollow_vein": "res://world/vein/hollow_vein.tscn",
 }
 const FADE_TIME := 0.35
 ## How long an interlude's text stays on the black between two areas.
@@ -275,7 +276,8 @@ func _show_interlude(text: String) -> void:
 
 
 ## Back to safety with full health, everything earned kept: to the checkpoint (the last shrine
-## awakened, wherever it is), or before any shrine to the entry the hero last arrived through.
+## awakened, wherever it is), or before any shrine to the entry the hero last arrived through. An
+## area with its own way back (`Level.fall_entry`, the vein's lamp or mouth) keeps a fall there.
 func respawn() -> void:
 	if _travelling:
 		return
@@ -284,7 +286,9 @@ func respawn() -> void:
 	_death_screen.close()
 	var area := adventure.area
 	var entry := adventure.entry
-	if adventure.has_checkpoint() and AREAS.has(adventure.checkpoint_area):
+	if level != null and not level.fall_entry.is_empty() and level.area_id == adventure.area:
+		entry = level.fall_entry
+	elif adventure.has_checkpoint() and AREAS.has(adventure.checkpoint_area):
 		area = adventure.checkpoint_area
 		entry = adventure.checkpoint_entry
 	elif adventure.has_checkpoint():
@@ -293,6 +297,24 @@ func respawn() -> void:
 	_load_area(area, entry)
 	adventure.enter(area, entry)
 	save_now()
+	await _fade_to(0.0)
+	_travelling = false
+
+
+## Moves the hero within the area to `entry` behind a fade (a cage, a ladder); nothing reloads.
+func pass_within(entry: StringName) -> void:
+	if _travelling or level == null or level.player.health.is_dead() or level.entry(entry) == null:
+		return
+	_travelling = true
+	level.process_mode = Node.PROCESS_MODE_DISABLED
+	await _fade_to(1.0)
+	# Back in the physics space before moving the hero (a disabled area's bodies are out of it).
+	level.process_mode = Node.PROCESS_MODE_INHERIT
+	await get_tree().physics_frame
+	if level == null:
+		_travelling = false
+		return
+	level.place_player(entry)
 	await _fade_to(0.0)
 	_travelling = false
 
@@ -386,6 +408,7 @@ func _load_area(area: StringName, entry: StringName) -> void:
 	player.quick_use_finished.connect(_finish_quick_use)
 	_refresh_quick_slot()
 	level.exit_requested.connect(travel)
+	level.passage_requested.connect(pass_within)
 	_hud.bind_player(player)
 	_refresh_first_step_guidance()
 	_hud.hide_boss()
@@ -455,7 +478,7 @@ func _grow() -> void:
 
 
 func _on_boss_fight_started(arena: BossArena) -> void:
-	_hud.show_boss(arena.boss_name, arena.warden.health)
+	_hud.show_boss(arena.boss_name, arena.boss_health())
 	_play_music(arena.music)
 
 
