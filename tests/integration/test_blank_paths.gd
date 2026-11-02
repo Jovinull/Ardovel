@@ -239,7 +239,11 @@ func test_she_draws_the_stretch_and_pins_her_note() -> void:
 	assert_true(await _walk_through([Vector2(300, 142)]), "to the board on foot")
 	await _tap(&"move_up")
 	assert_eq(await _press_interact(), "BLANK_BOARD_AFTER")
-	assert_eq(await _talk_to_the_witch(), "WITCH_AFTER")
+	var gift := await _talk_to_the_witch()
+	assert_string_contains(gift, tr("WITCH_GIFT_CHARM").substr(0, 20), "she thanks the hero for the map")
+	assert_string_contains(gift, tr("ITEM_TRAVELLER_CHARM"), "with her road charm")
+	assert_eq(game.adventure.count(&"traveller_charm"), 1)
+	assert_eq(await _talk_to_the_witch(), "WITCH_AFTER", "once")
 
 
 func test_her_map_is_blank_past_the_bridge_until_she_draws_it() -> void:

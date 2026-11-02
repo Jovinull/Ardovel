@@ -1,0 +1,58 @@
+{
+	"area": "waystop",
+	"checkpoint": {
+		"area": "forest",
+		"entry": "shrine"
+	},
+	"entry": "east",
+	"equipment": {
+		"legs": "traveller_boots",
+		"main_hand": "wayfarer_sword",
+		"ring_1": "carter_ring",
+		"ring_2": "root_ring"
+	},
+	"flags": [
+		"blank_witch_met",
+		"elder_thanked",
+		"equipment_seen",
+		"far_bank_bridge_tied",
+		"far_bank_hailed",
+		"far_bank_iara_met",
+		"forest_echo_found",
+		"forest_shrine_awakened",
+		"found_bank_carter_ring",
+		"found_bank_traveller_boots",
+		"found_forest_root_ring",
+		"found_halt_herb_tea",
+		"heard_of_shrine",
+		"road_work_started",
+		"spring_iara_left",
+		"spring_iara_ready",
+		"spring_stone_shifted"
+	],
+	"health": 12,
+	"inventory": [
+		{
+			"count": 1,
+			"id": "wayfarer_sword"
+		},
+		{
+			"count": 1,
+			"id": "carter_ring"
+		},
+		{
+			"count": 1,
+			"id": "traveller_boots"
+		},
+		{
+			"count": 1,
+			"id": "herb_tea"
+		},
+		{
+			"count": 1,
+			"id": "root_ring"
+		}
+	],
+	"quick_item": "herb_tea",
+	"version": 4
+}

@@ -126,6 +126,9 @@ func _press_interact() -> String:
 
 func _talk_facing(direction: StringName) -> String:
 	await _tap(direction)
+	_player().interactor.refresh_focus()
+	if _player().interactor.focused != null:
+		_assume_gifts(_player().interactor.focused.get_parent())
 	return await _press_interact()
 
 

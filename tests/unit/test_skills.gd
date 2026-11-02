@@ -203,7 +203,7 @@ func test_format_7_round_trip() -> void:
 	Skills.equip(adventure, &"piercing_step", 1)
 	Skills.equip(adventure, &"firm_stance", -1)
 	var data := adventure.to_dict()
-	assert_eq(data["version"], 7)
+	assert_eq(data["version"], Adventure.FORMAT_VERSION)
 	assert_eq(data["skills"], ["piercing_step", "guard_response", "firm_stance"])
 	assert_eq(data["skill_slots"], ["guard_response", "piercing_step"])
 	assert_eq(data["passive_skill"], "firm_stance")
@@ -247,7 +247,7 @@ func test_a_version_6_save_keeps_its_growth_and_gets_its_technique_points() -> v
 	assert_eq(adventure.skills().size(), 0)
 	assert_eq(Skills.points_free(adventure), 3, "level 7: three technique points free at once")
 	assert_eq(adventure.stored(&"corn_bread"), 3, "the chest kept")
-	assert_eq(adventure.to_dict()["version"], 7)
+	assert_eq(adventure.to_dict()["version"], Adventure.FORMAT_VERSION)
 	var back := _round_trip(adventure)
 	assert_eq(Skills.points_free(back), 3, "never given twice")
 
