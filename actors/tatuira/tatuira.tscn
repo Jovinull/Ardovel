@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/tatuira/tatuira.gd" id="1_rcxwg"]
+
+[node name="Tatuira" type="CharacterBody2D" unique_id=43714899]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_rcxwg")
