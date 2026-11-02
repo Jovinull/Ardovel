@@ -4,7 +4,8 @@ extends RefCounted
 ## return to after a fall, their health, the flags the world has earned, the items they have (how
 ## many of each), what they have equipped, what they keep in the chest at home, and how they have
 ## grown (experience, attribute points invested, one-time rewards given, skills learned and the
-## ones selected). Flags are the
+## ones selected), and their purse: the coppers they carry and what they have bought from each
+## merchant's limited goods (Commerce says what is sold, for how much). Flags are the
 ## story's progress: the shrine, the objectives and small permanent changes are each one named
 ## flag. Items are kept by their stable ids (ItemCatalog); nothing derived from them (the hero's
 ## statistics) is saved. The rules for what fits in the bag, in the chest and what goes in which
@@ -22,7 +23,13 @@ extends RefCounted
 ## Emitted whenever something worth saving changes.
 signal changed
 
-const FORMAT_VERSION := 7
+const FORMAT_VERSION := 8
+## Coppers a new adventure starts with; format 7 saves gain the same purse on upgrade (once: the
+## upgraded save is written as format 8 with the next change).
+const STARTING_MONEY := 30
+## The most coppers a purse holds (a balance parameter, far above anything the world pays, so an
+## earning that would pass it is refused whole instead of overflowing).
+const MAX_MONEY := 99999
 ## Health value meaning "full", whatever the hero's maximum is.
 const FULL_HEALTH := -1
 ## The sword every hero carries from the start (format 3 saves gain it on upgrade).
@@ -64,6 +71,10 @@ var _skills: Array[StringName] = []
 ## The two active skill slots (empty: nothing there) and the passive skill selected.
 var _skill_slots: Array[StringName] = [&"", &""]
 var passive_skill: StringName = &""
+## Coppers carried (never below 0 nor above MAX_MONEY; not an item: it takes no space).
+var money: int = STARTING_MONEY
+## "merchant/item" -> copies bought of that merchant's limited goods (less any sold back to them).
+var _purchases: Dictionary[StringName, int] = {}
 
 
 func _init(start_area: StringName = &"village", start_entry: StringName = &"start") -> void:
@@ -154,6 +165,75 @@ func give_reward(id: StringName, amount: int) -> bool:
 	experience += amount
 	changed.emit()
 	return true
+
+
+## Adds `amount` coppers (a find, a reward). False and nothing added for nothing or less, or if
+## the purse would pass MAX_MONEY.
+func earn(amount: int) -> bool:
+	if amount <= 0 or amount > MAX_MONEY - money:
+		return false
+	money += amount
+	changed.emit()
+	return true
+
+
+## Copies of `id` bought from `merchant`'s limited goods (and not sold back to them).
+func bought(merchant: StringName, id: StringName) -> int:
+	return _purchases.get(_purchase_key(merchant, id), 0)
+
+
+## "merchant/item" -> copies, sorted (for tests and saving).
+func purchases() -> Dictionary[StringName, int]:
+	var result: Dictionary[StringName, int] = {}
+	var keys: Array[StringName] = _purchases.keys()
+	keys.sort()
+	for key in keys:
+		result[key] = _purchases[key]
+	return result
+
+
+## A purchase as one change: pays `price` coppers for `amount` of `id`, and if `limited` counts
+## them against `merchant`'s goods. False and nothing changed for nothing, a negative price, or
+## too few coppers. Whether the merchant sells it and the bag has room is Commerce's to say.
+func buy(merchant: StringName, id: StringName, amount: int, price: int, limited: bool) -> bool:
+	if id.is_empty() or amount <= 0 or price < 0 or price > money:
+		return false
+	money -= price
+	if not _counts.has(id):
+		_items.append(id)
+	_counts[id] = count(id) + amount
+	if limited:
+		var key := _purchase_key(merchant, id)
+		_purchases[key] = _purchases.get(key, 0) + amount
+	changed.emit()
+	return true
+
+
+## A sale as one change: gives `amount` loose copies of `id` (never the ones worn) for `price`
+## coppers; if `restock`, they go back among `merchant`'s limited goods. False and nothing changed
+## for nothing, a negative price, too few loose copies, or a purse that would pass MAX_MONEY.
+func sell(merchant: StringName, id: StringName, amount: int, price: int, restock: bool) -> bool:
+	if id.is_empty() or amount <= 0 or price < 0 or count(id) - amount < equipped_copies(id) \
+			or price > MAX_MONEY - money:
+		return false
+	_counts[id] = count(id) - amount
+	if _counts[id] == 0:
+		_counts.erase(id)
+		_items.erase(id)
+	money += price
+	if restock:
+		var key := _purchase_key(merchant, id)
+		var left: int = maxi(_purchases.get(key, 0) - amount, 0)
+		if left == 0:
+			_purchases.erase(key)
+		else:
+			_purchases[key] = left
+	changed.emit()
+	return true
+
+
+static func _purchase_key(merchant: StringName, id: StringName) -> StringName:
+	return StringName("%s/%s" % [merchant, id])
 
 
 func skills() -> Array[StringName]:
@@ -359,6 +439,9 @@ func to_dict() -> Dictionary:
 	var slots: Array[String] = []
 	for id in _skill_slots:
 		slots.append(String(id))
+	var bought_goods := {}
+	for key in purchases():
+		bought_goods[String(key)] = _purchases[key]
 	return {
 		"version": FORMAT_VERSION,
 		"area": String(area),
@@ -377,6 +460,8 @@ func to_dict() -> Dictionary:
 		"skills": learned,
 		"skill_slots": slots,
 		"passive_skill": String(passive_skill),
+		"money": money,
+		"purchases": bought_goods,
 	}
 
 
@@ -400,6 +485,8 @@ static func from_dict(data: Variant) -> Adventure:
 		d = _upgraded_from_v5(d)
 	if _is_whole(d.get("version")) and int(d["version"]) == 6:
 		d = _upgraded_from_v6(d)
+	if _is_whole(d.get("version")) and int(d["version"]) == 7:
+		d = _upgraded_from_v7(d)
 	if not _is_whole(d.get("version")) or int(d["version"]) != FORMAT_VERSION:
 		return null
 	if not _is_name(d.get("area")) or not _is_name(d.get("entry")):
@@ -416,6 +503,9 @@ static func from_dict(data: Variant) -> Adventure:
 	if not _is_whole(d.get("experience")) or int(d["experience"]) < 0:
 		return null
 	if not d.get("skills") is Array or not d.get("skill_slots") is Array or not d.get("passive_skill") is String:
+		return null
+	if not _is_whole(d.get("money")) or int(d["money"]) < 0 or int(d["money"]) > MAX_MONEY \
+			or not d.get("purchases") is Dictionary:
 		return null
 	var adventure := Adventure.new(StringName(d["area"]), StringName(d["entry"]))
 	adventure._items.clear()
@@ -444,6 +534,13 @@ static func from_dict(data: Variant) -> Adventure:
 			adventure._stored_items.append(id)
 		adventure._stored[id] = adventure.stored(id) + int(stack["count"])
 	adventure.experience = int(d["experience"])
+	adventure.money = int(d["money"])
+	for key: Variant in d["purchases"]:
+		var copies: Variant = d["purchases"][key]
+		if not _is_name(key) or not (key as String).contains("/") or not _is_whole(copies) or int(copies) < 0:
+			return null
+		if int(copies) > 0:
+			adventure._purchases[StringName(key)] = int(copies)
 	for id: Variant in d["attributes"]:
 		var points: Variant = d["attributes"][id]
 		if not _is_name(id) or not _is_whole(points) or int(points) < 0:
@@ -574,6 +671,18 @@ static func _upgraded_from_v6(v6: Dictionary) -> Dictionary:
 	v7["skill_slots"] = ["", ""]
 	v7["passive_skill"] = ""
 	return v7
+
+
+## Version 7 had no purse: an adventure from then gets the purse a new one starts with (the policy
+## for old saves: the same coppers as a new hero, given once by this upgrade) and has bought
+## nothing. Merchants' goods that were lying in the world then are found by their old flags
+## (Commerce), not here.
+static func _upgraded_from_v7(v7: Dictionary) -> Dictionary:
+	var v8 := v7.duplicate()
+	v8["version"] = 8
+	v8["money"] = STARTING_MONEY
+	v8["purchases"] = {}
+	return v8
 
 
 ## {"id": a name, "count": a whole number from 1}.
