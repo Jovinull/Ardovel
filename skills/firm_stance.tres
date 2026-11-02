@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://skills/skill_def.gd" id="1_skill"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/skills/firm_stance.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_skill")
+id = &"firm_stance"
+kind = 1
+name_key = "SKILL_FIRM_STANCE"
+description_key = "SKILL_FIRM_STANCE_DESC"
+effect_key = "SKILL_FIRM_STANCE_EFFECT"
+icon = ExtResource("2_icon")
+level = 6
+cost = 1

@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://skills/skill_def.gd" id="1_skill"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/skills/guard_response.png" id="2_icon"]
+[ext_resource type="Script" path="res://skills/technique_data.gd" id="3_technique"]
+
+[sub_resource type="Resource" id="Resource_technique"]
+script = ExtResource("3_technique")
+motion = 3
+frames = 0
+windup = 0.04
+active = 0.1
+recovery = 0.2
+damage_scale = 1.5
+knockback_scale = 1.2
+stagger = 0.6
+breaking = false
+window = 0.45
+hit_stop = 0.08
+
+[resource]
+script = ExtResource("1_skill")
+id = &"guard_response"
+kind = 0
+name_key = "SKILL_GUARD_RESPONSE"
+description_key = "SKILL_GUARD_RESPONSE_DESC"
+effect_key = "SKILL_GUARD_RESPONSE_EFFECT"
+icon = ExtResource("2_icon")
+level = 6
+cost = 2
+needs_shield = true
+breath = 20.0
+technique = SubResource("Resource_technique")

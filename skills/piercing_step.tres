@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://skills/skill_def.gd" id="1_skill"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/skills/piercing_step.png" id="2_icon"]
+[ext_resource type="Script" path="res://skills/technique_data.gd" id="3_technique"]
+
+[sub_resource type="Resource" id="Resource_technique"]
+script = ExtResource("3_technique")
+motion = 1
+frames = 1
+windup = 0.14
+active = 0.16
+recovery = 0.24
+damage_scale = 1.5
+knockback_scale = 1.2
+stagger = 0.35
+breaking = false
+hitbox_size = Vector2(10, 22)
+reach = 14.0
+lunge = 44.0
+hit_stop = 0.07
+
+[resource]
+script = ExtResource("1_skill")
+id = &"piercing_step"
+kind = 0
+name_key = "SKILL_PIERCING_STEP"
+description_key = "SKILL_PIERCING_STEP_DESC"
+effect_key = "SKILL_PIERCING_STEP_EFFECT"
+icon = ExtResource("2_icon")
+level = 2
+cost = 1
+weapons = Array[StringName]([&"wayfarer_sword", &"crew_machete", &"ruin_blade"])
+breath = 30.0
+technique = SubResource("Resource_technique")
