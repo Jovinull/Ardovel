@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://ui/pause/pause_screen.tscn" id="6_pause"]
 [ext_resource type="PackedScene" path="res://ui/hero_menu/hero_menu.tscn" id="7_equipment"]
 [ext_resource type="PackedScene" path="res://ui/storage/storage_menu.tscn" id="7_storage"]
+[ext_resource type="PackedScene" path="res://ui/trade/trade_menu.tscn" id="8_trade"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1_game")
@@ -56,3 +57,5 @@ volume_db = -8.0
 [node name="HeroMenu" parent="." instance=ExtResource("7_equipment")]
 
 [node name="StorageMenu" parent="." instance=ExtResource("7_storage")]
+
+[node name="TradeMenu" parent="." instance=ExtResource("8_trade")]

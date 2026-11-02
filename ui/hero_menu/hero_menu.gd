@@ -139,6 +139,7 @@ var _inv_tabs: Control
 var _grid: Control
 var _inv_info: Control
 var _bag: Label
+var _money: Label
 var _status: Control
 ## Status: spending points (the attribute under the cursor, the points added so far).
 var _distributing := false
@@ -711,7 +712,8 @@ func _build_inventory() -> void:
 		_pip(cell)
 	_label(inventory, "Scroll", Rect2(8, 140, 40, 10), DIM)
 	_label(inventory, "Sort", Rect2(48, 140, 100, 10), DIM, HORIZONTAL_ALIGNMENT_RIGHT)
-	_bag = _label(inventory, "Bag", Rect2(8, 152, 140, 10), LIGHT)
+	_bag = _label(inventory, "Bag", Rect2(8, 152, 70, 10), LIGHT)
+	_money = _label(inventory, "Money", Rect2(78, 152, 70, 10), GOLD, HORIZONTAL_ALIGNMENT_RIGHT)
 	_inv_info = _patch(inventory, "Info", BOX, Rect2(152, 38, 160, 124), 6)
 	_label(_inv_info, "Name", Rect2(8, 6, 144, 10), WINE, 0, false)
 	_label(_inv_info, "Kind", Rect2(8, 16, 144, 10), TEAL, 0, false)
@@ -1018,6 +1020,7 @@ func _refresh_inventory() -> void:
 	var rows := ceili(float(ids.size()) / GRID_COLUMNS)
 	(_pages[1].get_node(^"Scroll") as Label).text = tr("MENU_ROWS") % [mini(_scroll + GRID_ROWS, maxi(rows, 1)), maxi(rows, 1)] if rows > GRID_ROWS else ""
 	_bag.text = tr("MENU_BAG") % [Bag.spaces_used(_adventure), Bag.CAPACITY]
+	_money.text = tr("MENU_MONEY") % _adventure.money
 	(_pages[1].get_node(^"Sort") as Label).text = "%s %s" % [_key(&"menu_sort"), tr(SORT_KEYS[_sort])]
 	var id := selected_item()
 	var item := ItemCatalog.find(id)
@@ -1225,7 +1228,8 @@ func effect_lines(item: ItemDef) -> Array[String]:
 	if item.heal > 0:
 		lines.append(tr("MENU_HEALS") % _hearts(item.heal))
 	if item.category == ItemCatalog.MATERIAL:
-		lines.append(tr("MENU_NO_USE_YET"))
+		var worth := Commerce.sell_price(item.id)
+		lines.append(tr("MENU_SELLS_FOR") % worth if worth > 0 else tr("MENU_NO_USE_YET"))
 	return lines
 
 
