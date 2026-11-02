@@ -1,7 +1,13 @@
 class_name Npc
 extends StaticBody2D
 ## A villager to talk to. Says the first of its `lines` whose conditions hold for the current
-## adventure, turning to face whoever spoke to them.
+## adventure, turning to face whoever spoke to them. A line may hand over a gift: it is given only
+## if the bag has room (otherwise the villager keeps it for later and the line will be said again).
+## A villager who trades (`merchant`, a Commerce id) asks for their goods to be shown once the line
+## is read, after `trades_after` (empty: from the start).
+
+## Asks for the trade with `merchant` (Game opens it once the dialogue closes).
+signal trade_requested(merchant: StringName)
 
 const FRAME_SIZE := 16
 
@@ -14,6 +20,10 @@ const FRAME_SIZE := 16
 @export var facing: Vector2 = Vector2.DOWN
 ## Checked from the top: put the most specific (latest in the story) lines first.
 @export var lines: Array[DialogueLine] = []
+## Commerce id of the goods this villager trades (empty: none).
+@export var merchant: StringName
+## They trade only once this flag is set (empty: always).
+@export var trades_after: StringName
 
 var _adventure: Adventure
 var _walked := 0.0
@@ -38,9 +48,22 @@ func bind_adventure(adventure: Adventure) -> void:
 	_adventure = adventure
 
 
-## The line this villager would say now, or null.
+## The line this villager would say now, or null. A gift waits while the story has something new to
+## say (a line that sets a flag not yet set): it never takes that line's place, only an everyday one's.
 func current_line() -> DialogueLine:
-	return DialogueLine.first_that_applies(lines, _adventure)
+	var said: DialogueLine = null
+	var gift: DialogueLine = null
+	for line in lines:
+		if not line.applies(_adventure):
+			continue
+		if line.gives.is_empty():
+			if said == null:
+				said = line
+		elif gift == null:
+			gift = line
+	if said != null and _adventure != null and not said.sets.is_empty() and not _adventure.has_flag(said.sets):
+		return said
+	return gift if gift != null else said
 
 
 ## Shows the sheet column for `direction` (pack character sheets: down, up, left, right).
@@ -79,11 +102,39 @@ func _column(direction: Vector2) -> int:
 	return ["down", "up", "left", "right"].find(String(Facing.name_of(direction)))
 
 
+## Whether they would trade now.
+func trades() -> bool:
+	return not merchant.is_empty() and _adventure != null \
+			and (trades_after.is_empty() or _adventure.has_flag(trades_after))
+
+
 func _on_interact(actor: Node2D) -> String:
 	var line := current_line()
+	var will_trade := trades()
 	if line == null:
+		if will_trade:
+			trade_requested.emit(merchant)
 		return ""
 	face(actor.global_position - global_position)
-	if _adventure != null:
+	var text := line.text
+	if _adventure != null and not line.gives.is_empty():
+		text = _give(line)
+	elif _adventure != null:
 		_adventure.set_flag(line.sets)
-	return line.text
+	if will_trade:
+		trade_requested.emit(merchant)
+	return text
+
+
+## The line with its gift: handed over (and the line's flag set) if it fits in the bag.
+func _give(line: DialogueLine) -> String:
+	var item := ItemCatalog.find(line.gives)
+	var name := tr(item.name_key) if item != null else String(line.gives)
+	if not Bag.try_add(_adventure, line.gives, line.gives_count):
+		return tr(line.text) + "\n\n" + tr("GIFT_BAG_FULL") % name
+	_adventure.set_flag(line.sets)
+	var got := tr("GIFT_RECEIVED") % name if line.gives_count == 1 \
+			else tr("GIFT_RECEIVED_MANY") % [name, line.gives_count]
+	return tr(line.text) + "\n\n" + got
+
+

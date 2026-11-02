@@ -9,9 +9,14 @@ extends Resource
 @export var also_requires: StringName
 ## Not said once this flag is set (empty: no restriction).
 @export var unless: StringName
+## A second flag that also silences it (empty: none): for a gift, the old pickup that gave the same.
+@export var also_unless: StringName
 @export var text: String
-## Flag set when this line is said (empty: none).
+## Flag set when this line is said (empty: none). A gift's flag is set only once it is given.
 @export var sets: StringName
+## A gift handed over with the line (an ItemCatalog id; empty: none), and how many.
+@export var gives: StringName
+@export var gives_count: int = 1
 
 
 ## The first of `lines` that applies, or null: lists put the most specific line first.
@@ -28,5 +33,7 @@ func applies(adventure: Adventure) -> bool:
 	if not requires.is_empty() and not adventure.has_flag(requires):
 		return false
 	if not also_requires.is_empty() and not adventure.has_flag(also_requires):
+		return false
+	if not also_unless.is_empty() and adventure.has_flag(also_unless):
 		return false
 	return unless.is_empty() or not adventure.has_flag(unless)
