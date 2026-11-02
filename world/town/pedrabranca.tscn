@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" path="res://assets/ardovel/town/quarry.png" id="4_jx14a"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/town/steps.png" id="5_l5bup"]
 [ext_resource type="PackedScene" path="res://actors/player/player.tscn" id="6_6qr3s"]
-[ext_resource type="Script" path="res://actors/player/player.gd" id="7_8x4bn"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Backgrounds/Tilesets/TilesetHouse.png" id="8_iiyg8"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/town/block.png" id="9_ft2bo"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/town/cart.png" id="10_qf6wp"]
@@ -29,17 +28,19 @@
 [ext_resource type="Script" path="res://actors/npc/iara_in_town.gd" id="27_kj5mh"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/SpriteSheet.png" id="28_6qayl"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager3/Faceset.png" id="29_8aqt3"]
-[ext_resource type="Script" path="res://actors/npc/npc.gd" id="30_cey4l"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Hunter/SpriteSheet.png" id="31_lkwnp"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Hunter/Faceset.png" id="32_ul6py"]
 [ext_resource type="Script" path="res://world/area_entry.gd" id="33_x0qlb"]
 [ext_resource type="Script" path="res://world/area_exit.gd" id="34_fiaml"]
-[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
-[ext_resource type="Texture2D" path="res://assets/ardovel/props/stone_rubble.png" id="m75_stone_rubble"]
-[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager2/SpriteSheet.png" id="m75_keeper_sheet"]
+[ext_resource type="Script" path="res://world/vein/boarded_adit.gd" id="37_iiyg8"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/town/adit.png" id="38_ft2bo"]
+[ext_resource type="AudioStream" path="res://assets/ninja_adventure/Audio/Sounds/Hit & Impact/Impact3.wav" id="39_qf6wp"]
 [ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager2/Faceset.png" id="m75_keeper_face"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Actor/Character/Villager2/SpriteSheet.png" id="m75_keeper_sheet"]
 [ext_resource type="Texture2D" path="res://assets/ardovel/props/crew_rack.png" id="m75_rack"]
+[ext_resource type="Texture2D" path="res://assets/ardovel/props/stone_rubble.png" id="m75_stone_rubble"]
+[ext_resource type="Texture2D" path="res://assets/ninja_adventure/Items/Treasure/LittleTreasureChest.png" id="pk_chest"]
+[ext_resource type="PackedScene" path="res://world/props/item_pickup.tscn" id="pk_pickup"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ksvog"]
 size = Vector2(56, 14)
@@ -148,6 +149,39 @@ size = Vector2(4, 3)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pm77q"]
 
+[sub_resource type="Resource" id="Resource_rufina_gear"]
+script = ExtResource("26_wqlxu")
+requires = &"town_notice_down"
+unless = &"town_crew_gear_given"
+text = "RUFINA_CREW_GEAR"
+sets = &"town_crew_gear_given"
+
+[sub_resource type="Resource" id="Resource_rucmf"]
+script = ExtResource("26_wqlxu")
+requires = &"vein_rufina_paid"
+text = "RUFINA_VEIN_PAID"
+
+[sub_resource type="Resource" id="Resource_70hgq"]
+script = ExtResource("26_wqlxu")
+requires = &"vein_drain_open"
+unless = &"vein_rufina_paid"
+text = "RUFINA_VEIN_PAY"
+sets = &"vein_rufina_paid"
+gives_money = 40
+
+[sub_resource type="Resource" id="Resource_h7i8u"]
+script = ExtResource("26_wqlxu")
+requires = &"vein_heard"
+unless = &"vein_drain_open"
+text = "RUFINA_VEIN_WAIT"
+
+[sub_resource type="Resource" id="Resource_37ms2"]
+script = ExtResource("26_wqlxu")
+requires = &"town_crew_gear_given"
+unless = &"vein_heard"
+text = "RUFINA_VEIN_WATER"
+sets = &"vein_heard"
+
 [sub_resource type="Resource" id="Resource_g7xry"]
 script = ExtResource("26_wqlxu")
 requires = &"town_notice_down"
@@ -199,6 +233,25 @@ unless = &"town_iara_met"
 text = "IARA_TOWN_MEET"
 sets = &"town_iara_met"
 
+[sub_resource type="Resource" id="Resource_teodoro_gift"]
+script = ExtResource("26_wqlxu")
+requires = &"town_teodoro_told"
+unless = &"gift_teodoro_ring"
+also_unless = &"found_town_whitestone_ring"
+text = "TEODORO_GIFT_RING"
+sets = &"gift_teodoro_ring"
+gives = &"whitestone_ring"
+
+[sub_resource type="Resource" id="Resource_151o1"]
+script = ExtResource("26_wqlxu")
+requires = &"vein_drain_open"
+text = "TEODORO_VEIN_AFTER"
+
+[sub_resource type="Resource" id="Resource_sdd57"]
+script = ExtResource("26_wqlxu")
+requires = &"vein_heard"
+text = "TEODORO_VEIN"
+
 [sub_resource type="Resource" id="Resource_7yjlt"]
 script = ExtResource("26_wqlxu")
 requires = &"town_notice_down"
@@ -213,6 +266,42 @@ sets = &"town_teodoro_told"
 [sub_resource type="Resource" id="Resource_6n6wf"]
 script = ExtResource("26_wqlxu")
 text = "TEODORO_BUSY"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crewrack"]
+size = Vector2(22, 6)
+
+[sub_resource type="Resource" id="Resource_keeper_notice"]
+script = ExtResource("26_wqlxu")
+requires = &"town_notice_down"
+unless = &"town_store_notice_heard"
+text = "STORE_NOTICE"
+sets = &"town_store_notice_heard"
+
+[sub_resource type="Resource" id="Resource_keeper_meet"]
+script = ExtResource("26_wqlxu")
+unless = &"town_store_met"
+text = "STORE_MEET"
+sets = &"town_store_met"
+
+[sub_resource type="Resource" id="Resource_yymjm"]
+script = ExtResource("26_wqlxu")
+requires = &"vein_drain_open"
+text = "STORE_VEIN_AFTER"
+
+[sub_resource type="Resource" id="Resource_ao025"]
+script = ExtResource("26_wqlxu")
+requires = &"vein_heard"
+text = "STORE_VEIN"
+
+[sub_resource type="Resource" id="Resource_keeper_idle"]
+script = ExtResource("26_wqlxu")
+text = "STORE_IDLE"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vpvd7"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wlqbi"]
+size = Vector2(28, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2wts8"]
 size = Vector2(6, 28)
@@ -229,8 +318,8 @@ size = Vector2(16, 288)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e7wfb"]
 size = Vector2(16, 288)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xm72p"]
-size = Vector2(130, 32)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u720e"]
+size = Vector2(72, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c4a4h"]
 size = Vector2(162, 32)
@@ -253,41 +342,11 @@ size = Vector2(80, 64)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5x28l"]
 size = Vector2(48, 64)
 
-[sub_resource type="Resource" id="Resource_teodoro_gift"]
-script = ExtResource("26_wqlxu")
-requires = &"town_teodoro_told"
-unless = &"gift_teodoro_ring"
-also_unless = &"found_town_whitestone_ring"
-text = "TEODORO_GIFT_RING"
-sets = &"gift_teodoro_ring"
-gives = &"whitestone_ring"
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fsrnn"]
+size = Vector2(26, 32)
 
-[sub_resource type="Resource" id="Resource_rufina_gear"]
-script = ExtResource("26_wqlxu")
-requires = &"town_notice_down"
-unless = &"town_crew_gear_given"
-text = "RUFINA_CREW_GEAR"
-sets = &"town_crew_gear_given"
-
-[sub_resource type="Resource" id="Resource_keeper_notice"]
-script = ExtResource("26_wqlxu")
-requires = &"town_notice_down"
-unless = &"town_store_notice_heard"
-text = "STORE_NOTICE"
-sets = &"town_store_notice_heard"
-
-[sub_resource type="Resource" id="Resource_keeper_meet"]
-script = ExtResource("26_wqlxu")
-unless = &"town_store_met"
-text = "STORE_MEET"
-sets = &"town_store_met"
-
-[sub_resource type="Resource" id="Resource_keeper_idle"]
-script = ExtResource("26_wqlxu")
-text = "STORE_IDLE"
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_crewrack"]
-size = Vector2(22, 6)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nwjoy"]
+size = Vector2(24, 8)
 
 [node name="Pedrabranca" type="Node2D" unique_id=1841904956 node_paths=PackedStringArray("player", "ground")]
 script = ExtResource("1_rqvmu")
@@ -590,11 +649,8 @@ centered = false
 [node name="Entities" type="Node2D" parent="." unique_id=496401410]
 y_sort_enabled = true
 
-[node name="Player" type="CharacterBody2D" parent="Entities" unique_id=1362234021 instance=ExtResource("6_6qr3s")]
+[node name="Player" parent="Entities" unique_id=1362234021 instance=ExtResource("6_6qr3s")]
 position = Vector2(458, 228)
-collision_layer = 2
-motion_mode = 1
-script = ExtResource("7_8x4bn")
 
 [node name="Piece1" type="StaticBody2D" parent="Entities" unique_id=1903884211]
 position = Vector2(40, 288)
@@ -1196,18 +1252,16 @@ prompt = NodePath("../Prompt")
 position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_pm77q")
 
-[node name="Rufina" type="StaticBody2D" parent="Entities" unique_id=1210241306 instance=ExtResource("22_fsrnn")]
+[node name="Rufina" parent="Entities" unique_id=1210241306 instance=ExtResource("22_fsrnn")]
 position = Vector2(300, 26)
-collision_mask = 0
 script = ExtResource("23_nwjoy")
 display_name = "NPC_RUFINA"
 sheet = ExtResource("24_vwymy")
 faceset = ExtResource("25_ugqcg")
-lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_rufina_gear"), SubResource("Resource_g7xry"), SubResource("Resource_0xjns"), SubResource("Resource_l0tav"), SubResource("Resource_8qipe")])
+lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_rufina_gear"), SubResource("Resource_rucmf"), SubResource("Resource_70hgq"), SubResource("Resource_h7i8u"), SubResource("Resource_37ms2"), SubResource("Resource_g7xry"), SubResource("Resource_0xjns"), SubResource("Resource_l0tav"), SubResource("Resource_8qipe")])
 
-[node name="Iara" type="StaticBody2D" parent="Entities" unique_id=1049673887 instance=ExtResource("22_fsrnn")]
+[node name="Iara" parent="Entities" unique_id=1049673887 instance=ExtResource("22_fsrnn")]
 position = Vector2(392, 236)
-collision_mask = 0
 script = ExtResource("27_kj5mh")
 display_name = "NPC_IARA"
 sheet = ExtResource("28_6qayl")
@@ -1215,15 +1269,89 @@ faceset = ExtResource("29_8aqt3")
 facing = Vector2(-1, 0)
 lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_y2pf4"), SubResource("Resource_w76tm"), SubResource("Resource_owwob"), SubResource("Resource_2p84u"), SubResource("Resource_qd8b7")])
 
-[node name="Teodoro" type="StaticBody2D" parent="Entities" unique_id=95369268 instance=ExtResource("22_fsrnn")]
+[node name="Teodoro" parent="Entities" unique_id=95369268 instance=ExtResource("22_fsrnn")]
 position = Vector2(318, 204)
-collision_mask = 0
-script = ExtResource("30_cey4l")
 display_name = "NPC_TEODORO"
 sheet = ExtResource("31_lkwnp")
 faceset = ExtResource("32_ul6py")
 facing = Vector2(-1, 0)
-lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_teodoro_gift"), SubResource("Resource_7yjlt"), SubResource("Resource_gbe6y"), SubResource("Resource_6n6wf")])
+lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_teodoro_gift"), SubResource("Resource_151o1"), SubResource("Resource_sdd57"), SubResource("Resource_7yjlt"), SubResource("Resource_gbe6y"), SubResource("Resource_6n6wf")])
+
+[node name="Found_QuarryMaul" parent="Entities" unique_id=868595805 instance=ExtResource("pk_pickup")]
+position = Vector2(380, 22)
+item = &"quarry_maul"
+flag = &"found_town_quarry_maul"
+allowed_by = &"town_crew_gear_given"
+refused = "CREW_GEAR_REFUSED"
+
+[node name="Found_QuarryBreastplate" parent="Entities" unique_id=1606821656 instance=ExtResource("pk_pickup")]
+position = Vector2(196, 262)
+item = &"quarry_breastplate"
+flag = &"found_town_quarry_breastplate"
+allowed_by = &"town_crew_gear_given"
+refused = "CREW_GEAR_REFUSED"
+message = "PICKUP_QUARRY_CHEST"
+chest = ExtResource("pk_chest")
+
+[node name="Found_WhiteStoneChip" parent="Entities" unique_id=1640507804 instance=ExtResource("pk_pickup")]
+position = Vector2(320, 80)
+item = &"white_stone_chip"
+count = 5
+flag = &"found_town_white_stone_chip"
+message = "RESOURCE_CHIPS"
+ground = ExtResource("m75_stone_rubble")
+
+[node name="CrewRack" type="StaticBody2D" parent="Entities" unique_id=124655624]
+position = Vector2(186, 198)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/CrewRack" unique_id=1107157041]
+texture = ExtResource("m75_rack")
+offset = Vector2(0, -12)
+
+[node name="Collision" type="CollisionShape2D" parent="Entities/CrewRack" unique_id=843432277]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_crewrack")
+
+[node name="Storekeeper" parent="Entities" unique_id=1677440815 instance=ExtResource("22_fsrnn")]
+position = Vector2(176, 214)
+display_name = "NPC_STOREKEEPER"
+sheet = ExtResource("m75_keeper_sheet")
+faceset = ExtResource("m75_keeper_face")
+lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_keeper_notice"), SubResource("Resource_keeper_meet"), SubResource("Resource_yymjm"), SubResource("Resource_ao025"), SubResource("Resource_keeper_idle")])
+merchant = &"crew_storeroom"
+
+[node name="Adit" type="StaticBody2D" parent="Entities" unique_id=1872080095]
+position = Vector2(184, 64)
+collision_mask = 0
+script = ExtResource("37_iiyg8")
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Adit" unique_id=1838250182]
+texture = ExtResource("38_ft2bo")
+centered = false
+offset = Vector2(-16, -32)
+hframes = 2
+
+[node name="Collision" type="CollisionShape2D" parent="Entities/Adit" unique_id=1395056806]
+position = Vector2(0, -16)
+shape = SubResource("RectangleShape2D_vpvd7")
+
+[node name="Prompt" type="Sprite2D" parent="Entities/Adit" unique_id=1636772963]
+visible = false
+position = Vector2(0, -36)
+texture = ExtResource("20_wlqbi")
+
+[node name="Interactable" type="Area2D" parent="Entities/Adit" unique_id=1909114930 node_paths=PackedStringArray("prompt")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("21_u720e")
+prompt = NodePath("../Prompt")
+
+[node name="Shape" type="CollisionShape2D" parent="Entities/Adit/Interactable" unique_id=572617690]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_wlqbi")
+
+[node name="Sound" type="AudioStreamPlayer2D" parent="Entities/Adit" unique_id=768065265]
+stream = ExtResource("39_qf6wp")
 
 [node name="Entries" type="Node2D" parent="." unique_id=1780463334]
 
@@ -1232,6 +1360,11 @@ position = Vector2(458, 228)
 script = ExtResource("33_x0qlb")
 id = &"east"
 facing = Vector2(-1, 0)
+
+[node name="Adit" type="Marker2D" parent="Entries" unique_id=708916761]
+position = Vector2(184, 86)
+script = ExtResource("33_x0qlb")
+id = &"adit"
 
 [node name="ToWaystop" type="Area2D" parent="." unique_id=477595215]
 position = Vector2(476, 228)
@@ -1265,8 +1398,8 @@ position = Vector2(488, 144)
 shape = SubResource("RectangleShape2D_e7wfb")
 
 [node name="@CollisionShape2D@6" type="CollisionShape2D" parent="Bounds" unique_id=1491693475]
-position = Vector2(161, 48)
-shape = SubResource("RectangleShape2D_xm72p")
+position = Vector2(132, 48)
+shape = SubResource("RectangleShape2D_u720e")
 
 [node name="@CollisionShape2D@7" type="CollisionShape2D" parent="Bounds" unique_id=1052421135]
 position = Vector2(335, 48)
@@ -1296,50 +1429,17 @@ shape = SubResource("RectangleShape2D_36ge4")
 position = Vector2(456, 32)
 shape = SubResource("RectangleShape2D_5x28l")
 
-[node name="Found_QuarryMaul" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(380, 22)
-item = &"quarry_maul"
-count = 1
-flag = &"found_town_quarry_maul"
-allowed_by = &"town_crew_gear_given"
-refused = "CREW_GEAR_REFUSED"
+[node name="QuarryWallEast" type="CollisionShape2D" parent="Bounds" unique_id=191167501]
+position = Vector2(213, 48)
+shape = SubResource("RectangleShape2D_fsrnn")
 
-[node name="Found_QuarryBreastplate" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(196, 262)
-item = &"quarry_breastplate"
-count = 1
-flag = &"found_town_quarry_breastplate"
-message = "PICKUP_QUARRY_CHEST"
-chest = ExtResource("pk_chest")
-allowed_by = &"town_crew_gear_given"
-refused = "CREW_GEAR_REFUSED"
+[node name="ToVein" type="Area2D" parent="." unique_id=1775514247]
+position = Vector2(184, 54)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("34_fiaml")
+target_area = &"hollow_vein"
+target_entry = &"mouth"
 
-[node name="Found_WhiteStoneChip" parent="Entities" instance=ExtResource("pk_pickup")]
-position = Vector2(320, 80)
-item = &"white_stone_chip"
-count = 5
-flag = &"found_town_white_stone_chip"
-ground = ExtResource("m75_stone_rubble")
-message = "RESOURCE_CHIPS"
-
-[node name="CrewRack" type="StaticBody2D" parent="Entities"]
-position = Vector2(186, 198)
-
-[node name="Sprite" type="Sprite2D" parent="Entities/CrewRack"]
-texture = ExtResource("m75_rack")
-offset = Vector2(0, -12)
-
-[node name="Collision" type="CollisionShape2D" parent="Entities/CrewRack"]
-position = Vector2(0, -3)
-shape = SubResource("RectangleShape2D_crewrack")
-
-[node name="Storekeeper" parent="Entities" instance=ExtResource("22_fsrnn")]
-position = Vector2(176, 214)
-collision_mask = 0
-script = ExtResource("30_cey4l")
-display_name = "NPC_STOREKEEPER"
-sheet = ExtResource("m75_keeper_sheet")
-faceset = ExtResource("m75_keeper_face")
-facing = Vector2(0, 1)
-lines = Array[ExtResource("26_wqlxu")]([SubResource("Resource_keeper_notice"), SubResource("Resource_keeper_meet"), SubResource("Resource_keeper_idle")])
-merchant = &"crew_storeroom"
+[node name="Shape" type="CollisionShape2D" parent="ToVein" unique_id=1035633198]
+shape = SubResource("RectangleShape2D_nwjoy")
