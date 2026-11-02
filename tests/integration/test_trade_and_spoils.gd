@@ -128,8 +128,8 @@ func test_every_item_has_a_source_and_no_old_flag_is_reused() -> void:
 		sources.get_or_add(Spoils.DROPS[kind]["item"], []).append("drop")
 	for id: StringName in ItemCatalog.ITEMS:
 		assert_true(sources.has(id), "%s can be had" % id)
-	assert_eq(ItemCatalog.ITEMS.size(), 41)
-	assert_eq(world["pickups"].size(), 30, "the world's pickups after the move")
+	assert_eq(ItemCatalog.ITEMS.size(), 42, "7.5's 41 and 7.6's Moult Ring")
+	assert_eq(world["pickups"].size(), 33, "7.5's 30 after the move, and 7.6's pay box, tool niche and ring")
 	# what moved is no longer lying around for free
 	for pickup: Dictionary in world["pickups"]:
 		if pickup["item"] == &"root_ring":

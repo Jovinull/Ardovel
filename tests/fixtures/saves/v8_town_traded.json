@@ -1,0 +1,53 @@
+{
+	"area": "pedrabranca",
+	"attributes": {
+		"strength": 3,
+		"vigor": 2,
+		"endurance": 2
+	},
+	"checkpoint": {
+		"area": "ruin",
+		"entry": "heart"
+	},
+	"entry": "east",
+	"equipment": {
+		"main_hand": "wayfarer_sword",
+		"off_hand": "traveller_shield",
+		"ring_1": "root_ring"
+	},
+	"experience": 560,
+	"flags": [
+		"blank_map_drawn",
+		"elder_thanked",
+		"equipment_seen",
+		"forest_shrine_awakened",
+		"heard_of_shrine",
+		"ruin_heart_awakened",
+		"ruin_warden_defeated",
+		"claimed_warden_root_ring",
+		"town_iara_met",
+		"town_rufina_heard",
+		"town_rufina_faced",
+		"town_iara_dealt",
+		"town_notice_down",
+		"town_crew_gear_given"
+	],
+	"health": -1,
+	"inventory": [
+		{"id": "wayfarer_sword", "count": 1},
+		{"id": "traveller_shield", "count": 1},
+		{"id": "root_ring", "count": 1},
+		{"id": "corn_bread", "count": 3}
+	],
+	"money": 64,
+	"passive_skill": "",
+	"purchases": {
+		"salt_carter/traveller_shield": 1
+	},
+	"quick_item": "corn_bread",
+	"rewards": [],
+	"skill_slots": ["", ""],
+	"skills": [],
+	"storage": [],
+	"version": 8
+}
