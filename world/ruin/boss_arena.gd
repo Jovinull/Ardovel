@@ -9,6 +9,8 @@ extends Node
 
 signal fight_started
 signal fight_won
+## The camera has finished gliding into the hall's frame or back to following the hero.
+signal camera_settled
 
 const SPIRIT := preload("res://actors/root_warden/warden_light.tscn")
 
@@ -26,9 +28,13 @@ const SPIRIT := preload("res://actors/root_warden/warden_light.tscn")
 ## While the fight lasts the camera keeps inside this rect (global; empty: it follows as everywhere),
 ## so a boss across the hall is never fought off screen.
 @export var camera_rect: Rect2
+## Seconds the camera takes to glide into that rect when the fight starts and back to the hero when
+## it is won (switching the limits in one frame made the view jump).
+@export var glide_time: float = 0.8
 
 var _camera: Camera2D
 var _limits: Array[int] = []
+var _glide: Tween
 
 var _adventure: Adventure
 var _fighting: bool = false
@@ -90,20 +96,57 @@ func _frame_camera(camera: Camera2D) -> void:
 		return
 	_camera = camera
 	_limits = [camera.limit_left, camera.limit_top, camera.limit_right, camera.limit_bottom]
-	camera.limit_left = int(camera_rect.position.x)
-	camera.limit_top = int(camera_rect.position.y)
-	camera.limit_right = int(camera_rect.end.x)
-	camera.limit_bottom = int(camera_rect.end.y)
+	# The limits start as exactly what is on screen (nothing moves) and slide to the hall's rect.
+	_glide_limits(_view_rect(), func() -> Rect2: return camera_rect, false)
 
 
 func _release_camera() -> void:
 	if not is_instance_valid(_camera) or _limits.is_empty():
 		return
-	_camera.limit_left = _limits[0]
-	_camera.limit_top = _limits[1]
-	_camera.limit_right = _limits[2]
-	_camera.limit_bottom = _limits[3]
-	_limits.clear()
+	# Back to where the camera would sit following the hero (he may walk meanwhile), then free.
+	_glide_limits(_view_rect(), _free_view, true)
+
+
+func _glide_limits(from: Rect2, to: Callable, release: bool) -> void:
+	if _glide != null:
+		_glide.kill()
+	_glide = create_tween()
+	_glide.tween_method(func(k: float) -> void:
+		var target: Rect2 = to.call()
+		var w := smoothstep(0.0, 1.0, k)
+		_set_limits(Rect2(from.position.lerp(target.position, w), from.size.lerp(target.size, w))),
+			0.0, 1.0, glide_time)
+	_glide.tween_callback(func() -> void:
+		if release:
+			_set_limits(Rect2(Vector2(_limits[0], _limits[1]), Vector2(_limits[2] - _limits[0], _limits[3] - _limits[1])))
+			_limits.clear()
+		else:
+			_set_limits(camera_rect)
+		camera_settled.emit())
+
+
+func _set_limits(rect: Rect2) -> void:
+	if not is_instance_valid(_camera):
+		return
+	_camera.limit_left = roundi(rect.position.x)
+	_camera.limit_top = roundi(rect.position.y)
+	_camera.limit_right = _camera.limit_left + roundi(rect.size.x)
+	_camera.limit_bottom = _camera.limit_top + roundi(rect.size.y)
+
+
+## What the camera shows now (global).
+func _view_rect() -> Rect2:
+	var size := _camera.get_viewport_rect().size / _camera.zoom
+	return Rect2(_camera.get_screen_center_position() - size / 2.0, size)
+
+
+## What it would show following the hero inside the area's own limits.
+func _free_view() -> Rect2:
+	var size := _camera.get_viewport_rect().size / _camera.zoom
+	var corner := _camera.global_position - size / 2.0
+	corner.x = clampf(corner.x, _limits[0], maxf(_limits[0], _limits[2] - size.x))
+	corner.y = clampf(corner.y, _limits[1], maxf(_limits[1], _limits[3] - size.y))
+	return Rect2(corner, size)
 
 
 ## Whether the camera is held to the hall now.

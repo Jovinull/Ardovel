@@ -6,10 +6,14 @@ extends Node2D
 ## (`refresh_all`). Nothing of it is saved: entering the area always finds the water as the miners
 ## left it (Sluice.found_way), and only what flags prove stays done (a drained pool, a cart sent).
 ##
-## By default a wet node shows its child "Wet" and hides "Dry" (and the other way round); subclasses
-## add what being wet does (a channel blocks, a bucket hangs low).
+## By default a wet node shows its child "Wet" and hides "Dry" (and the other way round), and while
+## wet plays the "Wet" sprite's frames (falling water, the spring's spout, a seep); subclasses add
+## what being wet does (a channel blocks, a bucket hangs low).
 
 signal wetness_changed(wet: bool)
+
+## Seconds per frame of the "Wet" sprite while the water runs.
+const WET_FRAME_TIME := 0.22
 
 ## What feeds this (empty: a spring).
 @export var source: WaterNode
@@ -20,12 +24,25 @@ signal wetness_changed(wet: bool)
 
 var _adventure: Adventure
 var _shown := -1
+var _running: Sprite2D
+var _wet_clock := 0.0
 
 
 func _ready() -> void:
 	add_to_group(&"vein_water")
 	add_to_group(&"adventure")
+	_running = get_node_or_null(^"Wet") as Sprite2D
+	set_process(_running != null and _running.hframes > 1)
 	_apply.call_deferred(false)
+
+
+func _process(delta: float) -> void:
+	if _shown != 1:
+		return
+	_wet_clock += delta
+	if _wet_clock >= WET_FRAME_TIME:
+		_wet_clock = 0.0
+		_running.frame = (_running.frame + 1) % _running.hframes
 
 
 func bind_adventure(adventure: Adventure) -> void:

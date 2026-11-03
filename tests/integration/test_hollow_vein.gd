@@ -175,12 +175,12 @@ func test_the_spring_sluice_sends_the_water_to_the_mouths_bucket_and_raises_the_
 	await _enter_vein()
 	var s1 := _sluice("SluiceSpring")
 	var gate := _gate("GateMouth")
-	assert_eq(s1.way, Sluice.WEST, "found sending the water down the sinkhole")
+	assert_eq(s1.way, Sluice.WEST, "found sending the water south, down the cut face to the ledge")
 	assert_true(_channel("ToSinkhole").is_wet())
 	assert_false(_channel("ToMouth").is_wet())
 	assert_false(gate.is_open())
 	# Walk from the mouth to the spring's sluice and turn it, with real input.
-	assert_true(await _walk_through([Vector2(470, 136), Vector2(330, 136), Vector2(250, 166), Vector2(150, 166), Vector2(128, 162)]),
+	assert_true(await _walk_through([Vector2(470, 136), Vector2(330, 136), Vector2(250, 166), Vector2(152, 164)]),
 			"the way from the mouth to the spring's sluice is open")
 	assert_eq(await _press_interact(), "")
 	assert_eq(s1.way, Sluice.EAST)
@@ -277,7 +277,7 @@ func test_the_lift_rises_only_with_water_in_its_bucket_and_always_comes_down() -
 	_assert_at_entry(VEIN, &"lift_bottom")
 
 
-func test_the_ladder_is_lowered_from_the_ledge_and_the_office_opens_on_the_sinkholes_water() -> void:
+func test_the_ladder_is_lowered_from_the_ledge_and_the_office_opens_on_the_ledges_water() -> void:
 	await _enter_vein([&"vein_gate_wedged"])
 	var top: VeinPassage = _node("Entities/LadderTop")
 	assert_eq(await _use_at(top.global_position + Vector2(0, -12)), "VEIN_LADDER_UP")
@@ -287,10 +287,10 @@ func test_the_ladder_is_lowered_from_the_ledge_and_the_office_opens_on_the_sinkh
 	assert_eq(await _use_at(bottom.global_position + Vector2(0, 12)), "VEIN_LADDER_LOWERED")
 	assert_true(game.adventure.has_flag(&"vein_ladder_down"))
 	var office := _gate("GateOffice")
-	assert_true(office.is_open(), "the spring found going down the sinkhole fills the office's bucket")
+	assert_true(office.is_open(), "the spring found running south fills the office's bucket")
 	_sluice("SluiceSpring").turn()
 	await wait_physics_frames(3)
-	assert_false(office.is_open(), "turned to the mouth, the sinkhole runs dry")
+	assert_false(office.is_open(), "turned to the mouth, the ledge's channel runs dry")
 	assert_eq(await _use_at(bottom.global_position + Vector2(0, 12)), "")
 	await _settle()
 	_assert_at_entry(VEIN, &"ladder_top")
@@ -438,7 +438,8 @@ func test_the_fight_starts_with_the_grate_shut_and_her_shell_takes_a_third() -> 
 	assert_false((_node("Entities/Grate") as VeinDoor).is_open(), "the way back shuts")
 	assert_true((game.get_node(^"HUD") as Hud).is_boss_bar_visible())
 	assert_true(arena.is_framing(), "the camera keeps the whole hall in view")
-	assert_eq(_player().camera.limit_top, 512)
+	assert_true(await _wait_until(func() -> bool: return _player().camera.limit_top == 512, 2.0),
+			"after gliding there")
 	var hurt := boss.get_node(^"Hurtbox") as Hurtbox
 	var full := boss.health.current
 	boss.state = OldGnawer.State.WALK
@@ -509,6 +510,49 @@ func test_a_fall_in_the_fight_leaves_her_whole_and_the_way_open() -> void:
 	assert_false((game.get_node(^"HUD") as Hud).is_boss_bar_visible())
 
 
+func test_the_camera_glides_into_her_hall_and_back_out_without_a_jump() -> void:
+	await _enter_vein([&"vein_gate_wedged", &"vein_cart_sent", &"vein_lamp_lit"], &"shelter")
+	var camera := _player().camera
+	_player().global_position = Vector2(440, 650)
+	await wait_physics_frames(3)
+	var start := camera.get_screen_center_position()
+	var track := _track_camera(camera)
+	assert_true(await _walk_through([Vector2(330, 650)], 4.0))
+	await wait_seconds(1.2)
+	get_tree().process_frame.disconnect(track[0])
+	var arena: BossArena = _node("BossArena")
+	assert_true(arena.is_fighting())
+	var moved := camera.get_screen_center_position().distance_to(start)
+	assert_gt(moved, 40.0, "the view moved to frame the hall")
+	assert_lt(track[1].max(), moved * 0.35, "sliding there over several frames, never in one jump")
+	# The hero waits in the hall's west corner: following him there frames less of the hall.
+	_player().global_position = Vector2(150, 660)
+	var boss: OldGnawer = _node("Entities/OldGnawer")
+	boss._enter(OldGnawer.State.DAZED)
+	boss.health.take_hit(99, 1)
+	assert_true(await _wait_until(func() -> bool: return game.adventure.has_flag(&"vein_gnawer_defeated"), 6.0))
+	start = camera.get_screen_center_position()
+	track = _track_camera(camera)
+	await wait_seconds(1.2)
+	get_tree().process_frame.disconnect(track[0])
+	assert_false(arena.is_framing(), "following the hero again")
+	moved = camera.get_screen_center_position().distance_to(start)
+	assert_gt(moved, 20.0, "the view went back to the hero")
+	assert_lt(track[1].max(), moved * 0.35, "gliding back, never in one jump")
+
+
+## Records how far the camera's view moves each frame: [the connected callable, the steps].
+func _track_camera(camera: Camera2D) -> Array:
+	var steps: Array[float] = [0.0]
+	var last := [camera.get_screen_center_position()]
+	var record := func() -> void:
+		var now := camera.get_screen_center_position()
+		steps.append(now.distance_to(last[0]))
+		last[0] = now
+	get_tree().process_frame.connect(record)
+	return [record, steps]
+
+
 func test_her_defeat_is_kept_rewarded_once_and_the_drain_runs() -> void:
 	await _enter_vein([&"vein_gate_wedged", &"vein_cart_sent", &"vein_lamp_lit"], &"shelter")
 	var boss := await _to_the_chamber()
@@ -520,7 +564,8 @@ func test_her_defeat_is_kept_rewarded_once_and_the_drain_runs() -> void:
 	assert_true(await _wait_until(func() -> bool: return game.adventure.has_flag(&"vein_gnawer_defeated"), 6.0))
 	assert_eq(game.adventure.experience - before, HeroGrowth.DEEDS[&"vein_gnawer"][1])
 	assert_true((_node("Entities/Grate") as VeinDoor).is_open())
-	assert_false((_node("BossArena") as BossArena).is_framing(), "the camera follows again")
+	assert_true(await _wait_until(func() -> bool: return not (_node("BossArena") as BossArena).is_framing(), 2.0),
+			"the camera glides back and follows again")
 	var reward: ItemPickup = _node("Entities/Reward_GnawerRing")
 	assert_true(reward.is_present(), "her ring lies in the den")
 	await _use_at(reward.global_position + Vector2(0, 12))

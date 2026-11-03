@@ -62,6 +62,7 @@ func _ready() -> void:
 	_shape = _shapes[0]
 	add_child(_body)
 	super._ready()
+	set_process(true)  # the running water's own frames (see _process)
 
 
 func _process(delta: float) -> void:

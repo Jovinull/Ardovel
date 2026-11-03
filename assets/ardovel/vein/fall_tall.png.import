@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cno05envltnkb"
-path="res://.godot/imported/sinkhole.png-a48716b75cc4c0411dacc2f89404778b.ctex"
+uid="uid://cmiveiua62yh6"
+path="res://.godot/imported/fall_tall.png-b931c40a9a39eb1046bb57f26a39bd92.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ardovel/vein/sinkhole.png"
-dest_files=["res://.godot/imported/sinkhole.png-a48716b75cc4c0411dacc2f89404778b.ctex"]
+source_file="res://assets/ardovel/vein/fall_tall.png"
+dest_files=["res://.godot/imported/fall_tall.png-b931c40a9a39eb1046bb57f26a39bd92.ctex"]
 
 [params]
 
