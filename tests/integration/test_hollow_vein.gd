@@ -175,12 +175,12 @@ func test_the_spring_sluice_sends_the_water_to_the_mouths_bucket_and_raises_the_
 	await _enter_vein()
 	var s1 := _sluice("SluiceSpring")
 	var gate := _gate("GateMouth")
-	assert_eq(s1.way, Sluice.WEST, "found sending the water down the sinkhole")
+	assert_eq(s1.way, Sluice.WEST, "found sending the water south, down the cut face to the ledge")
 	assert_true(_channel("ToSinkhole").is_wet())
 	assert_false(_channel("ToMouth").is_wet())
 	assert_false(gate.is_open())
 	# Walk from the mouth to the spring's sluice and turn it, with real input.
-	assert_true(await _walk_through([Vector2(470, 136), Vector2(330, 136), Vector2(250, 166), Vector2(150, 166), Vector2(128, 162)]),
+	assert_true(await _walk_through([Vector2(470, 136), Vector2(330, 136), Vector2(250, 166), Vector2(152, 164)]),
 			"the way from the mouth to the spring's sluice is open")
 	assert_eq(await _press_interact(), "")
 	assert_eq(s1.way, Sluice.EAST)
@@ -277,7 +277,7 @@ func test_the_lift_rises_only_with_water_in_its_bucket_and_always_comes_down() -
 	_assert_at_entry(VEIN, &"lift_bottom")
 
 
-func test_the_ladder_is_lowered_from_the_ledge_and_the_office_opens_on_the_sinkholes_water() -> void:
+func test_the_ladder_is_lowered_from_the_ledge_and_the_office_opens_on_the_ledges_water() -> void:
 	await _enter_vein([&"vein_gate_wedged"])
 	var top: VeinPassage = _node("Entities/LadderTop")
 	assert_eq(await _use_at(top.global_position + Vector2(0, -12)), "VEIN_LADDER_UP")
@@ -287,10 +287,10 @@ func test_the_ladder_is_lowered_from_the_ledge_and_the_office_opens_on_the_sinkh
 	assert_eq(await _use_at(bottom.global_position + Vector2(0, 12)), "VEIN_LADDER_LOWERED")
 	assert_true(game.adventure.has_flag(&"vein_ladder_down"))
 	var office := _gate("GateOffice")
-	assert_true(office.is_open(), "the spring found going down the sinkhole fills the office's bucket")
+	assert_true(office.is_open(), "the spring found running south fills the office's bucket")
 	_sluice("SluiceSpring").turn()
 	await wait_physics_frames(3)
-	assert_false(office.is_open(), "turned to the mouth, the sinkhole runs dry")
+	assert_false(office.is_open(), "turned to the mouth, the ledge's channel runs dry")
 	assert_eq(await _use_at(bottom.global_position + Vector2(0, 12)), "")
 	await _settle()
 	_assert_at_entry(VEIN, &"ladder_top")

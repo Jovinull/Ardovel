@@ -99,7 +99,7 @@ production tools are kept outside this repository.
 | `vein/vein_tiles.png` | the galleries' ground: wet and cut-stone floors, rock faces and tops with rims, the cut white-stone cliff, steps |
 | `vein/channel_*.png`, `vein/pool_*.png` | channels and the pool, running (two frames) and dry |
 | `vein/sluice.png`, `board_h.png`, `board_v.png`, `bucket.png`, `gate_h.png`, `gate_v.png`, `lift.png`, `cart.png`, `rails.png`, `trestle.png`, `cage.png`, `shaft.png`, `ladder.png`, `footbridge.png` | the old machines: sluices and their planks, counterweight buckets, grates, the lift, the cart and rails, the cage and its shaft, the ladder, a footbridge |
-| `vein/lamp.png`, `tally.png`, `sign.png`, `pay_box.png`, `tool_rack.png`, `cot.png`, `prop.png`, `spring.png`, `sinkhole.png`, `fall.png` | the miners' lamp, boards and painted arrows, the pay box, tools, cots, shoring props, the spring, the sinkhole, falling water |
+| `vein/lamp.png`, `tally.png`, `sign.png`, `pay_box.png`, `tool_rack.png`, `cot.png`, `prop.png`, `spring.png`, `fall.png`, `fall_tall.png`, `seep.png` | the miners' lamp, boards and painted arrows, the pay box, tools, cots, shoring props, the spring, falling water, the pool's seep |
 | `vein/master_sluice.png`, `den.png`, `weight.png`, `latch.png` | the drain chamber: the master sluice, the gnawer's den, the hoist's counterweight and its latch |
 | `town/adit.png` | the old adit in Pedrabranca's quarry face, boarded and open |
 | `monsters/tatuira.png`, `tatuira_acts.png` | the tatuira (stone-gnawing pill bug): walk, curl, roll, on its back, cracked |
