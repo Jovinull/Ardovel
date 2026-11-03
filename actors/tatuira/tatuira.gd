@@ -65,7 +65,7 @@ func _init() -> void:
 	_sprite.sprite_frames = CreatureParts.frames(SHEET, Vector2i(16, 16), walk)
 	var acts := CreatureParts.frames(ACTS, Vector2i(16, 16), {
 		&"curl": [[0, 1], 4.0, false], &"roll": [[2, 3], 12.0, true], &"flipped": [[4, 5], 8.0, true],
-		&"death": [[6, 7], 6.0, false]})
+		&"death": [[1, 6, 7, 8], 6.0, false]})
 	for anim in acts.get_animation_names():
 		_sprite.sprite_frames.add_animation(anim)
 		_sprite.sprite_frames.set_animation_speed(anim, acts.get_animation_speed(anim))
