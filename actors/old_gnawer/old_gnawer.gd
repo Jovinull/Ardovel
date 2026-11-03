@@ -28,7 +28,9 @@ enum Move { CLOSE, ROLL, SLAM, BURROW }
 const SHEET := preload("res://assets/ardovel/monsters/old_gnawer.png")
 const BARE := preload("res://assets/ardovel/monsters/old_gnawer_bare.png")
 const FX := preload("res://assets/ardovel/monsters/gnawer_fx.png")
-const FRAME := Vector2i(48, 40)
+## 48x48 frames (40 tall until refinement pass 01, which cut the low poses' mandibles); her feet stay
+## on the same row, so the sprite's offset moved with it.
+const FRAME := Vector2i(48, 48)
 const CRUSTED_CYCLE: Array[Move] = [Move.CLOSE, Move.CLOSE, Move.ROLL, Move.CLOSE, Move.SLAM]
 const BARE_CYCLE: Array[Move] = [Move.CLOSE, Move.BURROW, Move.ROLL, Move.CLOSE, Move.SLAM]
 const SHELL_SHARE := 1.0 / 3.0
@@ -92,7 +94,7 @@ func _init() -> void:
 	collision_mask = 1
 	_sprite = AnimatedSprite2D.new()
 	_sprite.name = "Sprite"
-	_sprite.offset = Vector2(0, -19)
+	_sprite.offset = Vector2(0, -15)
 	_sprite.sprite_frames = _frames(SHEET)
 	add_child(_sprite)
 	_body_shape = CreatureParts.box(Vector2(34, 12), Vector2(0, -6))
@@ -453,13 +455,7 @@ func _shed() -> void:
 	var anim := _sprite.animation
 	_sprite.sprite_frames = _frames(BARE)
 	_sprite.play(anim)
-	for i in 4:
-		var dust := _fx_sprite("Crust%d" % i, 6 + i % 2)
-		remove_child(dust)
-		dust.visible = true
-		dust.global_position = global_position + Vector2(-18 + i * 12, -10 - (i % 2) * 8)
-		get_parent().add_child(dust)
-		get_tree().create_timer(0.6, false).timeout.connect(dust.queue_free)
+	_dust_at([Vector2(-18, -10), Vector2(-6, -18), Vector2(6, -10), Vector2(18, -18)])
 
 
 func _on_died() -> void:
@@ -474,9 +470,25 @@ func _on_died() -> void:
 	_sprite.visible = true
 	_sounds["cry"].play()
 	_sprite.play(&"death")
+	# The crash: on the second frame she comes down on her front; a thud and dust at her sides.
+	await get_tree().create_timer(1.0 / _sprite.sprite_frames.get_animation_speed(&"death"), false).timeout
+	_sounds["crash"].play()
+	_dust_at([Vector2(-20, -2), Vector2(18, -1), Vector2(-6, 2), Vector2(8, 3)])
 	await _sprite.animation_finished
-	await get_tree().create_timer(0.5, false).timeout
+	await get_tree().create_timer(1.2, false).timeout  # she lies still a moment before the den takes her
+	_dust_at([Vector2(-12, -4), Vector2(12, -4), Vector2(0, 0)])
 	defeated.emit()
+
+
+## Puffs of dust (the effect sheet's two dust frames) around her, gone in a moment.
+func _dust_at(offsets: Array) -> void:
+	for i in offsets.size():
+		var dust := _fx_sprite("Dust%d" % i, 6 + i % 2)
+		remove_child(dust)
+		dust.visible = true
+		dust.global_position = global_position + (offsets[i] as Vector2)
+		get_parent().add_child(dust)
+		get_tree().create_timer(0.5, false).timeout.connect(dust.queue_free)
 
 
 func _fx_sprite(node_name: String, frame: int) -> Sprite2D:
